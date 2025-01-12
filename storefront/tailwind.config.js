@@ -21,6 +21,10 @@ module.exports = {
         padding: "padding-top padding-right padding-bottom padding-left",
       },
       colors: {
+        'gold':'#C7A88C',
+        'dolginsblue': '#222943',
+        'dolginslightblue': '#418FDE',
+        'christmasburgundy': '#9D1E29',        
         grey: {
           0: "#FFFFFF",
           5: "#F9FAFB",
