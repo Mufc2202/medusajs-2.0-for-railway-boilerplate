@@ -16,7 +16,8 @@ const Hero = () => {
             level="h2"
             className="text-3xl leading-10 text-ui-fg-subtle font-normal"
           >
-            Need help customizing your store?
+            Need help customizing your store? Please work! Testing JPD 1/13/25
+            2:11pm
           </Heading>
         </span>
         <a
