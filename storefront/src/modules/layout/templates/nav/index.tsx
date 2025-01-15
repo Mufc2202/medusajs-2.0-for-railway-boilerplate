@@ -26,7 +26,7 @@ const navigation = {
       featured: [
         {
           name: "Engagement & Wedding Rings",
-          href: "/t/wedding-rings/engagement-rings",
+          href: "/categories/wedding-rings",
           imageSrc: WeddingRing,
           imageAlt:
             "Engagement ring and wedding band in a jewelry box for a engagement proposal icon.",
@@ -75,7 +75,7 @@ const navigation = {
         },
         {
           name: "Watch Repair",
-          href: "https://storefront-production-82d1.up.railway.app/us/categories/jewelry-repair/watches",
+          href: "/categories/jewelry-repair/watches",
           imageSrc: WatchRepair,
           imageAlt: "Watch with the back removed and small screw driver",
         },

@@ -1,21 +1,12 @@
 import Link from "next/link"
 import Image from "next/image"
 import Logo from "/src/images/logos/logotag-text-blue-symbol-color.svg"
-
-function NavLink(href: any, children: any) {
-  return (
-    <Link
-      href={href}
-      className="text-lg text-dolginsblue h-14 mx-2 hover:text-gray-900"
-    >
-      {children}
-    </Link>
-  )
-}
+import Values from "@modules/layout/components/values"
 
 export default function Footer() {
   return (
     <footer className="bg-white py-4 px-4 sm:px-6 lg:px-8">
+      <Values />
       <div className="hero container max-w-screen-lg mx-auto pb-10 flex justify-center">
         <Link href="/">
           <Image
@@ -28,12 +19,42 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl overflow-hidden">
         <nav aria-label="Footer">
           <div className="flex mx-auto flex-wrap justify-center place-items-center">
-            <NavLink href="/">About</NavLink>
-            <NavLink href="/">Jewelry</NavLink>
-            <NavLink href="/t/custom">Custom-Make</NavLink>
-            <NavLink href="/">Buying Jewelry/Gold</NavLink>
-            <NavLink href="/">Jewelry Repair</NavLink>
-            <NavLink href="/">Contact</NavLink>
+            <Link
+              className="text-lg text-dolginsblue h-14 mx-2 hover:text-gray-900"
+              href="/about"
+            >
+              About
+            </Link>
+            <Link
+              className="text-lg text-dolginsblue h-14 mx-2 hover:text-gray-900"
+              href="/store"
+            >
+              Jewelry
+            </Link>
+            <Link
+              className="text-lg text-dolginsblue h-14 mx-2 hover:text-gray-900"
+              href="/categories/custom-jewelry"
+            >
+              Custom-Make
+            </Link>
+            <Link
+              className="text-lg text-dolginsblue h-14 mx-2 hover:text-gray-900"
+              href="/"
+            >
+              Buying Jewelry/Gold
+            </Link>
+            <Link
+              className="text-lg text-dolginsblue h-14 mx-2 hover:text-gray-900"
+              href="/categories/jewelry-repair"
+            >
+              Jewelry Repair
+            </Link>
+            <Link
+              className="text-lg text-dolginsblue h-14 mx-2 hover:text-gray-900"
+              href="/contact"
+            >
+              Contact
+            </Link>
           </div>
         </nav>
         <p className="mt-2 text-center text-sm text-gray-900">
