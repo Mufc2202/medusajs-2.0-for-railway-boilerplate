@@ -94,7 +94,7 @@ const navigation = {
   ],
 }
 
-function classNames(...classes) {
+function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ")
 }
 
@@ -215,7 +215,7 @@ export default function Nav() {
                         href={page.href}
                         className="-m-2 block p-2 font-medium text-gray-900"
                         data-testid={page.testid}
-                        scroll={page.scroll}
+                        //scroll={page.scroll}
                       >
                         {page.name}
                       </a>
@@ -405,7 +405,7 @@ export default function Nav() {
                       viewBox="0 0 24 24"
                       stroke-width="1.5"
                       stroke="currentColor"
-                      class="size-6"
+                      className="size-6"
                     >
                       <path
                         stroke-linecap="round"

@@ -23,7 +23,7 @@
     "@types/react": "17.0.40"
   },
   "dependencies": {
-    "@headlessui/react": "^1.6.1",
+    "@headlessui/react": "^1.7.19",
     "@hookform/error-message": "^2.0.0",
     "@medusajs/js-sdk": "preview",
     "@medusajs/types": "preview",
@@ -35,7 +35,6 @@
     "@stripe/stripe-js": "^1.29.0",
     "algoliasearch": "^4.20.0",
     "axios": "^1.6.7",
-    "heroicon": "^0.0.2",
     "lodash": "^4.17.21",
     "medusajs-launch-utils": "^0.0.10",
     "next": "^14.0.0",
