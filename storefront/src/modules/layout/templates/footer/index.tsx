@@ -2,7 +2,7 @@ import Link from "next/link"
 import Image from "next/image"
 import Logo from "/src/images/logos/logotag-text-blue-symbol-color.svg"
 
-function NavLink({ href, children }) {
+function NavLink(href: any, children: any) {
   return (
     <Link
       href={href}
