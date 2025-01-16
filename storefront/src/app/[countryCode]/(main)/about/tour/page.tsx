@@ -1,67 +1,145 @@
+import { Metadata } from "next"
+import PageHeader from "@modules/layout/components/page-header"
+import Image from "next/image"
+import DolginsCTA from "@modules/layout/components/dolgins-cta"
+import diamondtorch from "/src/images/about/diamond-torch.jpg"
+import tools1 from "/src/images/about/Tools-1.jpg"
+import tools2 from "/src/images/about/Tools-2.jpg"
+import tools3 from "/src/images/about/Tools-3.jpg"
+import tools4 from "/src/images/about/Tools-4.jpg"
+import tools5 from "/src/images/about/Tools-5.jpg"
+import tools6 from "/src/images/about/Tools-6.jpg"
+
+const posts = [
+  {
+    title: "Laser Welder",
+    href: "#",
+    category: { name: "Jewelry-Making" },
+    description:
+      "We do solder still but welding allows us to use harden wire for a stronger joint. Laser welders have changed jewelry-making when they were introduced. Ours works hard.",
+    imageUrl: tools1,
+    alt: "Laser welder smoking some silver from a ring.",
+  },
+  {
+    title: "Diamond Scale",
+    href: "#",
+    category: { name: "Gemological" },
+    description:
+      "We have modern diamond scales, but this one has been with us for 4 generations. The original weights are still its drawer and the scale features cigarette burns from that bygone era.",
+    imageUrl: tools5,
+    alt: "Diamond scale from the 1930s with cigarette burns, my grandfathers tweezers, and a beautiful engagement ring.",
+  },
+  {
+    title: "3D Printer",
+    category: { name: "Jewelry Design" },
+    description:
+      "3D printing allows you to visualize and wear the custom jewelry we create. It ensures we get the piece right: from the minute details to the major ones.",
+    imageUrl: tools6,
+    alt: "3D printed engagement rings before they have been cleaned and viewed.",
+  },
+  {
+    title: "Bench Scope",
+    category: { name: "Jewelry-Making" },
+    description:
+      "Petit and delicate jewelry has grown in popularity over the passed 20 years. Setting those small diamonds and gemstones takes specialized equipment including this scope.",
+    imageUrl: tools2,
+    alt: "Benchscope set up waiting to set some small accent diamonds known as melee.",
+  },
+  {
+    title: "Steam Cleaner",
+    category: { name: "Jewelry-Making" },
+    description:
+      "The steam cleaner is the final step to get jewelry looking perfectly bright. The pressure from the steam blasts grime away leaving the diamonds and metal to shine.",
+    imageUrl: tools3,
+    alt: "Steam blasting some grime from an engagement ring.",
+  },
+  {
+    title: "Lab Grown Diamond Tester",
+    category: { name: "Gemological" },
+    description:
+      "Lab grown diamonds are becoming more common. To tell them apart, I use a tool which analyzes how diamonds reflect shortwave and longwave UV light.",
+    imageUrl: tools4,
+    alt: "Testing whether a diamond was earth-created or lab-grown.",
+  },
+]
+
+export async function generateMetadata(): Promise<Metadata> {
+  const metadata = {
+    title: `Dolgin's Jewelry Store Tour | Dolgins Jewelry`,
+    description:
+      "Dolgin's is a unique jewelry store located in an office in Overland Park, KS. Tour our office to see where we design and craft fine jewelry & engagement rings in our small but well equipped jewelry studio.",
+  } as Metadata
+
+  return metadata
+}
+
 export function Tour() {
   return (
-    <div>
-      <main>
-        <div className="bg-white">
-          <div className="mx-auto max-w-7xl py-4 px-4 sm:py-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <h1 className="text-lg font-semibold text-dolginsblue">
-                Store Tour
-              </h1>
-              <p className="mt-1 text-4xl font-bold font-serif tracking-tight text-dolginslightblue sm:text-5xl lg:text-6xl">
-                Testing
-              </p>
-              <p className="mx-auto mt-2 pb-3 max-w-xl text-xl text-gray-500 border-b-gold border-b-2">
-                At Dolgins, we are small independent jeweler who aims to please.
-                Here is some basic information on how we operate.
-              </p>
-            </div>
+    <section>
+      <PageHeader
+        name="Tour Our Office"
+        subtitle="A Unique Jewelry Studio"
+        tidbit="The Dolgin's office is setup as a space to design, craft, and sell fine gold and platinum jewelry complete with a diamond and gemstone lab. We have all the necessary (and a few unnecessary) tools. Our office is low key, comfortable, personal, and secure."
+      />
+      <section>
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!4v1675113558236!6m8!1m7!1sCAoSLEFGMVFpcFBCY3BiakhNV0FsdzBYYVFacEdvaW1YNzNFR1dFY3F1TnhDN091!2m2!1d38.912421628701!2d-94.642002234998!3f52.1999130718467!4f-4.793720528529889!5f0.7820865974627469"
+          className="object-center mx-auto"
+          width="600"
+          height="450"
+          loading="lazy"
+        ></iframe>
+      </section>
+      <DolginsCTA
+        title="Please reach out"
+        subtitle="Our office is setup to create and repair fine jewelry."
+        text="Thank you for touring - now come see us in person. We are located inside the US Bank Building."
+      />
+      <div className="relative bg-dolginsblue px-6 pt-8 pb-20 lg:px-8 lg:pt-8 lg:pb-28">
+        <div className="absolute inset-0">
+          <div className="h-1/3 bg-white sm:h-2/3" />
+        </div>
+        <div className="relative mx-auto max-w-7xl">
+          <div id="tools" className="text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              Equipment Highlights
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-xl text-gray-500 sm:mt-4 border-b-gold border-b-2">
+              At Dolgins, we love our jewelry-making, design, and gemological
+              tools and use them everyday. Here are a few highlights of what we
+              have and why.
+            </p>
+          </div>
+          <div className="mx-auto mt-12 grid max-w-lg gap-5 lg:max-w-none lg:grid-cols-3">
+            {posts.map((post) => (
+              <div
+                key={post.title}
+                className="flex flex-col overflow-hidden rounded-lg shadow-lg"
+              >
+                <div className="flex-shrink-0">
+                  <Image className="" src={post.imageUrl} alt={post.alt} />
+                </div>
+                <div className="flex flex-1 flex-col justify-between bg-white p-6">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-dolginsblue">
+                      {post.category.name}
+                    </p>
+                    <div className="mt-2 block">
+                      <p className="text-xl font-semibold text-gray-900">
+                        {post.title}
+                      </p>
+                      <p className="mt-3 text-base text-gray-500">
+                        {post.description}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-        <section className="mx-auto max-w-3xl text-base leading-7">
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Awesome
-          </h2>
-          <p className="mt-6 text-xl leading-8">
-            Dolgins has many clients who do not live within driving distance. We
-            are capable of shipping our fine jewelry anywhere within the United
-            States. We mostly ship via Fedex or USPS though do use other
-            carriers too. All our jewelry is shipped insured through{" "}
-            <a
-              className="text-dolginslightblue"
-              href="https://jewelersmutual.com"
-            >
-              Jewelers Mutual
-            </a>
-            . Someone over the age of 21 will have to sign for it.
-          </p>
-          <p className="mt-6 text-xl leading-8">
-            The price of shipping varies from $50 to many thousands. We
-            coordinate shipping when your jewelry is ready. And shipping is
-            never free though some stores include it in the price.
-          </p>
-        </section>
-
-        <section className="mx-auto max-w-3xl text-base leading-7">
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Yes - Its awesome.
-          </h2>
-          <p className="mt-6 text-xl leading-8">
-            At Dolgins, we love jewelry and want you to love yours. We accept
-            returns and usually discuss the terms during the purchase because
-            each case is unique. Often, we care more about executing someone's
-            gesture or thought than getting the exact piece correct. In those
-            circumstances, we want the surprise and can figure out the perfect
-            piece later.
-          </p>
-          <p className="mt-6 text-xl leading-8">
-            Dolgins is NOT a corporate entity either. While we do not want to be
-            abused, we also know not all returns can happen within 30 days. We
-            are happy to work reasonably and honestly.
-          </p>
-        </section>
-      </main>
-    </div>
+      </div>
+    </section>
   )
 }
 
