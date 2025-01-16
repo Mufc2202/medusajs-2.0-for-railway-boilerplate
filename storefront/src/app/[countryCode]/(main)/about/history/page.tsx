@@ -1,3 +1,4 @@
+import { Metadata } from "next"
 import Image from "next/image"
 import PageHeader from "@modules/layout/components/page-header"
 import History1 from "/src/images/history/Dolgins-Historical-Photos-1.jpg"
@@ -29,6 +30,16 @@ import History28 from "/src/images/history/Dolgins-Historical-Photos-28.jpg"
 import History29 from "/src/images/history/Dolgins-Historical-Photos-29.jpg"
 import History30 from "/src/images/history/Dolgins-Historical-Photos-30.jpg"
 import History31 from "/src/images/history/Dolgins-Historical-Photos-31.svg"
+
+export async function generateMetadata(): Promise<Metadata> {
+  const metadata = {
+    title: `Dolgin's History | Dolgins Jewelry`,
+    description:
+      "For generations, the Dolginow family has helped Kansas City and beyond with fine jewelry including diamond engagement rings. See pictures from our past stores including our large catalog showrooms.",
+  } as Metadata
+
+  return metadata
+}
 
 export function History() {
   return (

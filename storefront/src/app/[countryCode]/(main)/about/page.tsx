@@ -1,3 +1,4 @@
+import { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import PageHeader from "@modules/layout/components/page-header"
@@ -8,6 +9,16 @@ import History12 from "/src/images/history/Dolgins-Historical-Photos-12.jpg"
 import History3 from "/src/images/history/Dolgins-Historical-Photos-3.jpg"
 import History16 from "/src/images/history/Dolgins-Historical-Photos-16.jpg"
 import History7 from "/src/images/history/Dolgins-Historical-Photos-7.jpg"
+
+export async function generateMetadata(): Promise<Metadata> {
+  const metadata = {
+    title: `About Dolgins Fine Jewelry | Dolgins Jewelry`,
+    description:
+      "Learn about me Joseph Dolgin & how my family has been helping Kansas City with jewelry for generations. See and learn about my current jewelry store in Overland Park",
+  } as Metadata
+
+  return metadata
+}
 
 export function About() {
   return (
