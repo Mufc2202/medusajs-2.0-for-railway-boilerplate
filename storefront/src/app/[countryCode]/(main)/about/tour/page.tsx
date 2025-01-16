@@ -90,11 +90,7 @@ export function Tour() {
           loading="lazy"
         ></iframe>
       </section>
-      <DolginsCTA
-        title="Please reach out"
-        subtitle="Our office is setup to create and repair fine jewelry."
-        text="Thank you for touring - now come see us in person. We are located inside the US Bank Building."
-      />
+
       <div className="relative bg-dolginsblue px-6 pt-8 pb-20 lg:px-8 lg:pt-8 lg:pb-28">
         <div className="absolute inset-0">
           <div className="h-1/3 bg-white sm:h-2/3" />
