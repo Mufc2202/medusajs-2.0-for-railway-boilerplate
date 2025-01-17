@@ -49,22 +49,15 @@ export default function CategoryTemplate({
                 /
               </span>
             ))}
-          <h1 data-testid="category-page-title">{category.name}-Test</h1>
         </div>
-        {category.description && (
-          <div className="mb-8 text-base-regular">
-            <p>{category.description}</p>
-          </div>
-        )}
         <PageHeader
           name={category.name}
-          subtitle={category.metadata.subtitle}
+          subtitle={category.metadata?.subtitle || "We Love This!"}
           tidbit={category.description}
         />
-        <pre>{JSON.stringify(category)} - test</pre>
         {category.category_children && (
           <div className="mb-8 text-base-large">
-            <ul className="grid grid-cols-1 gap-2">
+            <ul className="grid grid-cols-2 md:grid-cols-4 justify-items-center gap-2">
               {category.category_children?.map((c) => (
                 <li key={c.id}>
                   <InteractiveLink href={`/categories/${c.handle}`}>
