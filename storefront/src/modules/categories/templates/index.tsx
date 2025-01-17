@@ -58,7 +58,7 @@ export default function CategoryTemplate({
         )}
         <PageHeader
           name={category.name}
-          subtitle="More Coming Soon"
+          subtitle={category.metadata.subtitle}
           tidbit={category.description}
         />
         <pre>{JSON.stringify(category)} - test</pre>
