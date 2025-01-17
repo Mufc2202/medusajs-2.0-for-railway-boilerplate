@@ -187,6 +187,8 @@ export function Buying() {
       </div>
       <DolginsCTA
         title="Get Money For Your Jewelry"
+        imageSrc={RingCash}
+        imageAlt="White gold diamond engagement ring on a US dollar"
         subtitle="Setup An Appointment To Sell."
         text="We are low pressure and quick. Send us a message with what you have to sell and when you can meet."
       />
