@@ -4,8 +4,9 @@ import { SortOptions } from "@modules/store/components/refinement-list/sort-prod
 import StoreTemplate from "@modules/store/templates"
 
 export const metadata: Metadata = {
-  title: "Store",
-  description: "Explore all of our products.",
+  title: "Jewelry Catalog - Dolgins Fine Jewelry",
+  description:
+    "We complete so many custom jewelry and engagement rings; we love using our jewelry shop and skills to create treasured & unique pieces of jewelry and engagement rings. Contact us or visit our Kansas City jewelry store for more details.",
 }
 
 type Params = {

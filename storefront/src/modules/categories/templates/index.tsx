@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
-
+import PageHeader from "@modules/layout/components/page-header"
 import InteractiveLink from "@modules/common/components/interactive-link"
 import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
 import RefinementList from "@modules/store/components/refinement-list"
@@ -49,13 +49,19 @@ export default function CategoryTemplate({
                 /
               </span>
             ))}
-          <h1 data-testid="category-page-title">{category.name}</h1>
+          <h1 data-testid="category-page-title">{category.name}-Test</h1>
         </div>
         {category.description && (
           <div className="mb-8 text-base-regular">
             <p>{category.description}</p>
           </div>
         )}
+        <PageHeader
+          name={category.name}
+          subtitle="More Coming Soon"
+          tidbit={category.description}
+        />
+        <pre>{JSON.stringify(category)} - test</pre>
         {category.category_children && (
           <div className="mb-8 text-base-large">
             <ul className="grid grid-cols-1 gap-2">
