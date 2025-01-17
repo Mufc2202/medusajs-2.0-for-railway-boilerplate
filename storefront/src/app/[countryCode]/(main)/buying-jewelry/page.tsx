@@ -122,7 +122,7 @@ export function Buying() {
       <PageHeader
         name="Sell Us Your Jewelry, Gold Or Rings"
         subtitle="Free & Fair Offers"
-        tidbit="                Dolgins has been buying unwanted jewelry including engagement
+        tidbit="Dolgins has been buying unwanted jewelry including engagement
                 rings, estate jewelry, antique jewelry, gold, platinum, and
                 diamonds for decades in Kansas City. Our experience, market
                 knowledge, onsite jewelry shop, and comfortable office make our
@@ -489,14 +489,13 @@ export function Buying() {
           </div>
         </div>
       </div>
-      <Testimonial   
-        imageSrc = {EngagementRing}
-        imageAlt = "Engagement Ring With Diamond and Gold Sold After Divorce"
-        review = "Dolgin's was extremely helpful, friendly and a pleasure to do business with.
-                   Very knowledgeable and a real pro in his business. Best guy to bring gold rings & diamonds to,
-                   honest and best price. 10/10 recommended!"
-        reviewer = "Sean P"
-        who = "Found Dolgins On Google" />
+      <Testimonial
+        imageSrc={EngagementRing}
+        imageAlt="Engagement Ring With Diamond and Gold Sold After Divorce"
+        review="Dolgin's was extremely helpful, friendly and a pleasure to do business with. Very knowledgeable and a real pro in his business. Best guy to bring gold rings & diamonds to, honest and best price. 10/10 recommended!"
+        reviewer="Sean P"
+        who="Found Dolgins On Google"
+      />
       <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gray-50 py-6 sm:py-12">
         <div className="absolute inset-auto h-96 w-96 scale-150 bg-gold opacity-20 blur-3xl"></div>
         <div className="absolute inset-auto h-96 w-96 translate-x-full scale-150 bg-dolginsblue opacity-20 blur-3xl"></div>
