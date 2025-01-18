@@ -39,7 +39,7 @@ export default function Footer() {
             </Link>
             <Link
               className="text-lg text-dolginsblue h-14 mx-2 hover:text-gray-900"
-              href="/"
+              href="/buying-jewelry"
             >
               Buying Jewelry/Gold
             </Link>
