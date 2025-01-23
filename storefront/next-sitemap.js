@@ -3,7 +3,7 @@
 const excludedPaths = ["/checkout", "/account/*"]
 
 module.exports = {
-  siteUrl: process.env.NEXT_PUBLIC_BASE_URL,
+  siteUrl: 'https://dolgins.com',
   generateRobotsTxt: true,
   exclude: excludedPaths + ["/[sitemap]"],
   robotsTxtOptions: {
