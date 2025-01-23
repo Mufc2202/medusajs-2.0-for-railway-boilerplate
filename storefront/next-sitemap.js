@@ -1,3 +1,5 @@
+'use server'; 
+
 const excludedPaths = ["/checkout", "/account/*"]
 
 module.exports = {
