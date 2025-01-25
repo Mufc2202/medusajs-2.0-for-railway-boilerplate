@@ -12,6 +12,7 @@
     "launcher": "launch-storefront",
     "dev": "npm run wait && npm run launcher dev",
     "build": "npm run wait && npm run launcher build && next build",
+    "postbuild": "next-sitemap",
     "start": "npm run launcher start",
     "lint": "next lint",
     "analyze": "ANALYZE=true next build",
