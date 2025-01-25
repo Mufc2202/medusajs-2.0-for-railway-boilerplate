@@ -1,6 +1,7 @@
-// import { notFound } from "next/navigation"
+import { useEffect, useState } from "react"
 import CartDropdown from "../cart-dropdown"
 import { enrichLineItems, retrieveCart } from "@lib/data/cart"
+import { StoreCart } from "@medusajs/types"
 
 const fetchCart = async () => {
   const cart = await retrieveCart()
@@ -17,8 +18,17 @@ const fetchCart = async () => {
   return cart
 }
 
-export default async function CartButton() {
-  const cart = await fetchCart()
+export default function CartButton() {
+  const [cart, setCart] = useState<StoreCart | null>(null)
+
+  useEffect(() => {
+    const getCart = async () => {
+      const cartData = await fetchCart()
+      setCart(cartData)
+    }
+
+    getCart()
+  }, [])
 
   return <CartDropdown cart={cart} />
 }
