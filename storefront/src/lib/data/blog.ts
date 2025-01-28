@@ -16,11 +16,11 @@ export const getBlogsList = async () => {
     //   })
 
     const response = await fetch(
-      "https://62zgzp09-9000.inc1.devtunnels.ms/store/blogs",
+      `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/blogs`,
       {
         headers: {
           "x-publishable-api-key":
-            "pk_ed259c7035a5d2060cbc0df14844a4bf05d123dfa6569d4dd80e5e765fbdc083",
+            process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
         },
       }
     )
@@ -47,11 +47,11 @@ export const getBlogByHandle = async (handle: string) => {
     //   })
 
     const response = await fetch(
-      `https://62zgzp09-9000.inc1.devtunnels.ms/store/blogs?handle=${handle}`,
+      `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/blogs?handle=${handle}`,
       {
         headers: {
           "x-publishable-api-key":
-            "pk_ed259c7035a5d2060cbc0df14844a4bf05d123dfa6569d4dd80e5e765fbdc083",
+            process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
         },
       }
     )
@@ -78,11 +78,11 @@ export const getBlogCategories = async (handle: string) => {
     //   })
 
     const response = await fetch(
-      `https://62zgzp09-9000.inc1.devtunnels.ms/store/product-categories/${handle}`,
+      `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/product-categories/${handle}`,
       {
         headers: {
           "x-publishable-api-key":
-            "pk_ed259c7035a5d2060cbc0df14844a4bf05d123dfa6569d4dd80e5e765fbdc083",
+            process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
         },
       }
     )

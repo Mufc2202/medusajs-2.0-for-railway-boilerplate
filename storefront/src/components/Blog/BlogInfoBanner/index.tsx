@@ -9,10 +9,8 @@ type Props = {
 
 // TODO: author name and reading time
 const BlogInfoBanner = async ({ blog }: Props) => {
-  const BASE_API_URL =
-    "https://62zgzp09-9000.inc1.devtunnels.ms/store/product-categories"
-  const API_KEY =
-    "pk_ed259c7035a5d2060cbc0df14844a4bf05d123dfa6569d4dd80e5e765fbdc083"
+  const BASE_API_URL = `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/product-categories`
+  const API_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!
 
   const fetchCategory = async (id: string) => {
     const response = await fetch(`${BASE_API_URL}/${id}`, {
