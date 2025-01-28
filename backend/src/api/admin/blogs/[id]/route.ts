@@ -16,7 +16,13 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       data: [blog],
     } = await query.graph({
       entity: "blog",
-      fields: ["*", "blogSeo.*", "product_categories.*"],
+      fields: [
+        "*",
+        "blogSeo.*",
+        "product_categories.*",
+        "seo_details.*",
+        "seo_details.metaSocial.*",
+      ],
       filters: {
         id: req.params.id,
       },

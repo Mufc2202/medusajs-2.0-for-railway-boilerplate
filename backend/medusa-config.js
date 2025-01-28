@@ -46,6 +46,9 @@ const medusaConfig = {
   },
   modules: [
     {
+      resolve: "./src/modules/product-seo",
+    },
+    {
       resolve: "./src/modules/blog",
     },
     {

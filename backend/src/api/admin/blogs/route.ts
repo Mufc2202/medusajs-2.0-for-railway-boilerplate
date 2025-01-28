@@ -2,8 +2,8 @@ import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 import { BLOG_TYPE } from "./type";
 import BlogModuleService from "../../../modules/blog/service";
 import { BLOG_MODULE } from "../../../modules/blog";
-import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
 import { RemoteLink } from "@medusajs/framework/modules-sdk";
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
 
 export async function POST(req: MedusaRequest<BLOG_TYPE>, res: MedusaResponse) {
   try {
@@ -49,7 +49,12 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
 
     const { data: blogs } = await query.graph({
       entity: "blog",
-      fields: ["*", "product_categories.*"],
+      fields: [
+        "*",
+        "product_categories.*",
+        "seo_details.*",
+        "seo_details.metaSocial.*",
+      ],
     });
 
     res.status(200).json({ blogs: blogs, count: blogs.length });
