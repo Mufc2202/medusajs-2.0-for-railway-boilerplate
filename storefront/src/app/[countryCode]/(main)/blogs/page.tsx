@@ -1,13 +1,11 @@
 import BlogCard from "@components/Blog/BlogCard"
 import BlogCategories from "@components/Blog/BlogCategories"
 import BlogHeroSection from "@components/Blog/BlogHeroSection"
-import { getBlogCategories, getBlogsList } from "@lib/data/blog"
+import { getBlogsList } from "@lib/data/blog"
 
 const Page = async () => {
-  const response = await getBlogsList()
-  const { blogs } = await response.json()
+  const blogs = await getBlogsList()
 
-  // const categories = await getBlogCategories()
   return (
     <>
       <BlogHeroSection />

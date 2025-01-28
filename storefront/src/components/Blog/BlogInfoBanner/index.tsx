@@ -5,27 +5,11 @@ import { calculateReadingTime } from "@lib/getReadingTime"
 
 type Props = {
   blog: any
+  categories: any
 }
 
 // TODO: author name and reading time
-const BlogInfoBanner = async ({ blog }: Props) => {
-  const BASE_API_URL = `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/product-categories`
-  const API_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!
-
-  const fetchCategory = async (id: string) => {
-    const response = await fetch(`${BASE_API_URL}/${id}`, {
-      headers: {
-        "x-publishable-api-key": API_KEY,
-      },
-    })
-    if (!response.ok) throw new Error(`Failed to fetch category with id ${id}`)
-    return response.json()
-  }
-
-  const categories = await Promise.all(
-    blog?.product_categories?.map((category) => fetchCategory(category.id))
-  )
-
+const BlogInfoBanner = async ({ blog, categories }: Props) => {
   return (
     <section className="mx-auto max-w-4xl flex flex-col gap-6">
       <h1 className="text-blue-500 text-5xl font-bold font-serif">

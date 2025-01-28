@@ -1,20 +1,7 @@
-import { sdk } from "@lib/config"
-import { getAuthHeaders } from "./cookies"
+"use server"
 
 export const getBlogsList = async () => {
   try {
-    // const headers = {
-    //   ...(await getAuthHeaders()),
-    // }
-
-    //   const response = await sdk.client.fetch<{
-    //     blogs: any
-    //     count: number
-    //   }>(`/store/blogs`, {
-    //     method: "GET",
-    //     headers,
-    //   })
-
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/blogs`,
       {
@@ -25,7 +12,12 @@ export const getBlogsList = async () => {
       }
     )
 
-    return response
+    if (!response.ok) {
+      throw new Error("failed to fetch blogs.")
+    }
+    const { blogs } = await response.json()
+
+    return blogs
   } catch (error: any) {
     console.log("Error fetching blogs:", error)
     throw new Error(`Failed to fetch blogs : ${error.message}`)
@@ -34,18 +26,6 @@ export const getBlogsList = async () => {
 
 export const getBlogByHandle = async (handle: string) => {
   try {
-    // const headers = {
-    //   ...(await getAuthHeaders()),
-    // }
-
-    //   const response = await sdk.client.fetch<{
-    //     blogs: any
-    //     count: number
-    //   }>(`/store/blogs`, {
-    //     method: "GET",
-    //     headers,
-    //   })
-
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/blogs?handle=${handle}`,
       {
@@ -56,29 +36,21 @@ export const getBlogByHandle = async (handle: string) => {
       }
     )
 
-    return response
+    if (!response.ok) {
+      throw new Error("failed to fetch blog.")
+    }
+    const { blogs } = await response.json()
+    return blogs
   } catch (error: any) {
     console.log("Error fetching blogs:", error)
     throw new Error(`Failed to fetch blogs : ${error.message}`)
   }
 }
 
-export const getBlogCategories = async (handle: string) => {
+export const getCategoriesById = async (id: string) => {
   try {
-    // const headers = {
-    //   ...(await getAuthHeaders()),
-    // }
-
-    //   const response = await sdk.client.fetch<{
-    //     blogs: any
-    //     count: number
-    //   }>(`/store/blogs`, {
-    //     method: "GET",
-    //     headers,
-    //   })
-
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/product-categories/${handle}`,
+      `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/product-categories/${id}`,
       {
         headers: {
           "x-publishable-api-key":
@@ -86,8 +58,8 @@ export const getBlogCategories = async (handle: string) => {
         },
       }
     )
-
-    return response
+    if (!response.ok) throw new Error(`Failed to fetch category with id ${id}`)
+    return response.json()
   } catch (error: any) {
     console.log("Error fetching blogs:", error)
     throw new Error(`Failed to fetch blogs : ${error.message}`)
