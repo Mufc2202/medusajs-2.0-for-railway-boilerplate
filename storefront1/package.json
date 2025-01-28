@@ -8,22 +8,28 @@
     "medusa-storefront"
   ],
   "scripts": {
-    "dev": "next dev --turbopack -p 8000",
+    "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start -p 8000",
+    "start": "next start",
     "lint": "next lint",
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
+    "@hookform/error-message": "^2.0.0",
     "@medusajs/js-sdk": "latest",
+    "@medusajs/types": "latest",
     "@medusajs/ui": "latest",
     "@meilisearch/instant-meilisearch": "^0.24.0",
+    "@paypal/paypal-js": "^5.0.6",
+    "@paypal/react-paypal-js": "^7.8.1",
     "@radix-ui/react-accordion": "^1.2.1",
     "@stripe/react-stripe-js": "^1.7.2",
     "@stripe/stripe-js": "^1.29.0",
     "algoliasearch": "^5.20.0",
+    "axios": "^1.6.7",
     "lodash": "^4.17.21",
+    "medusajs-launch-utils": "^0.0.10",
     "next": "15.0.3",
     "pg": "^8.11.3",
     "qs": "^6.12.1",
@@ -31,14 +37,18 @@
     "react-country-flag": "^3.1.0",
     "react-dom": "19.0.0-rc-66855b96-20241106",
     "react-instantsearch-hooks-web": "^6.47.3",
+    "react-intersection-observer": "^9.3.4",
     "server-only": "^0.0.1",
+    "sharp": "^0.33.5",
     "tailwindcss-radix": "^2.8.0",
     "webpack": "^5"
   },
   "devDependencies": {
     "@babel/core": "^7.17.5",
+    "@medusajs/client-types": "latest",
     "@medusajs/types": "latest",
     "@medusajs/ui-preset": "latest",
+    "@playwright/test": "^1.41.1",
     "@types/lodash": "^4.14.195",
     "@types/node": "17.0.21",
     "@types/pg": "^8.11.0",
@@ -58,7 +68,8 @@
   "packageManager": "yarn@3.2.3",
   "resolutions": {
     "@types/react": "npm:types-react@19.0.0-rc.1",
-    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
+    "webpack": "^5"
   },
   "overrides": {
     "react": "19.0.0-rc-66855b96-20241106",
