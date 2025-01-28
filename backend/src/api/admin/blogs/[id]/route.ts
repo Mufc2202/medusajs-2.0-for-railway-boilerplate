@@ -3,6 +3,8 @@ import { UPDATE_BLOG_TYPE } from "../type";
 import BlogModuleService from "../../../../modules/blog/service";
 import { BLOG_MODULE } from "../../../../modules/blog";
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
+import { uploadFilesWorkflow } from "@medusajs/medusa/core-flows";
+import type { FileDTO } from "@medusajs/framework/types";
 import { RemoteLink } from "@medusajs/framework/modules-sdk";
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
@@ -47,9 +49,9 @@ export async function PUT(
     const remoteLink: RemoteLink = req.scope.resolve(
       ContainerRegistrationKeys.REMOTE_LINK
     );
-    const { categories: newCategories } = req.body;
     const blogId = req.params.id;
-
+    const blogImage = req.files as Express.Multer.File[];
+    const newCategories = JSON.parse(req.body.categories || "");
     // Step 1: Fetch the old blog and existing category IDs
     const {
       data: [oldBlog],
@@ -61,11 +63,28 @@ export async function PUT(
 
     const existingCategoryIds =
       oldBlog?.product_categories?.map((cat) => cat?.id) || [];
+    let upload_result: FileDTO | null = null;
+    if (blogImage.length > 0) {
+      const { result } = await uploadFilesWorkflow(req.scope).run({
+        input: {
+          files: blogImage?.map((f) => ({
+            filename: f.originalname,
+            mimeType: f.mimetype,
+            content: f.buffer.toString("binary"),
+            access: "public",
+          })),
+        },
+      });
+      if (result) {
+        upload_result = result[0];
+      }
+    }
 
     // Step 2: Update the blog
     const blogUpdate = await blogModuleService.updateBlogs({
       id: blogId,
       ...req.body,
+      ...(upload_result?.url && { image: upload_result?.url }),
     });
 
     // Step 3: Determine distinct categories to add and delete
