@@ -6,9 +6,10 @@ import { listRegions } from "@lib/data/regions"
 import { StoreProductCategory, StoreRegion } from "@medusajs/types"
 import CategoryTemplate from "@modules/categories/templates"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
+import { countryCode } from "@lib/constants"
 
 type Props = {
-  params: { category: string[]; countryCode: string }
+  params: { category: string[] }
   searchParams: {
     sortBy?: SortOptions
     page?: string
@@ -80,7 +81,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
       categories={product_categories}
       sortBy={sortBy}
       page={page}
-      countryCode={params.countryCode}
+      countryCode={countryCode}
     />
   )
 }

@@ -4,6 +4,7 @@ import SearchResultsTemplate from "@modules/search/templates/search-results-temp
 
 import { search } from "@modules/search/actions"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
+import { countryCode } from "@lib/constants"
 
 export const metadata: Metadata = {
   title: "Search",
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 }
 
 type Params = {
-  params: { query: string; countryCode: string }
+  params: { query: string }
   searchParams: {
     sortBy?: SortOptions
     page?: string
@@ -36,7 +37,7 @@ export default async function SearchResults({ params, searchParams }: Params) {
       ids={ids}
       sortBy={sortBy}
       page={page}
-      countryCode={params.countryCode}
+      countryCode={countryCode}
     />
   )
 }

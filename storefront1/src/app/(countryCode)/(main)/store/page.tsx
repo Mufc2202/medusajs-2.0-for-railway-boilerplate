@@ -2,6 +2,7 @@ import { Metadata } from "next"
 
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import StoreTemplate from "@modules/store/templates"
+import { countryCode } from "@lib/constants"
 
 export const metadata: Metadata = {
   title: "Jewelry Catalog - Dolgins Fine Jewelry",
@@ -14,19 +15,10 @@ type Params = {
     sortBy?: SortOptions
     page?: string
   }
-  params: {
-    countryCode: string
-  }
 }
 
-export default async function StorePage({ searchParams, params }: Params) {
+export default async function StorePage({ searchParams }: Params) {
   const { sortBy, page } = searchParams
 
-  return (
-    <StoreTemplate
-      sortBy={sortBy}
-      page={page}
-      countryCode={params.countryCode}
-    />
-  )
+  return <StoreTemplate sortBy={sortBy} page={page} countryCode={countryCode} />
 }

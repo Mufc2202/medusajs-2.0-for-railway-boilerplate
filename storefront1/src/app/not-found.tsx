@@ -13,7 +13,7 @@ export default function NotFound() {
         <main className="flex flex-grow flex-col bg-white">
           <div className="mx-auto flex w-full max-w-7xl flex-grow flex-col px-4 sm:px-6 lg:px-8">
             <div className="flex-shrink-0 pt-10 sm:pt-16">
-              <Link href="https://dolgins.com" className="inline-flex">
+              <Link href="/" className="inline-flex">
                 <span className="sr-only">Your Company</span>
                 <img
                   className="h-12 w-auto"
@@ -33,10 +33,7 @@ export default function NotFound() {
                 Sorry, we couldn’t find the page you’re looking for.
               </p>
               <div className="mt-6">
-                <a
-                  href="https://dolgins.com"
-                  className="text-base font-medium text-dolginsblue"
-                >
+                <a href="/" className="text-base font-medium text-dolginsblue">
                   Go back home
                   <span aria-hidden="true"> &rarr;</span>
                 </a>
