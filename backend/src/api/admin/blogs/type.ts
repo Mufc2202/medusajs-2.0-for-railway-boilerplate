@@ -4,7 +4,7 @@ export type BLOG_TYPE = {
   handle: string;
   image?: string;
   content: string;
-  categories?: string[];
+  categories?: string;
 };
 
 export type UPDATE_BLOG_TYPE = {
@@ -13,5 +13,5 @@ export type UPDATE_BLOG_TYPE = {
   handle?: string;
   image?: string;
   content?: string;
-  categories?: string[];
+  categories?: string;
 };
