@@ -25,12 +25,12 @@ export default defineMiddlewares({
     {
       matcher: "/admin/blogs",
       method: "POST",
-      middlewares: [validateAndTransformBody(CreateBlogSchema)],
+      middlewares: [upload.array("blogImage")],
     },
     {
       matcher: "/admin/blogs/*",
       method: "PUT",
-      middlewares: [validateAndTransformBody(UpdateBlogSchema)],
+      middlewares: [upload.array("blogImage")],
     },
   ],
 });

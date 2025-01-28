@@ -2,8 +2,10 @@ import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 import { BLOG_TYPE } from "./type";
 import BlogModuleService from "../../../modules/blog/service";
 import { BLOG_MODULE } from "../../../modules/blog";
-import { RemoteLink } from "@medusajs/framework/modules-sdk";
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
+import { uploadFilesWorkflow } from "@medusajs/medusa/core-flows";
+import type { FileDTO } from "@medusajs/framework/types";
+import { RemoteLink } from "@medusajs/framework/modules-sdk";
 
 export async function POST(req: MedusaRequest<BLOG_TYPE>, res: MedusaResponse) {
   try {
@@ -12,8 +14,31 @@ export async function POST(req: MedusaRequest<BLOG_TYPE>, res: MedusaResponse) {
       ContainerRegistrationKeys.REMOTE_LINK
     );
 
-    const { categories } = req.body;
-    const blog = await blogModuleService.createBlogs(req.body);
+    const categories = JSON.parse(req.body.categories || "");
+
+    const blogImage = req.files as Express.Multer.File[];
+
+    let upload_result: FileDTO | null = null;
+    if (blogImage.length > 0) {
+      const { result } = await uploadFilesWorkflow(req.scope).run({
+        input: {
+          files: blogImage?.map((f) => ({
+            filename: f.originalname,
+            mimeType: f.mimetype,
+            content: f.buffer.toString("binary"),
+            access: "public",
+          })),
+        },
+      });
+      if (result) {
+        upload_result = result[0];
+      }
+    }
+
+    const blog = await blogModuleService.createBlogs({
+      ...req.body,
+      ...(upload_result?.url && { image: upload_result?.url }),
+    });
 
     if (blog.id && categories && categories.length > 0) {
       await Promise.all(
