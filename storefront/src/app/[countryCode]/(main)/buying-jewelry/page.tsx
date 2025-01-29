@@ -215,9 +215,9 @@ export function Buying() {
                         height="24"
                         shape-rendering="geometricPrecision"
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
                         viewBox="0 0 24 24"
                         width="24"
                       >
@@ -246,9 +246,9 @@ export function Buying() {
                         height="24"
                         shape-rendering="geometricPrecision"
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
                         viewBox="0 0 24 24"
                         width="24"
                       >
@@ -278,9 +278,9 @@ export function Buying() {
                         height="24"
                         shape-rendering="geometricPrecision"
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
                         viewBox="0 0 24 24"
                         width="24"
                       >
@@ -310,9 +310,9 @@ export function Buying() {
                         height="24"
                         shape-rendering="geometricPrecision"
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
                         viewBox="0 0 24 24"
                         width="24"
                       >
@@ -336,9 +336,9 @@ export function Buying() {
                         height="24"
                         shape-rendering="geometricPrecision"
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
                         viewBox="0 0 24 24"
                         width="24"
                       >
@@ -365,9 +365,9 @@ export function Buying() {
                         height="24"
                         shape-rendering="geometricPrecision"
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
                         viewBox="0 0 24 24"
                         width="24"
                       >
@@ -396,9 +396,9 @@ export function Buying() {
                         height="24"
                         shape-rendering="geometricPrecision"
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
                         viewBox="0 0 24 24"
                         width="24"
                       >
@@ -410,7 +410,7 @@ export function Buying() {
                     Yes, offers are based on current market conditions. As of{" "}
                     {new Date().getFullYear()}, gold prices are incredibly
                     strong. However, diamond prices have fallen over the last 3
-                    years greater than any time during my dad or granddad's
+                    years greater than any time during my dad or granddad&apos;s
                     career.
                   </p>
                 </details>
@@ -425,9 +425,9 @@ export function Buying() {
                         height="24"
                         shape-rendering="geometricPrecision"
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
                         viewBox="0 0 24 24"
                         width="24"
                       >
@@ -454,9 +454,9 @@ export function Buying() {
                         height="24"
                         shape-rendering="geometricPrecision"
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
                         viewBox="0 0 24 24"
                         width="24"
                       >
@@ -512,7 +512,7 @@ export function Buying() {
           </div>
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 mx-auto px-4">
             {exampleBuys.map((buy) => (
-              <div>
+              <div key={buy.Name}>
                 <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
                   <Image
                     src={buy.Image}

@@ -51,7 +51,10 @@ export async function PUT(
     );
     const blogId = req.params.id;
     const blogImage = req.files as Express.Multer.File[];
-    const newCategories = JSON.parse(req.body.categories || "");
+    const newCategories =
+      typeof req.body.categories === "string"
+        ? JSON.parse(req.body.categories)
+        : req.body.categories;
     // Step 1: Fetch the old blog and existing category IDs
     const {
       data: [oldBlog],
@@ -64,7 +67,7 @@ export async function PUT(
     const existingCategoryIds =
       oldBlog?.product_categories?.map((cat) => cat?.id) || [];
     let upload_result: FileDTO | null = null;
-    if (blogImage.length > 0) {
+    if (blogImage?.length > 0) {
       const { result } = await uploadFilesWorkflow(req.scope).run({
         input: {
           files: blogImage?.map((f) => ({

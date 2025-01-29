@@ -14,12 +14,15 @@ export async function POST(req: MedusaRequest<BLOG_TYPE>, res: MedusaResponse) {
       ContainerRegistrationKeys.REMOTE_LINK
     );
 
-    const categories = JSON.parse(req.body.categories || "");
+    const categories =
+      typeof req.body.categories === "string"
+        ? JSON.parse(req.body.categories)
+        : req.body.categories;
 
     const blogImage = req.files as Express.Multer.File[];
 
     let upload_result: FileDTO | null = null;
-    if (blogImage.length > 0) {
+    if (blogImage?.length > 0) {
       const { result } = await uploadFilesWorkflow(req.scope).run({
         input: {
           files: blogImage?.map((f) => ({
