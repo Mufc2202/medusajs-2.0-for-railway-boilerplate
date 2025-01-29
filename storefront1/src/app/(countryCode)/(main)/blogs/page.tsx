@@ -6,7 +6,7 @@ import { getBlogsList } from "@lib/data/blog"
 const Page = async () => {
   const blogs = await getBlogsList()
 
-  if (blogs.length == 0) {
+  if (blogs.length === 0) {
     return (
       <div className="h-16 flex items-center justify-center">
         <p className="text-3xl font-semibold">No Blogs Found</p>
