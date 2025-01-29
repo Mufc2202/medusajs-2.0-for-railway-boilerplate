@@ -46,6 +46,12 @@ const medusaConfig = {
   },
   modules: [
     {
+      resolve: "./src/modules/product-seo",
+    },
+    {
+      resolve: "./src/modules/blog",
+    },
+    {
       key: Modules.FILE,
       resolve: '@medusajs/file',
       options: {

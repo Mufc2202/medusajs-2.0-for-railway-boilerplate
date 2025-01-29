@@ -18,7 +18,7 @@ const nextConfig = {
       {
         protocol: "http",
         hostname: "localhost",
-        
+
       },
       { // Note: needed to serve images from /public folder
         protocol: process.env.NEXT_PUBLIC_BASE_URL?.startsWith('https') ? 'https' : 'http',
@@ -39,6 +39,9 @@ const nextConfig = {
       { // Note: can be removed after deleting demo products
         protocol: "https",
         hostname: "medusa-server-testing.s3.us-east-1.amazonaws.com",
+      }, {
+        protocol: "https",
+        hostname: "minio.thespecialcharacter.com",
       },
       ...(process.env.NEXT_PUBLIC_MINIO_ENDPOINT ? [{ // Note: needed when using MinIO bucket storage for media
         protocol: "https",

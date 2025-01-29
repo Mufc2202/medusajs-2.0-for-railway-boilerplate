@@ -1,0 +1,21 @@
+.blogCard {
+  box-shadow: 0 5px 15px 0 rgba(30, 61, 96, 0.03);
+  border-radius: 20px;
+  overflow: hidden;
+
+  & .blogImage {
+    @apply relative rounded-t-3xl overflow-hidden w-full aspect-video;
+  }
+
+  & .blogInfo {
+    @apply p-4 flex flex-col gap-2;
+  }
+
+  & .blogDate {
+    @apply text-gray-500 text-base font-bold;
+  }
+
+  & .blogTitle {
+    @apply text-3xl leading-none font-semibold text-blue-700;
+  }
+}
