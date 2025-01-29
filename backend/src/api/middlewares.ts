@@ -1,4 +1,5 @@
 import {
+  authenticate,
   defineMiddlewares,
   validateAndTransformBody,
 } from "@medusajs/framework";
@@ -25,12 +26,18 @@ export default defineMiddlewares({
     {
       matcher: "/admin/blogs",
       method: "POST",
-      middlewares: [upload.array("blogImage")],
+      middlewares: [
+        upload.array("blogImage"),
+        authenticate("user", ["session", "bearer"]),
+      ],
     },
     {
       matcher: "/admin/blogs/*",
       method: "PUT",
-      middlewares: [upload.array("blogImage")],
+      middlewares: [
+        upload.array("blogImage"),
+        authenticate("user", ["session", "bearer"]),
+      ],
     },
   ],
 });

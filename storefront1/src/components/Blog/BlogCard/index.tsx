@@ -5,7 +5,14 @@ import Link from "next/link"
 import { cn } from "@lib/utils"
 import { convertDateFormat } from "@lib/convertBlogDate"
 import { BlogBadge } from "@components/Blog/BlogBadge"
-const BlogCard = ({ blog }: { blog: any }) => {
+import { getCategoriesById } from "@lib/data/blog"
+const BlogCard = async ({ blog }: { blog: any }) => {
+  const categories = await Promise.all(
+    blog?.product_categories?.map((category: any) =>
+      getCategoriesById(category.id)
+    )
+  )
+
   return (
     <Link
       href={`/blogs/${blog?.handle}`}
@@ -15,22 +22,9 @@ const BlogCard = ({ blog }: { blog: any }) => {
       )}
     >
       <div className={styles.blogImage}>
-        {/* <BlogBadge
-          variant="outline"
-          size="lg"
-          className="absolute top-6 right-6 hover:bg-background hover:text-primary"
-        >
-          {blog?.attributes?.category}
-        </BlogBadge> */}
         <Image
-          src={
-            "https://minio.thespecialcharacter.com/auco/banner_1_736d029c8d.jpg"
-          }
-          // src={blog?.image ? blog?.image : ""}
-          alt={
-            blog?.attributes?.image?.data?.attributes?.alternativeText ??
-            blog?.attributes?.title
-          }
+          src={blog?.image ? blog?.image : ""}
+          alt={blog?.title ?? blog?.title}
           fill
           className="-z-10 group-hover:scale-105 duration-500"
         />
@@ -39,6 +33,19 @@ const BlogCard = ({ blog }: { blog: any }) => {
         <span className={styles.blogDate}>
           {convertDateFormat(blog?.created_at)}
         </span>
+        <div className="flex gap-2">
+          {categories?.length > 0 &&
+            categories?.map((category: any) => (
+              <BlogBadge
+                key={category?.product_category?.id}
+                variant="outline"
+                size="sm"
+                className="px-2"
+              >
+                {category?.product_category?.name || ""}
+              </BlogBadge>
+            ))}
+        </div>
         <h3 className={styles.blogTitle}>{blog?.title}</h3>
       </div>
     </Link>

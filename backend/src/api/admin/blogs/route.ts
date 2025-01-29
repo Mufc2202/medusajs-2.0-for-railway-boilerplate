@@ -1,4 +1,8 @@
-import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
+import type {
+  AuthenticatedMedusaRequest,
+  MedusaRequest,
+  MedusaResponse,
+} from "@medusajs/framework/http";
 import { BLOG_TYPE } from "./type";
 import BlogModuleService from "../../../modules/blog/service";
 import { BLOG_MODULE } from "../../../modules/blog";
@@ -7,13 +11,15 @@ import { uploadFilesWorkflow } from "@medusajs/medusa/core-flows";
 import type { FileDTO } from "@medusajs/framework/types";
 import { RemoteLink } from "@medusajs/framework/modules-sdk";
 
-export async function POST(req: MedusaRequest<BLOG_TYPE>, res: MedusaResponse) {
+export async function POST(
+  req: AuthenticatedMedusaRequest<BLOG_TYPE>,
+  res: MedusaResponse
+) {
   try {
     const blogModuleService: BlogModuleService = req.scope.resolve(BLOG_MODULE);
     const remoteLink: RemoteLink = req.scope.resolve(
       ContainerRegistrationKeys.REMOTE_LINK
     );
-
     const categories =
       typeof req.body.categories === "string"
         ? JSON.parse(req.body.categories)
@@ -59,6 +65,16 @@ export async function POST(req: MedusaRequest<BLOG_TYPE>, res: MedusaResponse) {
         })
       );
     }
+
+    await remoteLink.create({
+      [BLOG_MODULE]: {
+        blog_id: blog.id,
+      },
+      [Modules.USER]: {
+        user_id: req.auth_context.actor_id,
+      },
+    });
+
     res.status(200).json(blog);
   } catch (error) {
     console.error("Error creating blog:", error);
@@ -82,6 +98,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
         "product_categories.*",
         "seo_details.*",
         "seo_details.metaSocial.*",
+        "user.*",
       ],
     });
 

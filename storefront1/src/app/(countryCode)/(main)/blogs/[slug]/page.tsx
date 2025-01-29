@@ -29,7 +29,7 @@ const Page = async ({ params: { slug } }: Props) => {
         className="mx-auto max-w-4xl flex flex-col gap-6 py-8"
       />
       <div className="mx-auto max-w-4xl flex flex-col gap-6">
-        <BlogAuthor author={blogs[0]} />
+        <BlogAuthor author={blogs[0]?.user} />
       </div>
     </div>
   )

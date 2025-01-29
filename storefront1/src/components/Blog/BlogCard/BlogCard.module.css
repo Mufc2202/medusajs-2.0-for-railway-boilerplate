@@ -8,7 +8,7 @@
   }
 
   & .blogInfo {
-    @apply p-6 space-y-4;
+    @apply p-4 flex flex-col gap-2;
   }
 
   & .blogDate {
@@ -16,6 +16,6 @@
   }
 
   & .blogTitle {
-    @apply text-3xl font-semibold text-blue-700;
+    @apply text-3xl leading-none font-semibold text-blue-700;
   }
 }

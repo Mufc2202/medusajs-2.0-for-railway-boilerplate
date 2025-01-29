@@ -1,4 +1,8 @@
-import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
+import type {
+  AuthenticatedMedusaRequest,
+  MedusaRequest,
+  MedusaResponse,
+} from "@medusajs/framework/http";
 import { UPDATE_BLOG_TYPE } from "../type";
 import BlogModuleService from "../../../../modules/blog/service";
 import { BLOG_MODULE } from "../../../../modules/blog";
@@ -24,6 +28,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
         "product_categories.*",
         "seo_details.*",
         "seo_details.metaSocial.*",
+        "user.*",
       ],
       filters: {
         id: req.params.id,
@@ -40,7 +45,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
 }
 
 export async function PUT(
-  req: MedusaRequest<UPDATE_BLOG_TYPE>,
+  req: AuthenticatedMedusaRequest<UPDATE_BLOG_TYPE>,
   res: MedusaResponse
 ) {
   try {
@@ -120,6 +125,15 @@ export async function PUT(
 
       await Promise.all(createPromises);
     }
+
+    await remoteLink.create({
+      [BLOG_MODULE]: {
+        blog_id: blogId,
+      },
+      [Modules.USER]: {
+        user_id: req.auth_context.actor_id,
+      },
+    });
 
     res.status(200).json(blogUpdate);
   } catch (error) {

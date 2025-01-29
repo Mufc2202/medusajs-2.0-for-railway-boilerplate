@@ -11,15 +11,9 @@ const BlogImageSection = ({ blog }: { blog: any }) => {
         <div className="rounded-3xl relative w-full aspect-video overflow-hidden">
           <Image
             className="scale-105 hover:scale-100 duration-500"
-            src={
-              "https://minio.thespecialcharacter.com/auco/banner_1_736d029c8d.jpg"
-            }
-            // src={blog?.image ? blog?.image : ""}
+            src={blog?.image ? blog?.image : ""}
+            alt={blog?.title ?? blog?.title}
             fill
-            alt={
-              blog?.attributes?.image?.data?.attributes?.alternativeText ??
-              blog?.attributes?.title
-            }
           />
         </div>
       </div>
