@@ -44,7 +44,8 @@ const nextConfig = {
       { // Note: can be removed after deleting demo products
         protocol: "https",
         hostname: "medusa-server-testing.s3.us-east-1.amazonaws.com",
-      }, {
+      },
+      {
         protocol: "https",
         hostname: "minio.thespecialcharacter.com",
       },

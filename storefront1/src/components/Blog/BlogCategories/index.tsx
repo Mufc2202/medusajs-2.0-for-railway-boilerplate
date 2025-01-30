@@ -3,8 +3,13 @@
 import { Button } from "@medusajs/ui"
 import styles from "./BlogCategories.module.css"
 import { useRouter } from "next/navigation"
+import { StoreProductCategory } from "@medusajs/types"
 
-const BlogCategories = ({ categories }: { categories: string[] }) => {
+const BlogCategories = ({
+  categories,
+}: {
+  categories: StoreProductCategory[]
+}) => {
   const router = useRouter()
 
   const handleCategoryClick = (category: string) => {
@@ -17,50 +22,17 @@ const BlogCategories = ({ categories }: { categories: string[] }) => {
   }
 
   return (
-    <div className={styles.categoryContainer}>
-      <div className={styles.scrollContainer}>
+    <div className="bg-[#e1edfb66] max-w-1/2 p-3 rounded-full flex overflow-scroll no-scrollbar">
+      <div className="flex gap-4 items-center flex-1 no-scrollbar">
         {categories &&
           categories?.map((category, index) => (
             <Button
               key={index}
               size="large"
-              className="h-12"
-              onClick={() => handleCategoryClick(category)}
+              className="h-10 w-full rounded-full bg-white text-dolginslightblue hover:bg-dolginslightblue hover:text-white outline-none border border-gray-200"
+              onClick={() => handleCategoryClick(category?.handle)}
             >
-              {category}
-            </Button>
-          ))}
-        {categories &&
-          categories?.map((category, index) => (
-            <Button
-              key={index}
-              size="large"
-              className="h-12"
-              onClick={() => handleCategoryClick(category)}
-            >
-              {category}
-            </Button>
-          ))}
-        {categories &&
-          categories?.map((category, index) => (
-            <Button
-              key={index}
-              size="large"
-              className="h-12"
-              onClick={() => handleCategoryClick(category)}
-            >
-              {category}
-            </Button>
-          ))}
-        {categories &&
-          categories?.map((category, index) => (
-            <Button
-              key={index}
-              size="large"
-              className="h-12"
-              onClick={() => handleCategoryClick(category)}
-            >
-              {category}
+              {category?.name}
             </Button>
           ))}
       </div>

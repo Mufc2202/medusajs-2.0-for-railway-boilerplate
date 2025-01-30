@@ -18,9 +18,13 @@ const BlogAuthor = ({ author }: { author: any }) => {
       </div>
       <div className="flex-1 flex flex-col gap-6">
         <div className="flex max-sm:flex-col gap-4 items-center justify-between">
-          <h2 className="text-3xl font-bold text-primary">
-            {author?.first_name || author?.last_name
+          <h2 className="text-3xl font-bold text-primary capitalize">
+            {author?.first_name && author?.last_name
               ? `${author?.first_name} ${author?.last_name}`
+              : author?.first_name
+              ? author?.first_name
+              : author?.last_name
+              ? author?.last_name
               : "Author"}
           </h2>
           {/* <Button className="rounded-full px-6">Content</Button> */}

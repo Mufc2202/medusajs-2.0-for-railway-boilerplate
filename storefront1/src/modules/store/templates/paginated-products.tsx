@@ -7,7 +7,7 @@ import { SortOptions } from "@modules/store/components/refinement-list/sort-prod
 const PRODUCT_LIMIT = 12
 
 type PaginatedProductsParams = {
-  limit: number
+  limit?: number
   collection_id?: string[]
   category_id?: string[]
   id?: string[]
@@ -29,9 +29,7 @@ export default async function PaginatedProducts({
   productsIds?: string[]
   countryCode: string
 }) {
-  const queryParams: PaginatedProductsParams = {
-    limit: 12,
-  }
+  const queryParams: PaginatedProductsParams = {}
 
   if (collectionId) {
     queryParams["collection_id"] = [collectionId]
