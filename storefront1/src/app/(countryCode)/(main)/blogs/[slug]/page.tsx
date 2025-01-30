@@ -5,6 +5,18 @@ import BlogAuthor from "@components/Blog/BlogAuthor"
 import BlogImageSection from "@components/Blog/BlogImageSection"
 import { getBlogByHandle, getCategoriesById } from "@lib/data/blog"
 import NotFound from "app/not-found"
+import { Metadata } from "next"
+import {
+  APPLICATION_NAME,
+  BASE_URL,
+  FB_APP_ID,
+  FB_USER_ID,
+  GENERATOR,
+  PUBLISHER,
+  SITE_NAME,
+  TWITTER_CREATER,
+  TWITTER_SITE_ID,
+} from "@lib/constants"
 
 type Props = {
   params: {
@@ -12,29 +24,87 @@ type Props = {
   }
 }
 
-const Page = async ({ params: { slug } }: Props) => {
-  const blogs = await getBlogByHandle(slug)
+export async function generateMetadata({
+  params: { slug },
+}: Props): Promise<Metadata> {
+  const { blogs } = await getBlogByHandle(slug)
+  const blog = blogs[0]
 
-  if (blogs.length === 0) {
+  return {
+    title: blog?.seo_details?.metaTitle,
+    description: blog?.seo_details?.metaDescription,
+    keywords: blog?.seo_details?.keywords,
+    robots: blog?.seo_details?.metaRobots,
+    openGraph: {
+      title: blog?.seo_details?.metaTitle,
+      description: blog?.seo_details?.metaDescription,
+      url: `${BASE_URL}/store/${blog?.handle}`,
+      siteName: SITE_NAME,
+      images: blog?.seo_details?.metaImage,
+      locale: "pt_BR",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title:
+        blog?.seo_details?.metaSocial?.find(
+          (meta) => meta.socialNetwork === "Twitter"
+        )?.title || blog?.seo_details?.metaTitle,
+      description:
+        blog?.seo_details?.metaSocial?.find(
+          (meta) => meta.socialNetwork === "Twitter"
+        )?.description || blog?.seo_details?.metaDescription,
+      images: [
+        {
+          url:
+            blog?.seo_details?.metaSocial?.find(
+              (meta) => meta.socialNetwork === "Twitter"
+            )?.image || blog?.seo_details?.metaImage,
+          alt: blog?.seo_details?.metaTitle,
+        },
+      ],
+      site: SITE_NAME,
+      siteId: TWITTER_SITE_ID,
+      creator: TWITTER_CREATER,
+      creatorId: TWITTER_SITE_ID,
+    },
+    facebook: {
+      admins: FB_USER_ID,
+      appId: FB_APP_ID as unknown as undefined,
+    },
+    viewport: blog?.seo_details?.metaViewport,
+    alternates: { canonical: blog?.seo_details?.canonicalURL },
+    metadataBase: new URL(`${BASE_URL}/blogs/${slug}`),
+    applicationName: APPLICATION_NAME,
+    authors: [{ name: "The Special Character" }],
+    publisher: PUBLISHER,
+    generator: GENERATOR,
+    referrer: "origin-when-cross-origin",
+  }
+}
+
+const Page = async ({ params: { slug } }: Props) => {
+  const { blogs } = await getBlogByHandle(slug)
+  const blog = blogs[0]
+
+  if (!blog) {
     return <NotFound />
   }
 
   const categories = await Promise.all(
-    blogs[0]?.product_categories?.map((category: any) =>
-      getCategoriesById(category.id)
-    )
+    blog?.product_categories?.map((category) => getCategoriesById(category.id))
   )
 
   return (
     <div>
-      <BlogImageSection blog={blogs[0]} />
-      <BlogInfoBanner blog={blogs[0]} categories={categories} />
+      <BlogImageSection blog={blog} />
+      <BlogInfoBanner blog={blog} categories={categories} />
       <MarkdownRenderer
-        content={blogs[0]?.content}
+        content={blog?.content}
         className="mx-auto max-w-4xl flex flex-col gap-6 py-6 px-4"
       />
       <div className="mx-auto max-w-4xl flex flex-col gap-6">
-        <BlogAuthor author={blogs[0]?.user} />
+        <BlogAuthor author={blog?.user} />
       </div>
     </div>
   )

@@ -68,3 +68,19 @@ export const noDivisionCurrencies = [
   "xdr",
   "xau",
 ]
+
+export const DEFAULT_REGION = "us"
+export const BASE_URL =
+  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+export const SITE_NAME = "Dolgins"
+export const SITE_TITLE = "Dolgins | Welcome - Dolgins Fine Jewelry Store"
+export const SITE_DESC =
+  "A trusted, 4th generation jewelry store serving Kansas City from a private office in Overland Park. We sell & custom-make beautiful diamond engagement rings, wedding bands & other jewelry. We also buy your unwanted gold and diamonds and repair jewelry."
+export const KEYWORDS = "medusa, ecommerce, website"
+export const APPLICATION_NAME = "Dolgins"
+export const PUBLISHER = "The Special Character"
+export const GENERATOR = "Next.js"
+export const TWITTER_CREATER = "@TheSpecialChar"
+export const TWITTER_SITE_ID = "1467726470533754880"
+export const FB_APP_ID = "12345667"
+export const FB_USER_ID = "12345667"
