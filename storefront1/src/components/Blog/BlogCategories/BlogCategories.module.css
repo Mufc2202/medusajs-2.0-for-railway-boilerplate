@@ -1,7 +1,0 @@
-.categoryContainer {
-  @apply bg-[#e1edfb66] p-4 rounded-full flex overflow-scroll;
-
-  & .scrollContainer {
-    @apply flex gap-4 items-center flex-1;
-  }
-}

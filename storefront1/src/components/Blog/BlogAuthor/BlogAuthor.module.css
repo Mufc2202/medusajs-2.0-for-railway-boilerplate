@@ -1,5 +1,5 @@
 .container {
-  @apply flex max-sm:flex-col items-center justify-between gap-8 p-6 rounded-3xl mb-6;
+  @apply flex max-sm:flex-col items-center justify-between gap-4 md:gap-8 p-6 rounded-3xl mb-6;
   box-shadow: 0 5px 15px 0 rgba(30, 61, 96, 0.03);
 
   &:hover {

@@ -2,6 +2,7 @@ import BlogCard from "@components/Blog/BlogCard"
 import BlogCategories from "@components/Blog/BlogCategories"
 import BlogHeroSection from "@components/Blog/BlogHeroSection"
 import { getBlogsList } from "@lib/data/blog"
+import { listCategoriesList } from "@lib/data/categories"
 
 const Page = async () => {
   const blogs = await getBlogsList()
@@ -13,16 +14,28 @@ const Page = async () => {
       </div>
     )
   }
+  const categoryIds = blogs?.flatMap((blog: any) =>
+    blog?.product_categories?.map((category: any) => category?.id)
+  )
+  const uniqueCategoryIds = [...new Set(categoryIds)]
+  let categories
+  if (uniqueCategoryIds?.length > 0) {
+    categories = await listCategoriesList({
+      id: uniqueCategoryIds,
+    })
+  }
 
   return (
     <>
       <BlogHeroSection />
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex max-md:flex-col gap-6 md:items-center justify-between py-10">
-          <h2 className="text-primary text-3xl font-serif font-bold whitespace-nowrap">
+          <h2 className="text-xl md:text-3xl text-dolginsblue font-bold whitespace-nowrap">
             Resources & News
           </h2>
-          {/* {categories && <BlogCategories categories={categories} />} */}
+          {uniqueCategoryIds?.length > 0 && categories && (
+            <BlogCategories categories={categories} />
+          )}
         </div>
         <div className="grid gap-12 md:grid-cols-2">
           {blogs?.map((blog: any) => (

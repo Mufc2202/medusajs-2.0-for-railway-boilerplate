@@ -16,6 +16,6 @@
   }
 
   & .blogTitle {
-    @apply text-3xl leading-none font-semibold text-blue-700;
+    @apply text-3xl leading-none font-semibold text-dolginslightblue;
   }
 }

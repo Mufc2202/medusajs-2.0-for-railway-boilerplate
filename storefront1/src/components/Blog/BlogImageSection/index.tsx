@@ -1,5 +1,6 @@
 import Image from "next/image"
 import React from "react"
+import defaultImg from "@images/no_image.jpg"
 
 const BlogImageSection = ({ blog }: { blog: any }) => {
   // TODO: need to appy scroll scale down effect
@@ -11,7 +12,7 @@ const BlogImageSection = ({ blog }: { blog: any }) => {
         <div className="rounded-3xl relative w-full aspect-video overflow-hidden">
           <Image
             className="scale-105 hover:scale-100 duration-500"
-            src={blog?.image ? blog?.image : ""}
+            src={blog?.image ? blog?.image : defaultImg}
             alt={blog?.title ?? blog?.title}
             fill
           />

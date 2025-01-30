@@ -7,7 +7,7 @@
   & h4,
   & h5,
   & h6 {
-    @apply font-bold mt-14 mb-4 text-blue-700 font-serif;
+    @apply font-bold mt-14 mb-4 text-dolginsblue;
     line-height: 1.5em;
   }
 

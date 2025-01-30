@@ -45,6 +45,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
+    params = await params
     const { product_categories } = await getCategoryByHandle(params.category)
 
     const title = product_categories
@@ -68,7 +69,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CategoryPage({ params, searchParams }: Props) {
-  const { sortBy, page } = searchParams
+  const { sortBy, page } = await searchParams
+  params = await params
 
   const { product_categories } = await getCategoryByHandle(params.category)
 

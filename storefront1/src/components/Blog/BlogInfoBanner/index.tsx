@@ -12,11 +12,11 @@ type Props = {
 // TODO: author name and reading time
 const BlogInfoBanner = async ({ blog, categories }: Props) => {
   return (
-    <section className="mx-auto max-w-4xl flex flex-col gap-6">
-      <h1 className="text-blue-500 text-5xl font-bold font-serif">
+    <section className="mx-auto max-w-4xl flex flex-col gap-6 px-4">
+      <h1 className="text-dolginslightblue text-5xl font-bold font-serif">
         {blog?.title}
       </h1>
-      <div className="flex max-sm:flex-col gap-8 justify-between sm:items-center border-b pb-20">
+      <div className="flex max-sm:flex-col gap-8 justify-between sm:items-center border-b pb-10">
         <div className="flex gap-4 items-center">
           <div className="relative aspect-square w-16">
             <Image
@@ -26,9 +26,13 @@ const BlogInfoBanner = async ({ blog, categories }: Props) => {
             />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold text-primary text-caption1">
-              {blog?.user?.first_name || blog?.user?.last_name
+            <span className="font-semibold text-dolginsblue capitalize">
+              {blog?.user?.first_name && blog?.user?.last_name
                 ? `${blog?.user?.first_name} ${blog?.user?.last_name}`
+                : blog?.user?.first_name
+                ? blog?.user?.first_name
+                : blog?.user?.last_name
+                ? blog?.user?.last_name
                 : "Author"}
             </span>
             <span className="text-gray-500 text-base">
@@ -44,7 +48,7 @@ const BlogInfoBanner = async ({ blog, categories }: Props) => {
       </div>
       <div className="flex flex-col gap-2">
         {categories && categories.length > 0 && (
-          <p className="text-2xl font-bold">Categories:</p>
+          <p className="text-2xl font-bold text-dolginsblue">Categories:</p>
         )}
         <div className="flex gap-2">
           {categories?.length > 0 &&
@@ -53,6 +57,7 @@ const BlogInfoBanner = async ({ blog, categories }: Props) => {
                 key={category?.product_category?.id}
                 variant="outline"
                 size="lg"
+                className="font-semibold"
               >
                 {category?.product_category?.name || ""}
               </BlogBadge>

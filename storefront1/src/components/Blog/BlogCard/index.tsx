@@ -6,6 +6,8 @@ import { cn } from "@lib/utils"
 import { convertDateFormat } from "@lib/convertBlogDate"
 import { BlogBadge } from "@components/Blog/BlogBadge"
 import { getCategoriesById } from "@lib/data/blog"
+import defaultImg from "@images/no_image.jpg"
+
 const BlogCard = async ({ blog }: { blog: any }) => {
   const categories = await Promise.all(
     blog?.product_categories?.map((category: any) =>
@@ -23,8 +25,8 @@ const BlogCard = async ({ blog }: { blog: any }) => {
     >
       <div className={styles.blogImage}>
         <Image
-          src={blog?.image ? blog?.image : ""}
-          alt={blog?.title ?? blog?.title}
+          src={blog?.image ? blog?.image : defaultImg}
+          alt={blog?.title ?? "Blog Image"}
           fill
           className="-z-10 group-hover:scale-105 duration-500"
         />
