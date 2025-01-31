@@ -69,7 +69,6 @@ export const noDivisionCurrencies = [
   "xau",
 ]
 
-export const DEFAULT_REGION = "us"
 export const BASE_URL =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
 export const SITE_NAME = "Dolgins"
@@ -84,3 +83,6 @@ export const TWITTER_CREATER = "@TheSpecialChar"
 export const TWITTER_SITE_ID = "1467726470533754880"
 export const FB_APP_ID = "12345667"
 export const FB_USER_ID = "12345667"
+
+export const AUTHOR = "Dolgins"
+export const DEFAULT_REGION = process.env.NEXT_PUBLIC_DEFAULT_REGION! || "us"
