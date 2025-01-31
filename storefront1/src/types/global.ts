@@ -24,7 +24,8 @@ export type SeoDetails = {
   metaImage: string
   keywords: string
   metaRobots: string
-  structuredData: Record<string, any>
+  structuredData: string
+  feedData: string
   metaViewport: string
   canonicalURL: string
   created_at: string
