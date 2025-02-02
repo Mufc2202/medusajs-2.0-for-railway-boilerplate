@@ -13,6 +13,7 @@
     "medusa"
   ],
   "scripts": {
+    "predeploy": "medusa db:migrate",
     "build": "medusa build && node src/scripts/postBuild.js",
     "seed": "medusa exec ./src/scripts/seed.ts",
     "ib": "init-backend",
