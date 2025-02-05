@@ -24,7 +24,7 @@ const LocalizedClientLink = ({
 
   return (
     // <Link href={`/${countryCode}${href}`} {...props}>
-    <Link href={`/${href}`} {...props}>
+    <Link href={`${href}`} {...props}>
       {children}
     </Link>
   )

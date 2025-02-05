@@ -35,7 +35,7 @@ const BlogCard = async ({ blog }: { blog: any }) => {
         <span className={styles.blogDate}>
           {convertDateFormat(blog?.created_at)}
         </span>
-        <div className="flex gap-2">
+        <div className="flex gap-2 overflow-x-scroll no-scrollbar">
           {categories?.length > 0 &&
             categories?.map((category: any) => (
               <BlogBadge
