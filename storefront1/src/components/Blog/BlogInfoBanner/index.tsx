@@ -50,13 +50,13 @@ const BlogInfoBanner = async ({ blog, categories }: Props) => {
         {categories && categories.length > 0 && (
           <p className="text-2xl font-bold text-dolginsblue">Categories:</p>
         )}
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {categories?.length > 0 &&
             categories?.map((category: any) => (
               <BlogBadge
                 key={category?.product_category?.id}
                 variant="outline"
-                size="lg"
+                size="default"
                 className="font-semibold"
               >
                 {category?.product_category?.name || ""}

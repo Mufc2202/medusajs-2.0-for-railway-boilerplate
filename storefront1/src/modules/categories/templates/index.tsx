@@ -41,7 +41,7 @@ export default function CategoryTemplate({
               <span key={parent.id} className="text-ui-fg-subtle">
                 <LocalizedClientLink
                   className="mr-4 hover:text-black"
-                  href={`categories/${parent.handle}`}
+                  href={`/categories/${parent.handle}`}
                   data-testid="sort-by-link"
                 >
                   {parent.name}
@@ -60,7 +60,7 @@ export default function CategoryTemplate({
             <ul className="grid grid-cols-2 md:grid-cols-4 justify-items-center gap-2">
               {category.category_children?.map((c) => (
                 <li key={c.id}>
-                  <InteractiveLink href={`categories/${c.handle}`}>
+                  <InteractiveLink href={`/categories/${c.handle}`}>
                     {c.name}
                   </InteractiveLink>
                 </li>
