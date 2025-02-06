@@ -20,6 +20,7 @@ jobs:
           node-version: 22
           cache: "yarn"
           cache-dependency-path: storefront1/yarn.lock
+          yarn-version: 3.2.3
 
       - name: Install Dependencies
         run: |
