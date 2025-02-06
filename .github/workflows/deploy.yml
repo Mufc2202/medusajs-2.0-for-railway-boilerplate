@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "storefront1/**" 
 
 jobs:
   build-check:
@@ -11,13 +13,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: "yarn"
+          cache-dependency-path: storefront1/yarn.lock
 
       - name: Install Dependencies
-        run: yarn install
+        run: |
+          cd storefront1
+          yarn install
 
       - name: Build Storefront
-        run: yarn build
+        run: |
+          cd storefront1
+          yarn build
 
   deploy:
     name: Deploy to VPS
@@ -26,16 +39,20 @@ jobs:
     if: success()
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Dependencies
-        run: yarn install
+        run: |
+          cd storefront1
+          yarn install 
 
       - name: Build Storefront
-        run: yarn build
+        run: |
+          cd storefront1
+          yarn build
 
       - name: Deploy to VPS
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
@@ -43,7 +60,7 @@ jobs:
           script: |
             cd /home/dolgins/dolgins/medusajs-2.0-for-railway-boilerplate/storefront1
             git pull origin main
-            yarn install
+            yarn install 
             yarn build
             pm2 restart ecosystem.config.js
 

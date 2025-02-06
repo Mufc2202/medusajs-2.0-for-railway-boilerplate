@@ -1,0 +1,32 @@
+name: Build Dolgins Storefront
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "storefront1/**" 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "yarn"
+          cache-dependency-path: storefront1/yarn.lock
+
+      - name: Install Dependencies
+        run: |
+          cd storefront1
+          yarn install --immutable
+
+      - name: Build Storefront
+        run: |
+          cd storefront1
+          yarn build
