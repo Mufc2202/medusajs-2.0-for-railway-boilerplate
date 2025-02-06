@@ -20,13 +20,13 @@ jobs:
           node-version: 22
 
       - name: Install Dependencies
+        working-directory: storefront1
         run: |
-          cd storefront1
           corepack enable
           yarn install --immutable
 
       - name: Build Storefront
+        working-directory: storefront1
         run: |
-          cd storefront1
           corepack enable
           yarn build
