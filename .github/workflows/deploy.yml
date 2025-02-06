@@ -31,6 +31,10 @@ jobs:
         run: |
           corepack enable
           export NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_a427551fb11442a5dcbb12b05a78fb8c987bb0aa8bc22acc1e3121b8b896e7d0
+          export NEXT_PUBLIC_BASE_URL=https://admin.dolgins.com
+          export NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://medusa.dolgins.com
+          export NEXT_PUBLIC_DEFAULT_REGION=us
+          export NEXT_PUBLIC_INDEX_NAME=products
           yarn build
 
   deploy:
