@@ -18,17 +18,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: "yarn"
-          cache-dependency-path: storefront1/yarn.lock
 
       - name: Install Dependencies
+        working-directory: storefront1
         run: |
-          cd storefront1
           corepack enable
           yarn install --immutable
 
       - name: Build Storefront
+        working-directory: storefront1
         run: |
-          cd storefront1
           corepack enable
           yarn build

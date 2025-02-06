@@ -1,0 +1,87 @@
+name: Deploy Dolgins Storefront
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "storefront1/**"
+
+jobs:
+  build-check:
+    name: Verify Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Dependencies
+        working-directory: storefront1
+        run: |
+          corepack enable
+          yarn install
+
+      - name: Build Storefront
+        working-directory: storefront1
+        run: |
+          corepack enable
+          export NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_a427551fb11442a5dcbb12b05a78fb8c987bb0aa8bc22acc1e3121b8b896e7d0
+          export NEXT_PUBLIC_BASE_URL=https://admin.dolgins.com
+          export NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://medusa.dolgins.com
+          export NEXT_PUBLIC_DEFAULT_REGION=us
+          export NEXT_PUBLIC_INDEX_NAME=products
+          yarn build
+
+  deploy:
+    name: Deploy to VPS
+    runs-on: ubuntu-latest
+    needs: build-check
+    if: success()
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        working-directory: storefront1
+        run: |
+          corepack enable
+          yarn install
+
+      - name: Build Storefront
+        working-directory: storefront1
+        run: |
+          corepack enable
+           export NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_a427551fb11442a5dcbb12b05a78fb8c987bb0aa8bc22acc1e3121b8b896e7d0
+          export NEXT_PUBLIC_BASE_URL=https://admin.dolgins.com
+          export NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://medusa.dolgins.com
+          export NEXT_PUBLIC_DEFAULT_REGION=us
+          export NEXT_PUBLIC_INDEX_NAME=products
+          yarn build
+
+      - name: Echo Secret Variables
+        run: |
+          echo "VPS Host: ${{ secrets.VPS_HOST }}"
+          echo "VPS User: ${{ secrets.VPS_USER }}"
+          echo "VPS SSH Key: ${{ secrets.VPS_SSH_KEY }}"
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd /home/dolgins/dolgins/medusajs-2.0-for-railway-boilerplate/storefront1
+            git pull origin main
+            corepack enable
+            yarn install 
+            yarn build
+            pm2 restart ecosystem.config.js
+
+      - name: Notify Deployment Success
+        run: echo "Deployment successful!"
