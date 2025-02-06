@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "storefront1/**" 
+      - "storefront1/**"
 
 jobs:
   build-check:
@@ -18,18 +18,20 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
           cache: "yarn"
           cache-dependency-path: storefront1/yarn.lock
 
       - name: Install Dependencies
         run: |
           cd storefront1
+          corepack enable
           yarn install
 
       - name: Build Storefront
         run: |
           cd storefront1
+          corepack enable
           yarn build
 
   deploy:
@@ -44,11 +46,13 @@ jobs:
       - name: Install Dependencies
         run: |
           cd storefront1
-          yarn install 
+          corepack enable
+          yarn install
 
       - name: Build Storefront
         run: |
           cd storefront1
+          corepack enable
           yarn build
 
       - name: Deploy to VPS
@@ -60,6 +64,7 @@ jobs:
           script: |
             cd /home/dolgins/dolgins/medusajs-2.0-for-railway-boilerplate/storefront1
             git pull origin main
+            corepack enable
             yarn install 
             yarn build
             pm2 restart ecosystem.config.js
@@ -68,4 +73,4 @@ jobs:
         run: echo "Deployment successful!"
 
       - name: Pipeline Deployment test
-        run:  echo "Pipeline deployment test success!"
+        run: echo "Pipeline deployment test success!"

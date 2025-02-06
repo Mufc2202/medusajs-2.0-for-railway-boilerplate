@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "storefront1/**" 
+      - "storefront1/**"
 
 jobs:
   build:
@@ -24,9 +24,11 @@ jobs:
       - name: Install Dependencies
         run: |
           cd storefront1
+          corepack enable
           yarn install --immutable
 
       - name: Build Storefront
         run: |
           cd storefront1
+          corepack enable
           yarn build
