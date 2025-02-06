@@ -30,6 +30,7 @@ jobs:
         working-directory: storefront1
         run: |
           corepack enable
+          export NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_a427551fb11442a5dcbb12b05a78fb8c987bb0aa8bc22acc1e3121b8b896e7d0
           yarn build
 
   deploy:
