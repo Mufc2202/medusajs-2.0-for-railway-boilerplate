@@ -71,6 +71,3 @@ jobs:
 
       - name: Notify Deployment Success
         run: echo "Deployment successful!"
-      
-      - name: Notify Deployment test success
-        run: echo "Deployment test success!"
