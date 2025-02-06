@@ -32,3 +32,6 @@ jobs:
           cd storefront1
           corepack enable
           yarn build
+      
+      -name: Notify Build Success
+        run: echo "Build Success!"
