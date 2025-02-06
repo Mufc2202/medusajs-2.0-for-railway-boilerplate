@@ -63,6 +63,12 @@ jobs:
           export NEXT_PUBLIC_INDEX_NAME=products
           yarn build
 
+      - name: Echo Secret Variables
+        run: |
+          echo "VPS Host: ${{ secrets.VPS_HOST }}"
+          echo "VPS User: ${{ secrets.VPS_USER }}"
+          echo "VPS SSH Key: ${{ secrets.VPS_SSH_KEY }}"
+
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
