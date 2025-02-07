@@ -27,40 +27,43 @@ type Props = {
 export async function generateMetadata({
   params: { slug },
 }: Props): Promise<Metadata> {
-  const { blogs } = await getBlogByHandle(slug)
-  const blog = blogs[0]
+  const data = await getBlogByHandle(slug)
+
+  if (!data?.blogs[0]) {
+    notFound()
+  }
 
   return {
-    title: blog?.seo_details?.metaTitle,
-    description: blog?.seo_details?.metaDescription,
-    keywords: blog?.seo_details?.keywords,
-    robots: blog?.seo_details?.metaRobots,
+    title: data?.blogs[0]?.seo_details?.metaTitle,
+    description: data?.blogs[0]?.seo_details?.metaDescription,
+    keywords: data?.blogs[0]?.seo_details?.keywords,
+    robots: data?.blogs[0]?.seo_details?.metaRobots,
     openGraph: {
-      title: blog?.seo_details?.metaTitle,
-      description: blog?.seo_details?.metaDescription,
-      url: `${BASE_URL}/blogs/${blog?.handle}`,
+      title: data?.blogs[0]?.seo_details?.metaTitle,
+      description: data?.blogs[0]?.seo_details?.metaDescription,
+      url: `${BASE_URL}/blogs/${data?.blogs[0]?.handle}`,
       siteName: SITE_NAME,
-      images: blog?.seo_details?.metaImage,
+      images: data?.blogs[0]?.seo_details?.metaImage,
       locale: "en_US",
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
       title:
-        blog?.seo_details?.metaSocial?.find(
+        data?.blogs[0]?.seo_details?.metaSocial?.find(
           (meta) => meta.socialNetwork === "Twitter"
-        )?.title || blog?.seo_details?.metaTitle,
+        )?.title || data?.blogs[0]?.seo_details?.metaTitle,
       description:
-        blog?.seo_details?.metaSocial?.find(
+        data?.blogs[0]?.seo_details?.metaSocial?.find(
           (meta) => meta.socialNetwork === "Twitter"
-        )?.description || blog?.seo_details?.metaDescription,
+        )?.description || data?.blogs[0]?.seo_details?.metaDescription,
       images: [
         {
           url:
-            blog?.seo_details?.metaSocial?.find(
+            data?.blogs[0]?.seo_details?.metaSocial?.find(
               (meta) => meta.socialNetwork === "Twitter"
-            )?.image || blog?.seo_details?.metaImage,
-          alt: blog?.seo_details?.metaTitle,
+            )?.image || data?.blogs[0]?.seo_details?.metaImage,
+          alt: data?.blogs[0]?.seo_details?.metaTitle,
         },
       ],
       site: SITE_NAME,
@@ -72,8 +75,8 @@ export async function generateMetadata({
       admins: FB_USER_ID,
       appId: FB_APP_ID as unknown as undefined,
     },
-    viewport: blog?.seo_details?.metaViewport,
-    alternates: { canonical: blog?.seo_details?.canonicalURL },
+    viewport: data?.blogs[0]?.seo_details?.metaViewport,
+    alternates: { canonical: data?.blogs[0]?.seo_details?.canonicalURL },
     metadataBase: new URL(`${BASE_URL}/blogs/${slug}`),
     applicationName: APPLICATION_NAME,
     authors: [{ name: "The Special Character" }],
@@ -84,27 +87,30 @@ export async function generateMetadata({
 }
 
 const Page = async ({ params: { slug } }: Props) => {
-  const { blogs } = await getBlogByHandle(slug)
-  const blog = blogs[0]
+  const data = await getBlogByHandle(slug)
 
-  if (!blog) {
+  const categories =
+    data?.blogs[0] &&
+    (await Promise.all(
+      data?.blogs[0]?.product_categories?.map((category) =>
+        getCategoriesById(category.id)
+      )
+    ))
+
+  if (!data?.blogs[0]) {
     return <NotFound />
   }
 
-  const categories = await Promise.all(
-    blog?.product_categories?.map((category) => getCategoriesById(category.id))
-  )
-
   return (
     <div>
-      <BlogImageSection blog={blog} />
-      <BlogInfoBanner blog={blog} categories={categories} />
+      <BlogImageSection blog={data?.blogs[0]} />
+      <BlogInfoBanner blog={data?.blogs[0]} categories={categories} />
       <MarkdownRenderer
-        content={blog?.content}
+        content={data?.blogs[0]?.content}
         className="mx-auto max-w-4xl flex flex-col gap-6 py-6 px-4"
       />
       <div className="mx-auto max-w-4xl flex flex-col gap-6">
-        <BlogAuthor author={blog?.user} />
+        <BlogAuthor author={data?.blogs[0]?.user} />
       </div>
     </div>
   )

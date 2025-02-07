@@ -5,24 +5,27 @@ import { getBlogsList } from "@lib/data/blog"
 import { listCategoriesList } from "@lib/data/categories"
 
 const Page = async () => {
-  const blogs = await getBlogsList()
+  const data = await getBlogsList()
 
-  if (blogs.length === 0) {
-    return (
-      <div className="h-16 flex items-center justify-center">
-        <p className="text-3xl font-semibold">No Blogs Found</p>
-      </div>
+  const categoryIds =
+    data?.blogs &&
+    data?.blogs?.flatMap((blog: any) =>
+      blog?.product_categories?.map((category: any) => category?.id)
     )
-  }
-  const categoryIds = blogs?.flatMap((blog: any) =>
-    blog?.product_categories?.map((category: any) => category?.id)
-  )
   const uniqueCategoryIds = [...new Set(categoryIds)]
   let categories
   if (uniqueCategoryIds?.length > 0) {
     categories = await listCategoriesList({
       id: uniqueCategoryIds,
     })
+  }
+
+  if (!data?.blogs || data?.blogs.length === 0) {
+    return (
+      <div className="h-16 flex items-center justify-center">
+        <p className="text-3xl font-semibold">No Blogs Found</p>
+      </div>
+    )
   }
 
   return (
@@ -38,7 +41,7 @@ const Page = async () => {
           )}
         </div>
         <div className="grid gap-12 md:grid-cols-2">
-          {blogs?.map((blog: any) => (
+          {data?.blogs?.map((blog: any) => (
             <BlogCard key={blog.id} blog={blog} />
           ))}
         </div>
