@@ -38,10 +38,10 @@ export async function generateMetadata({
     openGraph: {
       title: blog?.seo_details?.metaTitle,
       description: blog?.seo_details?.metaDescription,
-      url: `${BASE_URL}/store/${blog?.handle}`,
+      url: `${BASE_URL}/blogs/${blog?.handle}`,
       siteName: SITE_NAME,
       images: blog?.seo_details?.metaImage,
-      locale: "pt_BR",
+      locale: "en_US",
       type: "website",
     },
     twitter: {
