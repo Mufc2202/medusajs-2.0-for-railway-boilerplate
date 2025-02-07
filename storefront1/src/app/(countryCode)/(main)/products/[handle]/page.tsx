@@ -8,6 +8,7 @@ import {
   APPLICATION_NAME,
   BASE_URL,
   countryCode,
+  DEFAULT_REGION,
   FB_APP_ID,
   FB_USER_ID,
   GENERATOR,
@@ -55,34 +56,10 @@ export async function generateStaticParams() {
   return staticParams
 }
 
-// export async function generateMetadata({ params }: Props): Promise<Metadata> {
-//   const { handle } = params
-//   const region = await getRegion(countryCode)
-
-//   if (!region) {
-//     notFound()
-//   }
-
-//   const product = await getProductByHandle(handle, region.id)
-
-//   if (!product) {
-//     notFound()
-//   }
-
-//   return {
-//     title: `${product.title} | Dolgins Fine Jewelry`,
-//     description: `${product.title}`,
-//     openGraph: {
-//       title: `${product.title} | Dolgins Fine Jewelry`,
-//       description: `${product.title}`,
-//       images: product.thumbnail ? [product.thumbnail] : [],
-//     },
-//   }
-// }
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params
   const { handle } = params
-  const region = await getRegion(countryCode)
+  const region = await getRegion(DEFAULT_REGION)
 
   if (!region) {
     notFound()
@@ -104,7 +81,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: `${BASE_URL}/products/${product?.handle}`,
       siteName: SITE_NAME,
       images: product?.seo_details?.metaImage,
-      locale: "pt_BR",
+      locale: "en_US",
       type: "website",
     },
     facebook: {
@@ -137,7 +114,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     category: product?.categories?.[0]?.name,
     viewport: product?.seo_details?.metaViewport,
-    alternates: { canonical: product?.seo_details?.canonicalURL },
     metadataBase: new URL(`${BASE_URL}/products/${product?.handle}`),
     applicationName: APPLICATION_NAME,
     authors: [{ name: "The Special Character" }],
