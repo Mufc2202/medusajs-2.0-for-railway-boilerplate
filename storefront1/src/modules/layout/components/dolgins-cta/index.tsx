@@ -7,6 +7,8 @@ const DolginsCTA = ({
   subtitle = "Excited To Help You",
   imageAlt = "Custom gold and diamond cross ring on the jewelers bench",
   text = "At Dolgins Jewelry, we look forward to working with you. A call is great, but a text is best. Talk to you soon.",
+  link = "/contact",
+  linkText = "Contact",
 }) => {
   return (
     <div className="relative bg-dolginsblue m-8 rounded-lg">
@@ -43,6 +45,14 @@ const DolginsCTA = ({
               className="inline-flex rounded-md bg-white/30 px-3.5 ml-4 py-2.5 text-xlg font-semibold text-white shadow-sm hover:bg-dolginslightblue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               Call
+            </a>
+          </div>
+          <div className="pt-4">
+            <a
+              href={link}
+              className="inline-flex min-w-48 justify-center rounded-md bg-white/30 px-3.5 text-center py-2.5 text-xlg font-semibold text-white shadow-sm hover:bg-dolginslightblue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            >
+              {linkText}
             </a>
           </div>
         </div>

@@ -8,12 +8,12 @@ import { CustomProduct } from "types/global"
 export async function GET() {
   const feed = new RSS({
     title: "Dolgins products",
-    description: "Dolgins's Product Description",
+    description: "Dolgins's Google Merchant RSS Feed",
     generator: "RSS for Node and Next.js",
     feed_url: `${process.env.NEXT_PUBLIC_BASE_URL}/feed.xml`,
     site_url: `${process.env.NEXT_PUBLIC_BASE_URL}`,
-    managingEditor: "editor@example.com (Dolgins)",
-    webMaster: "editor@example.com (Dolgins)",
+    managingEditor: "joseph@dolgins.com",
+    webMaster: "joseph@dolgins.com",
     copyright: `Copyright ${new Date().getFullYear().toString()}, Dolgins`,
     language: "en-US",
     pubDate: new Date().toUTCString(),
