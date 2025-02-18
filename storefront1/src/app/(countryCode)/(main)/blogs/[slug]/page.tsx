@@ -79,7 +79,7 @@ export async function generateMetadata({
     alternates: { canonical: data?.blogs[0]?.seo_details?.canonicalURL },
     metadataBase: new URL(`${BASE_URL}/blogs/${slug}`),
     applicationName: APPLICATION_NAME,
-    authors: [{ name: "The Special Character" }],
+    authors: [{ name: "Joseph Dolginow" }],
     publisher: PUBLISHER,
     generator: GENERATOR,
     referrer: "origin-when-cross-origin",
@@ -109,9 +109,6 @@ const Page = async ({ params: { slug } }: Props) => {
         content={data?.blogs[0]?.content}
         className="mx-auto max-w-4xl flex flex-col gap-6 py-6 px-4"
       />
-      <div className="mx-auto max-w-4xl flex flex-col gap-6">
-        <BlogAuthor author={data?.blogs[0]?.user} />
-      </div>
     </div>
   )
 }

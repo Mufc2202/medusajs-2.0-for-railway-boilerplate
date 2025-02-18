@@ -13,27 +13,21 @@ type Props = {
 const BlogInfoBanner = async ({ blog, categories }: Props) => {
   return (
     <section className="mx-auto max-w-4xl flex flex-col gap-6 px-4">
-      <h1 className="text-dolginslightblue text-5xl font-bold font-serif">
+      <h1 className="text-dolginsblue text-5xl capitalize font-bold font-serif">
         {blog?.title}
       </h1>
-      <div className="flex max-sm:flex-col gap-8 justify-between sm:items-center border-b pb-10">
+      <div className="flex max-sm:flex-col gap-8 justify-between sm:items-center border-b-2 border-gold pb-10">
         <div className="flex gap-4 items-center">
           <div className="relative aspect-square w-16">
             <Image
               src={blog?.user?.metadata?.image || defaultImg}
-              alt={blog?.user?.first_name || blog?.user?.last_name || "Author"}
+              alt="Avatar Image of Joseph Dolginow in Dolgins Jewelry in Kansas City"
               fill
             />
           </div>
           <div className="flex flex-col">
             <span className="font-semibold text-dolginsblue capitalize">
-              {blog?.user?.first_name && blog?.user?.last_name
-                ? `${blog?.user?.first_name} ${blog?.user?.last_name}`
-                : blog?.user?.first_name
-                ? blog?.user?.first_name
-                : blog?.user?.last_name
-                ? blog?.user?.last_name
-                : "Author"}
+              Written By: Joseph Dolginow
             </span>
             <span className="text-gray-500 text-base">
               {convertDateFormat(blog?.created_at)}
@@ -42,7 +36,7 @@ const BlogInfoBanner = async ({ blog, categories }: Props) => {
         </div>
         <div className="flex gap-4 items-center">
           <BlogBadge variant="secondary" size="lg">
-            {calculateReadingTime(blog?.content)} m
+            Reading Time: {calculateReadingTime(blog?.content)} m
           </BlogBadge>
         </div>
       </div>
@@ -55,9 +49,8 @@ const BlogInfoBanner = async ({ blog, categories }: Props) => {
             categories?.map((category: any) => (
               <BlogBadge
                 key={category?.product_category?.id}
-                variant="outline"
+                variant="jpd"
                 size="default"
-                className="font-semibold"
               >
                 {category?.product_category?.name || ""}
               </BlogBadge>

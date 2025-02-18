@@ -22,14 +22,14 @@ const BlogCategories = ({
   }
 
   return (
-    <div className="bg-[#e1edfb66] max-w-1/2 p-3 rounded-full flex overflow-scroll no-scrollbar">
+    <div className="max-w-1/2 p-3 flex overflow-scroll no-scrollbar">
       <div className="flex gap-4 items-center flex-1 no-scrollbar">
         {categories &&
           categories?.map((category, index) => (
             <Button
               key={index}
               size="large"
-              className="h-10 w-full rounded-full bg-white text-dolginslightblue hover:bg-dolginslightblue hover:text-white outline-none border border-gray-200"
+              className="h-10 w-full bg-dolginsblue text-white hover:bg-dolginslightblue hover:text-white outline-none"
               onClick={() => handleCategoryClick(category?.handle)}
             >
               {category?.name}

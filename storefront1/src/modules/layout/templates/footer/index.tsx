@@ -51,6 +51,12 @@ export default function Footer() {
             </Link>
             <Link
               className="text-lg text-dolginsblue h-14 mx-2 hover:text-gray-900"
+              href="/blogs"
+            >
+              Blog
+            </Link>
+            <Link
+              className="text-lg text-dolginsblue h-14 mx-2 hover:text-gray-900"
               href="/contact"
             >
               Contact

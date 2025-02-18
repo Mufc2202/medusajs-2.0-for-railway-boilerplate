@@ -32,10 +32,8 @@ const Page = async () => {
     <>
       <BlogHeroSection />
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2>Find By Category:</h2>
         <div className="flex max-md:flex-col gap-6 md:items-center justify-between py-10">
-          <h2 className="text-xl md:text-3xl text-dolginsblue font-bold whitespace-nowrap">
-            Resources & News
-          </h2>
           {uniqueCategoryIds?.length > 0 && categories && (
             <BlogCategories categories={categories} />
           )}

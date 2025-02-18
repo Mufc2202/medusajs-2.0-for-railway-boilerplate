@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@lib/utils"
 
 const blogBadgeVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-full text-caption2 font-bold disabled:opacity-50 duration-500",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-caption2 disabled:opacity-50 duration-500",
   {
     variants: {
       variant: {
@@ -17,6 +17,7 @@ const blogBadgeVariants = cva(
         secondary: "bg-gray-200 text-secondary-foreground shadow-sm",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        jpd: "bg-dolginsblue text-white hover:text-white outline-none",
       },
       size: {
         default: "h-9 px-4 py-2",

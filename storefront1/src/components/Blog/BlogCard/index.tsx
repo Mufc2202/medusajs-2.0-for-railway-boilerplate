@@ -40,7 +40,7 @@ const BlogCard = async ({ blog }: { blog: any }) => {
             categories?.map((category: any) => (
               <BlogBadge
                 key={category?.product_category?.id}
-                variant="outline"
+                variant="jpd"
                 size="sm"
                 className="px-2"
               >

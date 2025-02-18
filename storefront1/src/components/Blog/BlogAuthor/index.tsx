@@ -19,6 +19,7 @@ const BlogAuthor = ({ author }: { author: any }) => {
       <div className="flex-1 flex flex-col gap-6">
         <div className="flex max-sm:flex-col gap-4 items-center justify-between">
           <h2 className="text-3xl font-bold text-primary capitalize">
+            test
             {author?.first_name && author?.last_name
               ? `${author?.first_name} ${author?.last_name}`
               : author?.first_name
