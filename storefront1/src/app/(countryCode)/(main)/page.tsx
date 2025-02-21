@@ -6,6 +6,7 @@ import { getCollectionsWithProducts } from "@lib/data/collections"
 import { getRegion } from "@lib/data/regions"
 import { countryCode } from "@lib/constants"
 import DolginsCTA from "@modules/layout/components/dolgins-cta"
+import CategoriesGrid from "@modules/layout/components/category-grid"
 import BuyingRing from "@images/index/buying-ring-money.jpg"
 import Repair from "@images/index/repairing.jpg"
 
@@ -41,6 +42,7 @@ export default async function Home() {
         linkText="Learn More About Selling Your Jewelry"
         link="/buying-jewelry"
       />
+      <CategoriesGrid />
       <DolginsCTA
         title="Let Us Help With Your Jewelry Repairs."
         subtitle="Quality Jewelry Repair"
