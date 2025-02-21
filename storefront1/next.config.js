@@ -33,13 +33,13 @@ const nextConfig = {
         protocol: "https",
         hostname: process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL?.replace('https://', ''),
       },
-      { // Note: can be removed after deleting demo products
+      { 
         protocol: "https",
-        hostname: "medusa-public-images.s3.eu-west-1.amazonaws.com",
+        hostname: "meteor.stullercloud.com",
       },
-      { // Note: can be removed after deleting demo products
+      { 
         protocol: "https",
-        hostname: "medusa-server-testing.s3.amazonaws.com",
+        hostname: "dolgins-nextjs.s3.us-east-2.amazonaws.com",
       },
       { // Note: can be removed after deleting demo products
         protocol: "https",

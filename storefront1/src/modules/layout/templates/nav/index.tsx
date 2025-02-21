@@ -4,6 +4,7 @@ import Link from "next/link"
 import Logo from "@images/logos/logolong-text-blue-symbol-color.svg"
 import { Fragment, useState } from "react"
 import { Dialog, Popover, Tab, Transition } from "@headlessui/react"
+import Banner from "@modules/layout/banner"
 import Diamond from "@images/Navbar/icon-diamond.svg"
 import WeddingRing from "@images/Navbar/icon-engagementring.svg"
 import WatchRepair from "@images/Navbar/icon-watchrepair.svg"
@@ -259,15 +260,7 @@ export default function Nav() {
       <header className="relative">
         <nav aria-label="Top">
           {/* Top Headline/Announcement Bar */}
-          {/*           <div className="bg-dolginsblue">
-            <div className="mx-auto flex h-10 max-w-7xl items-center justify-center px-4 sm:px-6 lg:px-8">
-              <div className="flex items-center space-x-6 text-sm font-medium text-white hover:text-gray-100">
-                Closed From July 20th To July 29th For Summer Vacation. Please
-                Email Any Questions. Thank You!
-              </div>
-            </div>
-          </div> */}
-
+          <Banner></Banner>
           {/* Secondary navigation */}
           <div className="bg-white">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
