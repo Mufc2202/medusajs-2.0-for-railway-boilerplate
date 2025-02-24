@@ -29,7 +29,7 @@ const features = [
 
 export default function Values() {
   return (
-    <section className="bg-white py-10 mt-3 mb-3 border-gold border-2">
+    <section className="bg-white py-10 mt-3 mb-3 border-gold border-2 rounded-md">
       <div className="mx-auto max-w-xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <h2 className="sr-only">Dolgins Jewelry Store Values</h2>
         <dl className="space-y-10 lg:grid lg:grid-cols-3 lg:gap-8 lg:space-y-0">
