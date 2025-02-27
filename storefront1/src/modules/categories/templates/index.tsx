@@ -58,13 +58,17 @@ export default function CategoryTemplate({
         {category.category_children && (
           <div className="mb-8 text-base-large">
             <ul className="grid grid-cols-2 md:grid-cols-4 justify-items-center gap-2">
-              {category.category_children?.map((c) => (
-                <li key={c.id}>
-                  <InteractiveLink href={`/categories/${c.handle}`}>
-                    {c.name}
-                  </InteractiveLink>
-                </li>
-              ))}
+              {category.category_children?.map((c) => {
+                return (
+                  <li key={c.id}>
+                    <InteractiveLink
+                      href={`/categories/${category.handle}/${c.handle}`}
+                    >
+                      {c.name}
+                    </InteractiveLink>
+                  </li>
+                )
+              })}
             </ul>
           </div>
         )}
