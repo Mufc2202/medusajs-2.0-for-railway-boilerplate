@@ -232,7 +232,7 @@ export default function Nav() {
                         href="tel:9132282808"
                         className="inline-block rounded-md shadow bg-dolginsblue py-2 px-4 text-center text-white hover:bg-dolginslightblue"
                       >
-                        <span className="text-sm">Call</span>
+                        <span className="text-sm">Don't Call</span>
                       </a>
                       <a
                         id="TextMobileNavTag"
@@ -284,7 +284,7 @@ export default function Nav() {
                     <div className="flex h-full justify-center space-x-8">
                       {navigation.categories.map((category) => (
                         <Popover key={category.name} className="flex">
-                          {({ open }) => (
+                          {({ open, close }) => (
                             <>
                               <div className="relative flex">
                                 <Popover.Button
@@ -351,6 +351,7 @@ export default function Nav() {
                                             </div>
                                             <Link
                                               href={item.href}
+                                              onClick={close}
                                               className="mt-4 flex justify-center block font-medium text-gray-900"
                                             >
                                               <span

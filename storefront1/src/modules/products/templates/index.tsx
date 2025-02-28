@@ -51,7 +51,6 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
             }
           >
             <ProductActionsWrapper id={product.id} region={region} />
-            {product.metadata?.googleCategory || ""}
           </Suspense>
         </div>
       </div>
