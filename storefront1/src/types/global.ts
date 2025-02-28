@@ -58,7 +58,18 @@ export type BlogProps = {
   user: UserDTO
   product_categories: { id: string }[]
 }
-
+export type BannerProps = {
+  created_at: Date
+  updated_at: Date
+  id: string
+  image: string | null
+  isActive: boolean
+  link: string
+  metadata: any | null
+  name: string
+  text: string
+  deleted_at: Date | null
+}
 export type CustomProduct = StoreProduct & {
   seo_details: SeoDetails
 }

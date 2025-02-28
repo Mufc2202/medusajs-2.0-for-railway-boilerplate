@@ -4,7 +4,6 @@ import Link from "next/link"
 import Logo from "@images/logos/logolong-text-blue-symbol-color.svg"
 import { Fragment, useState } from "react"
 import { Dialog, Popover, Tab, Transition } from "@headlessui/react"
-import Banner from "@modules/layout/banner"
 import Diamond from "@images/Navbar/icon-diamond.svg"
 import WeddingRing from "@images/Navbar/icon-engagementring.svg"
 import WatchRepair from "@images/Navbar/icon-watchrepair.svg"
@@ -261,7 +260,6 @@ export default function Nav({ cartData }: { cartData: StoreCart | null }) {
       <header className="relative">
         <nav aria-label="Top">
           {/* Top Headline/Announcement Bar */}
-          <Banner></Banner>
           {/* Secondary navigation */}
           <div className="bg-white">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
