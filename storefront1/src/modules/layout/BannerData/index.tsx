@@ -14,6 +14,8 @@ import "swiper/css/navigation"
 // import "./styles.css"
 
 import { Autoplay } from "swiper/modules"
+import Markdown from "react-markdown"
+import rehypeRaw from "rehype-raw"
 
 type Props = {
   data: { bannerList: BannerProps[] }
@@ -25,9 +27,12 @@ export const BannerData = ({ data }: Props) => {
   return (
     <>
       <Swiper
+        speed={1500}
         centeredSlides={true}
         autoplay={{
           delay: 3000,
+          // disableOnInteraction: false,
+          pauseOnMouseEnter: true,
         }}
         loop={true}
         modules={[Autoplay]}
@@ -54,7 +59,9 @@ export const BannerData = ({ data }: Props) => {
                             />
                           </div>
                         )}
-                        <p>{item.text}</p>
+                        <Markdown rehypePlugins={[rehypeRaw]}>
+                          {item.text}
+                        </Markdown>
                       </div>
                     </div>
                   </Link>
@@ -75,7 +82,7 @@ export const BannerData = ({ data }: Props) => {
                             />
                           </div>
                         )}
-                        <p>{item.text}</p>
+                        <Markdown>{item.text}</Markdown>
                       </div>
                     </div>
                   </div>
