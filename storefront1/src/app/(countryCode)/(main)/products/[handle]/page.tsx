@@ -20,7 +20,7 @@ import {
 import { CustomProduct } from "types/global"
 
 type Props = {
-  params: { handle: string }
+  params: Promise<{ handle: string }>
 }
 
 export async function generateStaticParams() {
@@ -129,8 +129,9 @@ export default async function ProductPage({ params }: Props) {
   if (!region) {
     notFound()
   }
+  const { handle } = await params
 
-  const pricedProduct = await getProductByHandle(params.handle, region.id)
+  const pricedProduct = await getProductByHandle(handle, region.id)
   if (!pricedProduct) {
     notFound()
   }

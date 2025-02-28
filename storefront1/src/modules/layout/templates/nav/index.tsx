@@ -16,6 +16,7 @@ import Repair from "@images/Navbar/icon-repair.svg"
 import { Suspense } from "react"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CartButton from "@modules/layout/components/cart-button"
+import { StoreCart } from "@medusajs/types"
 
 //https://tailwindui.com/components/ecommerce/page-examples/storefront-pages
 //With overlapping image tiles and perks
@@ -99,7 +100,7 @@ function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ")
 }
 
-export default function Nav() {
+export default function Nav({ cartData }: { cartData: StoreCart | null }) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -456,7 +457,7 @@ export default function Nav() {
                       </LocalizedClientLink>
                     }
                   >
-                    <CartButton />
+                    <CartButton cartData={cartData} />
                   </Suspense>
                 </div>
               </div>

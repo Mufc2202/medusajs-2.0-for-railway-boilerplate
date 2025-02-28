@@ -82,7 +82,6 @@ export async function addToCart({
   }
 
   const cart = await getOrSetCart(countryCode)
-  console.log(cart, "cart:::::")
   if (!cart) {
     throw new Error("Error retrieving or creating cart")
   }
@@ -95,7 +94,7 @@ export async function addToCart({
         quantity,
       },
       {},
-      getAuthHeaders()
+      await getAuthHeaders()
     )
     .then(() => {
       revalidateTag("cart")
