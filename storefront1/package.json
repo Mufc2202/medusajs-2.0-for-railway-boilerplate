@@ -46,6 +46,7 @@
     "rss": "^1.2.2",
     "server-only": "^0.0.1",
     "sharp": "^0.33.5",
+    "swiper": "^11.2.4",
     "tailwindcss-radix": "^2.8.0",
     "webpack": "^5"
   },
