@@ -27,21 +27,47 @@ export async function generateStaticParams() {
     regions?.map((r) => r.countries?.map((c) => c.iso_2)).flat()
   )
 
-  const categoryHandles = product_categories.map(
-    (category: any) => category.handle
-  )
+  const categoryHandleMap = new Map<string, string>() // id => handle
+  for (const productCategory of product_categories) {
+    categoryHandleMap.set(productCategory.id, productCategory.handle)
+    if (productCategory.parent_category) {
+      categoryHandleMap.set(
+        productCategory.parent_category.id,
+        productCategory.parent_category.handle
+      )
+    }
+  }
 
-  const staticParams = countryCodes
-    ?.map((countryCode: string | undefined) =>
-      categoryHandles.map((handle: any) => ({
+  const staticParams = []
+
+  for (const countryCode of countryCodes) {
+    for (const productCategory of product_categories) {
+      // up to 3 levels supported
+      const route = [] as string[]
+
+      if (productCategory.parent_category?.parent_category_id) {
+        const grandparent = categoryHandleMap.get(
+          productCategory.parent_category.parent_category_id
+        )
+        if (grandparent) route.push(grandparent)
+      }
+      if (productCategory.parent_category_id) {
+        const parent = categoryHandleMap.get(productCategory.parent_category_id)
+        if (parent) route.push(parent)
+      }
+      route.push(productCategory.handle)
+
+      staticParams.push({
         countryCode,
-        category: [handle],
-      }))
-    )
-    .flat()
+        category: route,
+      })
+    }
+  }
 
   return staticParams
 }
+
+export const dynamicParams = false // don't allow any route
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {

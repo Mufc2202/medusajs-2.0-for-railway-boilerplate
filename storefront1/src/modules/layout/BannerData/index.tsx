@@ -49,16 +49,6 @@ export const BannerData = ({ data }: Props) => {
                         key={item.id}
                         className="flex items-center gap-4 text-sm font-medium text-white hover:text-gray-100"
                       >
-                        {item.image && (
-                          <div className="relative h-4 aspect-square">
-                            <Image
-                              alt={item.name}
-                              src={item.image || ""}
-                              className=""
-                              fill
-                            />
-                          </div>
-                        )}
                         <Markdown rehypePlugins={[rehypeRaw]}>
                           {item.text}
                         </Markdown>

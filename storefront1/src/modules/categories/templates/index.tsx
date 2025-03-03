@@ -8,6 +8,7 @@ import { SortOptions } from "@modules/store/components/refinement-list/sort-prod
 import PaginatedProducts from "@modules/store/templates/paginated-products"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { HttpTypes } from "@medusajs/types"
+import Repair from "@modules/categories/templates/repair"
 
 export default function CategoryTemplate({
   categories,
@@ -27,6 +28,16 @@ export default function CategoryTemplate({
   const parents = categories.slice(0, categories.length - 1)
 
   if (!category || !countryCode) notFound()
+
+  if (category.name === "Services")
+    return (
+      <Repair
+        sort={sort}
+        pageNumber={pageNumber}
+        category={category}
+        countryCode={countryCode}
+      />
+    )
 
   return (
     <div
@@ -59,13 +70,17 @@ export default function CategoryTemplate({
           <div className="mb-8 text-base-large">
             <ul className="grid grid-cols-2 md:grid-cols-4 justify-items-center gap-2">
               {category.category_children?.map((c) => {
+                const route = [
+                  "/categories",
+                  category.parent_category?.handle,
+                  category.handle,
+                  c.handle,
+                ]
+                  .filter(Boolean)
+                  .join("/")
                 return (
                   <li key={c.id}>
-                    <InteractiveLink
-                      href={`/categories/${category.handle}/${c.handle}`}
-                    >
-                      {c.name}
-                    </InteractiveLink>
+                    <InteractiveLink href={route}>{c.name}</InteractiveLink>
                   </li>
                 )
               })}

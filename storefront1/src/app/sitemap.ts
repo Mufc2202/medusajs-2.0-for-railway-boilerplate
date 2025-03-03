@@ -71,39 +71,41 @@ const generateCategoryRoutes = async (): Promise<Sitemap[] | null> => {
   try {
     const { product_categories } = await getCategoriesList()
 
-    const categoryRoutes: Sitemap[] = product_categories?.reduce(
-      (p: Sitemap[], c: StoreProductCategory) => {
-        const data = []
-        data.push({
-          url: `${BASE_URL}/categories/${c.handle}`,
-          lastModified: c.updated_at,
-          priority: 0.8,
-        })
-        if (c?.category_children && c?.category_children?.length) {
-          c?.category_children?.map((subCategory) => {
-            data.push({
-              url: `${BASE_URL}/categories/${c?.handle}/${subCategory?.handle}`,
-              lastModified: subCategory?.updated_at,
-              priority: 0.8,
-            })
-            if (
-              subCategory?.category_children &&
-              subCategory?.category_children?.length
-            ) {
-              subCategory?.category_children?.map((subSubCategory) => {
-                data.push({
-                  url: `${BASE_URL}/categories/${c?.handle}/${subCategory?.handle}/${subSubCategory?.handle}`,
-                  lastModified: subSubCategory?.updated_at,
-                  priority: 0.8,
-                })
-              })
-            }
-          })
-        }
-        return [...p, ...data]
-      },
-      []
-    )
+    const categoryRoutes: Sitemap[] = [];
+
+    const categoryHandleMap = new Map<string, string>() // id => handle
+    for (const productCategory of product_categories) {
+      categoryHandleMap.set(productCategory.id, productCategory.handle)
+      if (productCategory.parent_category) {
+        categoryHandleMap.set(
+          productCategory.parent_category.id,
+          productCategory.parent_category.handle
+        )
+      }
+    }
+  
+    for (const productCategory of product_categories) {
+      // up to 3 levels supported
+      const route = [] as string[]
+
+      if (productCategory.parent_category?.parent_category_id) {
+        const grandparent = categoryHandleMap.get(
+          productCategory.parent_category.parent_category_id
+        )
+        if (grandparent) route.push(grandparent)
+      }
+      if (productCategory.parent_category_id) {
+        const parent = categoryHandleMap.get(productCategory.parent_category_id)
+        if (parent) route.push(parent)
+      }
+      route.push(productCategory.handle)
+
+      categoryRoutes.push({
+        url: `${BASE_URL}/categories/${route.join('/')}`,
+        lastModified: productCategory.updated_at,
+        priority: 0.8,
+      })
+    }
 
     return categoryRoutes
   } catch (error) {
