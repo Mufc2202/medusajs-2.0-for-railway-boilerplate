@@ -8,7 +8,7 @@ import { SortOptions } from "@modules/store/components/refinement-list/sort-prod
 import PaginatedProducts from "@modules/store/templates/paginated-products"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { HttpTypes } from "@medusajs/types"
-import Repair from "@modules/categories/templates/repair"
+import Repair from "@modules/categories/repair"
 
 export default function CategoryTemplate({
   categories,
