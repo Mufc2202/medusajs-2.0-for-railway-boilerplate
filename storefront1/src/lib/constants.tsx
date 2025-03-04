@@ -71,18 +71,18 @@ export const noDivisionCurrencies = [
 
 export const BASE_URL =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-export const SITE_NAME = "Dolgins"
+export const SITE_NAME = "Dolgins Fine Jewelry"
 export const SITE_TITLE = "Dolgins | Welcome - Dolgins Fine Jewelry Store"
 export const SITE_DESC =
   "A trusted, 4th generation jewelry store serving Kansas City from a private office in Overland Park. We sell & custom-make beautiful diamond engagement rings, wedding bands & other jewelry. We also buy your unwanted gold and diamonds and repair jewelry."
-export const KEYWORDS = "medusa, ecommerce, website"
+export const KEYWORDS = "Fine Jewelry, Diamonds, Custom Jewelry, Jewelry Repair"
 export const APPLICATION_NAME = "Dolgins"
-export const PUBLISHER = "The Special Character"
-export const GENERATOR = "Next.js"
-export const TWITTER_CREATER = "@TheSpecialChar"
-export const TWITTER_SITE_ID = "1467726470533754880"
-export const FB_APP_ID = "12345667"
-export const FB_USER_ID = "12345667"
-
-export const AUTHOR = "Dolgins"
+export const PUBLISHER = "Dolgins Fine Jewelry Kansas City, MO"
+export const GENERATOR = "Dolgins Jewelry API"
+export const TWITTER_CREATER = "@DolginsJewelry"
+export const TWITTER_SITE_ID = ""
+export const FB_APP_ID = ""
+export const FB_USER_ID = ""
+//TheSpecialChar special character
+export const AUTHOR = "Joseph Dolginow"
 export const DEFAULT_REGION = process.env.NEXT_PUBLIC_DEFAULT_REGION! || "us"

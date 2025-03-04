@@ -107,7 +107,6 @@ const Repair = (props: any) => {
         subtitle={category.metadata.subtitle}
         tidbit={category.description}
       />
-      <pre>{JSON.stringify(category, null, 2)}</pre>
       <section className="bg-white">
         <div className="mx-auto max-w-7xl py-8 sm:px-2 sm:py-8 lg:px-4">
           <div className="mx-auto max-w-2xl px-4 lg:max-w-none">
@@ -170,66 +169,21 @@ const Repair = (props: any) => {
         text="Please reach out if you are interested. We can answer any question and are happy to help!"
       />
 
-      <Suspense fallback={<SkeletonProductGrid />}>
-        <PaginatedProducts
-          sortBy={sort}
-          page={pageNumber}
-          categoryId={category.id}
-          countryCode={countryCode}
-        />
-      </Suspense>
-
-      <section>
-        <div className="overflow-hidden bg-white py-8 sm:py-8">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <div className="mx-auto grid max-w-2xl grid-cols-1 gap-y-16 gap-x-8 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
-              <div className="lg:pr-8 lg:pt-4">
-                <div className="lg:max-w-lg">
-                  <h2 className="text-lg font-semibold leading-8 tracking-tight text-dolginsblue">
-                    Example Repair
-                  </h2>
-                  <p className="mt-2 text-3xl font-serif tracking-tight text-dolginslightblue sm:text-4xl">
-                    Emerald Engagement Ring Restoration
-                  </p>
-                  <p className="mt-6 text-lg leading-8 text-gray-600">
-                    We originally custom-made this 14 karat yellow gold
-                    engagement ring and wedding band in the 1990s. It featured a
-                    stunning emerald with two round diamond accents and a
-                    channel set band.
-                  </p>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Image
-                      src={Example1}
-                      className="rounded-xl shadow-xl ring-1 ring-gray-400/10"
-                      alt="14 karat yellow gold ring before repairs"
-                    />
-                    <Image
-                      src={Example2}
-                      className="rounded-xl shadow-xl ring-1 ring-gray-400/10"
-                      alt="Yellow gold engagement ring on the bench while being fixed"
-                    />
-                  </div>
-                  <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-600 lg:max-w-none">
-                    {features.map((feature) => (
-                      <div key={feature.name} className="relative pl-9">
-                        <dt className="inline font-semibold text-gray-900">
-                          {feature.name}
-                        </dt>{" "}
-                        <dd className="inline">{feature.description}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
-              </div>
-              <Image
-                src={Example4}
-                alt="Product screenshot"
-                className="w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-4 lg:-ml-0"
-              />
-            </div>
-          </div>
+      <div className="content-container py-12 small:py-24">
+        <div className="flex justify-between mb-8 border-b-2 border-gold">
+          <h2 className="text-5xl font-serif font-gold tracking-tight pb-2">
+            Common Jewelry Repairs
+          </h2>
         </div>
-      </section>
+        <Suspense fallback={<SkeletonProductGrid />}>
+          <PaginatedProducts
+            sortBy={sort}
+            page={pageNumber}
+            categoryId={category.id}
+            countryCode={countryCode}
+          />
+        </Suspense>
+      </div>
 
       <div className="relative flex flex-col justify-start overflow-hidden bg-dolginsblue py-6">
         <div className="relative w-full bg-white px-6 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-2xl sm:rounded-lg sm:px-10">
@@ -405,6 +359,61 @@ const Repair = (props: any) => {
           </div>
         </div>
       </div>
+
+      <section>
+        <div className="overflow-hidden bg-white py-8 sm:py-8">
+          <div className="mx-auto max-w-7xl px-6 lg:px-8">
+            <div className="mx-auto grid max-w-2xl grid-cols-1 gap-y-16 gap-x-8 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
+              <div className="lg:pr-8 lg:pt-4">
+                <div className="lg:max-w-lg">
+                  <div className="flex justify-between mb-8 border-b-2 border-gold">
+                    <h2 className="text-5xl font-serif font-gold tracking-tight pb-2">
+                      Explain Jewelry Repair
+                    </h2>
+                  </div>
+                  <p className="mt-2 text-3xl font-serif tracking-tight text-dolginslightblue sm:text-4xl">
+                    Emerald Engagement Ring Restoration
+                  </p>
+                  <p className="mt-6 text-lg leading-8 text-gray-600">
+                    We originally custom-made this 14 karat yellow gold
+                    engagement ring and wedding band in the 1990s. It featured a
+                    stunning emerald with two round diamond accents and a
+                    channel set band.
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Image
+                      src={Example1}
+                      className="rounded-xl shadow-xl ring-1 ring-gray-400/10"
+                      alt="14 karat yellow gold ring before repairs"
+                    />
+                    <Image
+                      src={Example2}
+                      className="rounded-xl shadow-xl ring-1 ring-gray-400/10"
+                      alt="Yellow gold engagement ring on the bench while being fixed"
+                    />
+                  </div>
+                  <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-600 lg:max-w-none">
+                    {features.map((feature) => (
+                      <div key={feature.name} className="relative pl-9">
+                        <dt className="inline font-semibold text-gray-900">
+                          {feature.name}
+                        </dt>{" "}
+                        <dd className="inline">{feature.description}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              </div>
+              <Image
+                src={Example4}
+                alt="Product screenshot"
+                className="w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-4 lg:-ml-0"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       <Testimonial
         reviewer="Kelly P."
         who="Recommended By A Friend"

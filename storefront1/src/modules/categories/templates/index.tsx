@@ -9,6 +9,7 @@ import PaginatedProducts from "@modules/store/templates/paginated-products"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { HttpTypes } from "@medusajs/types"
 import Repair from "@modules/categories/repair"
+import Custom from "@modules/categories/custom"
 
 export default function CategoryTemplate({
   categories,
@@ -29,9 +30,19 @@ export default function CategoryTemplate({
 
   if (!category || !countryCode) notFound()
 
-  if (category.name === "Services")
+  if (category.name === "Jewelry Repair")
     return (
       <Repair
+        sort={sort}
+        pageNumber={pageNumber}
+        category={category}
+        countryCode={countryCode}
+      />
+    )
+
+  if (category.name === "Custom Jewelry")
+    return (
+      <Custom
         sort={sort}
         pageNumber={pageNumber}
         category={category}
