@@ -40,15 +40,12 @@ export const BannerData = ({ data }: Props) => {
       >
         {bannerData.map((item) => {
           return (
-            <SwiperSlide>
+            <SwiperSlide key={item.id}>
               <div className="bg-dolginsblue">
                 {item.link ? (
                   <Link href={item.link}>
                     <div className="mx-auto flex h-10 max-w-7xl items-center justify-center px-4 sm:px-6 lg:px-8">
-                      <div
-                        key={item.id}
-                        className="flex items-center gap-4 text-sm font-medium text-white hover:text-gray-100"
-                      >
+                      <div className="flex items-center gap-4 text-sm font-medium text-white hover:text-gray-100">
                         <Markdown rehypePlugins={[rehypeRaw]}>
                           {item.text}
                         </Markdown>
@@ -58,10 +55,7 @@ export const BannerData = ({ data }: Props) => {
                 ) : (
                   <div className="bg-dolginsblue">
                     <div className="mx-auto flex h-10 max-w-7xl items-center justify-center px-4 sm:px-6 lg:px-8">
-                      <div
-                        key={item.id}
-                        className="flex items-center space-x-6 text-sm font-medium text-white hover:text-gray-100"
-                      >
+                      <div className="flex items-center space-x-6 text-sm font-medium text-white hover:text-gray-100">
                         {item.image && (
                           <div className="relative">
                             <Image
