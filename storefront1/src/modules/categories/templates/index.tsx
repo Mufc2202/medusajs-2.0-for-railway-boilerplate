@@ -10,6 +10,7 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import { HttpTypes } from "@medusajs/types"
 import Repair from "@modules/categories/repair"
 import Custom from "@modules/categories/custom"
+import Watch from "@modules/categories/watch"
 
 export default function CategoryTemplate({
   categories,
@@ -50,6 +51,16 @@ export default function CategoryTemplate({
       />
     )
 
+  if (category.name === "Watch Repair")
+    return (
+      <Watch
+        sort={sort}
+        pageNumber={pageNumber}
+        category={category}
+        countryCode={countryCode}
+      />
+    )
+
   return (
     <div
       className="flex flex-col small:flex-row small:items-start py-6 content-container"
@@ -63,7 +74,7 @@ export default function CategoryTemplate({
               <span key={parent.id} className="text-ui-fg-subtle">
                 <LocalizedClientLink
                   className="mr-4 hover:text-black"
-                  href={`/categories/${parent.handle}`}
+                  href={`/t/${parent.handle}`}
                   data-testid="sort-by-link"
                 >
                   {parent.name}
@@ -82,7 +93,7 @@ export default function CategoryTemplate({
             <ul className="grid grid-cols-2 md:grid-cols-4 justify-items-center gap-2">
               {category.category_children?.map((c) => {
                 const route = [
-                  "/categories",
+                  "/t",
                   category.parent_category?.handle,
                   category.handle,
                   c.handle,

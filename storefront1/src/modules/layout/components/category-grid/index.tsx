@@ -19,7 +19,7 @@ const CategoryGrid = ({}) => {
         <div className="mt-4 grid grid-cols-1 gap-4 sm:mt-8 lg:grid-cols-6 lg:grid-rows-2">
           <div className="relative lg:col-span-3">
             <div className="absolute inset-px rounded-lg bg-white max-lg:rounded-t-[2rem] lg:rounded-tl-[2rem]" />
-            <Link href="/categories/custom-jewelry">
+            <Link href="/t/custom-jewelry">
               <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)] lg:rounded-tl-[calc(2rem+1px)]">
                 <Image
                   alt="Marsha carving a wax for a custom ring with contouring diamond wedding band."
@@ -44,7 +44,7 @@ const CategoryGrid = ({}) => {
           </div>
           <div className="relative lg:col-span-3">
             <div className="absolute inset-px rounded-lg bg-white lg:rounded-tr-[2rem]" />
-            <Link href="/categories/diamonds">
+            <Link href="/t/diamonds">
               <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] lg:rounded-tr-[calc(2rem+1px)]">
                 <Image
                   alt="Antique diamond engagement ring featuring single cut diamonds and an Old European Cut Round GIA graded"
@@ -70,7 +70,7 @@ const CategoryGrid = ({}) => {
           </div>
           <div className="relative lg:col-span-2">
             <div className="absolute inset-px rounded-lg bg-white lg:rounded-bl-[2rem]" />
-            <Link href="/categories/gemstones">
+            <Link href="/t/gemstones">
               <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] lg:rounded-bl-[calc(2rem+1px)]">
                 <Image
                   alt="Comparing pink sapphire for an engagement ring in our jewelry store in Overland Park, Kansas"
@@ -94,7 +94,7 @@ const CategoryGrid = ({}) => {
           </div>
           <div className="relative lg:col-span-2">
             <div className="absolute inset-px rounded-lg bg-white" />
-            <Link href="/categories/best-sellers">
+            <Link href="/t/best-sellers">
               <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)]">
                 <Image
                   alt="Diamond solitaire earrings have been a best selling jewelry item from our jewelry store in Overland Park Kansas for generations."

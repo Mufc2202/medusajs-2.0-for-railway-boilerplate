@@ -49,7 +49,7 @@ export default async function Home() {
         text="Marsha and I repair fine jewelry and watches in our Kansas City Jewelry store. We have decades of experience and do a quality job."
         imageSrc={Repair}
         linkText="Learn More About Jewelry Repair"
-        link="/categories/jewelry-repair"
+        link="/t/jewelry-repair"
         imageAlt="Carving a wax for a custom diamond wedding band that contours an engagement ring"
       />
     </>

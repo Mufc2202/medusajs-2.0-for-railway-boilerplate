@@ -34,7 +34,7 @@ const generateProductsRoute = async (
     } = await getProductsList({ countryCode })
 
     const productsSitemap = products?.map((product) => ({
-      url: `${BASE_URL}/products/${product.handle}`,
+      url: `${BASE_URL}/jewelry/${product.handle}`,
       lastModified:
         product.updated_at || product.created_at || new Date().toISOString(),
       priority: 0.7,
@@ -101,7 +101,7 @@ const generateCategoryRoutes = async (): Promise<Sitemap[] | null> => {
       route.push(productCategory.handle)
 
       categoryRoutes.push({
-        url: `${BASE_URL}/categories/${route.join('/')}`,
+        url: `${BASE_URL}/t/${route.join('/')}`,
         lastModified: productCategory.updated_at,
         priority: 0.8,
       })

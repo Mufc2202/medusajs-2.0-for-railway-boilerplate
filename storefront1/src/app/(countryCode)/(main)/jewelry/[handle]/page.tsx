@@ -78,7 +78,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     openGraph: {
       title: product?.seo_details?.metaTitle,
       description: product?.seo_details?.metaDescription,
-      url: `${BASE_URL}/products/${product?.handle}`,
+      url: `${BASE_URL}/jewelry/${product?.handle}`,
       siteName: SITE_NAME,
       images: product?.seo_details?.metaImage,
       locale: "en_US",
@@ -114,7 +114,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     },
     category: product?.categories?.[0]?.name,
     viewport: product?.seo_details?.metaViewport,
-    metadataBase: new URL(`${BASE_URL}/products/${product?.handle}`),
+    metadataBase: new URL(`${BASE_URL}/jewelry/${product?.handle}`),
     applicationName: APPLICATION_NAME,
     authors: [{ name: "The Special Character" }],
     publisher: PUBLISHER,

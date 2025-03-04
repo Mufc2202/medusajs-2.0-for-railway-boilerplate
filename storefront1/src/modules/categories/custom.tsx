@@ -401,7 +401,7 @@ const Custom = (props: any) => {
               We completed the ring with some micro milgrain edging. We cast the
               ring in platinum creating a{" "}
               <Link
-                href="/products/2-carat-asscher-engagement-ring"
+                href="/jewelry/2-carat-asscher-engagement-ring"
                 className="text-dolginslightblue"
               >
                 solid heirloom engagement ring

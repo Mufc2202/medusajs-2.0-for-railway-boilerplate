@@ -33,7 +33,7 @@ export default function Footer() {
             </Link>
             <Link
               className="text-lg text-dolginsblue h-14 mx-2 hover:text-gray-900"
-              href="/categories/custom-jewelry"
+              href="/t/custom-jewelry"
             >
               Custom-Make
             </Link>
@@ -45,7 +45,7 @@ export default function Footer() {
             </Link>
             <Link
               className="text-lg text-dolginsblue h-14 mx-2 hover:text-gray-900"
-              href="/categories/jewelry-repair"
+              href="/t/jewelry-repair"
             >
               Jewelry Repair
             </Link>

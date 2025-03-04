@@ -61,7 +61,31 @@ const nextConfig = {
   },
   serverRuntimeConfig: {
     port: process.env.PORT || 3000
-  }
+  },
+  async redirects() {
+    return [
+      {
+        source: '/products/:path',
+        destination: '/jewelry/:path',
+        permanent: true,
+      },
+      {
+        source: '/categories/:path',
+        destination: '/t/:path',
+        permanent: true,
+      },      
+      {
+        source: '/jewelry-repairs',
+        destination: '/t/jewelry-repair',
+        permanent: true,
+      },      
+      {
+        source: '/jewelry-repairs/watch-repair',
+        destination: '/t/jewelry-repair/watches',
+        permanent: true,
+      },      
+    ]
+  },  
 }
 
 module.exports = nextConfig

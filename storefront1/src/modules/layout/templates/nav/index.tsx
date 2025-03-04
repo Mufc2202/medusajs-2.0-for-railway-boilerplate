@@ -27,20 +27,20 @@ const navigation = {
       featured: [
         {
           name: "Engagement & Wedding Rings",
-          href: "/categories/wedding-rings",
+          href: "/t/wedding-rings",
           imageSrc: WeddingRing,
           imageAlt:
             "Engagement ring and wedding band in a jewelry box for a engagement proposal icon.",
         },
         {
           name: "Diamonds",
-          href: "/categories/diamonds",
+          href: "/t/diamonds",
           imageSrc: Diamond,
           imageAlt: "Sparkling diamond icon",
         },
         {
           name: "Custom-Made",
-          href: "/categories/custom-jewelry",
+          href: "/t/custom-jewelry",
           imageSrc: CustomRing,
           imageAlt: "Designing a custom diamond engagement ring icon",
         },
@@ -64,7 +64,7 @@ const navigation = {
         },
         {
           name: "Jewelry Repairs",
-          href: "/categories/jewelry-repair",
+          href: "/t/jewelry-repair",
           imageSrc: Repair,
           imageAlt: "Pliers working on an diamond engagement ring for repair",
         },
@@ -76,7 +76,7 @@ const navigation = {
         },
         {
           name: "Watch Repair",
-          href: "/categories/jewelry-repair/watches",
+          href: "/t/jewelry-repair/watches",
           imageSrc: WatchRepair,
           imageAlt: "Watch with the back removed and small screw driver",
         },

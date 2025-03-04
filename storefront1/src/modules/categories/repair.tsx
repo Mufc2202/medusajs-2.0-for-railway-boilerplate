@@ -145,7 +145,7 @@ const Repair = (props: any) => {
                   to make sure your repair is completed correctly.{" "}
                   <Link
                     className="text-dolginslightblue"
-                    href="/categories/jewelry-repair/watches"
+                    href="/t/jewelry-repair/watches"
                   >
                     For more information on watch repair, click here.
                   </Link>
