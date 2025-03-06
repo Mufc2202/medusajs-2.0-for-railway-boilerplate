@@ -1,5 +1,5 @@
 import { useFormState } from "react-dom"
-
+import PageHeader from "@modules/layout/components/page-header"
 import { LOGIN_VIEW } from "@modules/account/templates/login-template"
 import Input from "@modules/common/components/input"
 import ErrorMessage from "@modules/checkout/components/error-message"
@@ -18,10 +18,11 @@ const Login = ({ setCurrentView }: Props) => {
       className="max-w-sm w-full flex flex-col items-center"
       data-testid="login-page"
     >
-      <h1 className="text-large-semi uppercase mb-6">Welcome back</h1>
-      <p className="text-center text-base-regular text-ui-fg-base mb-8">
-        Sign in to access an enhanced shopping experience.
-      </p>
+      <PageHeader
+        name="Your Account"
+        subtitle="Welcome"
+        tidbit="Sign in to access an enhanced shopping experience."
+      />
       <form className="w-full" action={formAction}>
         <div className="flex flex-col w-full gap-y-2">
           <Input
@@ -43,7 +44,10 @@ const Login = ({ setCurrentView }: Props) => {
           />
         </div>
         <ErrorMessage error={message} data-testid="login-error-message" />
-        <SubmitButton data-testid="sign-in-button" className="w-full mt-6">
+        <SubmitButton
+          data-testid="sign-in-button"
+          className="w-full mt-4 rounded-md shadow bg-dolginsblue py-2 px-4 text-center text-white hover:bg-dolginslightblue"
+        >
           Sign in
         </SubmitButton>
       </form>

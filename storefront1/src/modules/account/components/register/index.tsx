@@ -1,7 +1,7 @@
 "use client"
 
 import { useFormState } from "react-dom"
-
+import PageHeader from "@modules/layout/components/page-header"
 import Input from "@modules/common/components/input"
 import { LOGIN_VIEW } from "@modules/account/templates/login-template"
 import ErrorMessage from "@modules/checkout/components/error-message"
@@ -21,13 +21,12 @@ const Register = ({ setCurrentView }: Props) => {
       className="max-w-sm flex flex-col items-center"
       data-testid="register-page"
     >
-      <h1 className="text-large-semi uppercase mb-6">
-        Become a Medusa Store Member
-      </h1>
-      <p className="text-center text-base-regular text-ui-fg-base mb-4">
-        Create your Medusa Store Member profile, and get access to an enhanced
-        shopping experience.
-      </p>
+      <PageHeader
+        name="Register"
+        subtitle="Create Your Account"
+        tidbit="Create your Dolgin's Jewelry profile, and get access to an enhanced
+        shopping experience."
+      />
       <form className="w-full flex flex-col" action={formAction}>
         <div className="flex flex-col w-full gap-y-2">
           <Input
@@ -70,7 +69,7 @@ const Register = ({ setCurrentView }: Props) => {
         </div>
         <ErrorMessage error={message} data-testid="register-error" />
         <span className="text-center text-ui-fg-base text-small-regular mt-6">
-          By creating an account, you agree to Medusa Store&apos;s{" "}
+          By creating an account, you agree to Dolgin's Jewelry &apos;s{" "}
           <LocalizedClientLink
             href="/content/privacy-policy"
             className="underline"
@@ -86,7 +85,10 @@ const Register = ({ setCurrentView }: Props) => {
           </LocalizedClientLink>
           .
         </span>
-        <SubmitButton className="w-full mt-6" data-testid="register-button">
+        <SubmitButton
+          className="w-full mt-6 rounded-md shadow bg-dolginsblue py-2 px-4 text-center text-white hover:bg-dolginslightblue"
+          data-testid="register-button"
+        >
           Join
         </SubmitButton>
       </form>
