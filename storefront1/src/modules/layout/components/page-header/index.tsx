@@ -10,7 +10,7 @@ export default function PageHeader(props: any) {
             <p className="mt-1 text-4xl font-bold font-serif tracking-tight text-dolginslightblue sm:text-5xl lg:text-6xl">
               {props.subtitle}
             </p>
-            <p className="mx-auto mt-2 pb-3 max-w-xl text-xl text-gray-500 border-b-gold border-b-2 capitalize">
+            <p className="mx-auto mt-2 pb-3 max-w-xl text-xl text-gray-500 border-t-gold border-t-2 capitalize">
               {props.tidbit}
             </p>
           </div>

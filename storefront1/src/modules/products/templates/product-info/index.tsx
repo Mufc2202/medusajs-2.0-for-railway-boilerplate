@@ -1,6 +1,8 @@
 import { HttpTypes } from "@medusajs/types"
-import { Heading, Text } from "@medusajs/ui"
+//import { Heading, Text } from "@medusajs/ui"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import PageHeader from "@modules/layout/components/page-header"
+
 import Markdown from "react-markdown"
 import rehypeRaw from "rehype-raw"
 
@@ -20,20 +22,18 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
             {product.collection.title}
           </LocalizedClientLink>
         )}
-        <Heading
-          level="h2"
-          className="text-3xl leading-10 text-ui-fg-base"
-          data-testid="product-title"
-        >
-          {product.title}
-        </Heading>
+        <PageHeader
+          name={product.title}
+          subtitle={product.subtitle}
+          tidbit={product.description}
+        />
         {/* 
         <Text
           className="text-medium text-ui-fg-subtle whitespace-pre-line"
           data-testid="product-description"
         >
           {product.description}
-        </Text> */}
+        </Text> 
 
         <div className="prose">
           <Markdown
@@ -53,7 +53,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
           >
             {product.description}
           </Markdown>
-        </div>
+        </div>*/}
       </div>
     </div>
   )

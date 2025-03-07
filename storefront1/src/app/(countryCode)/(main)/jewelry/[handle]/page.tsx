@@ -71,7 +71,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     notFound()
   }
   return {
-    title: product?.seo_details?.metaTitle,
+    title: product?.title + " | Dolgins Jewelry",
     description: product?.seo_details?.metaDescription,
     keywords: product?.seo_details?.keywords,
     robots: product?.seo_details?.metaRobots,
@@ -116,7 +116,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     viewport: product?.seo_details?.metaViewport,
     metadataBase: new URL(`${BASE_URL}/jewelry/${product?.handle}`),
     applicationName: APPLICATION_NAME,
-    authors: [{ name: "The Special Character" }],
+    authors: [{ name: "Dolgins Jewelry" }],
     publisher: PUBLISHER,
     generator: GENERATOR,
     referrer: "origin-when-cross-origin",
