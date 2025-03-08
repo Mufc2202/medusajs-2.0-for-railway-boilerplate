@@ -48,6 +48,10 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "minio.thespecialcharacter.com",
+      },      
+      {
+        protocol: "https",
+        hostname: "minio.dangbaby.co",
       },
       {
         protocol: "https",
