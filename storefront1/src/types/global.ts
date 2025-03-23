@@ -73,3 +73,30 @@ export type BannerProps = {
 export type CustomProduct = StoreProduct & {
   seo_details: SeoDetails
 }
+export type CustomCategoryDetails = {
+  id: string
+  thumbnail: string
+  media?: any
+  product_aspect_ratio: string
+  product_bg_color: string
+  created_at: Date | string
+  updated_at: Date | string
+  deleted_at: Date | string | null
+}
+export type CustomCategory = {
+  id: string
+  name: string
+  mpath?: string
+  description: string
+  handle: string
+  rank: number
+  parent_category_id: string | null
+  created_at: Date | string
+  updated_at: Date | string
+  metadata: Record<string, any>
+  parent_category: CustomCategory
+  category_children: CustomCategory[]
+  products: CustomProduct[]
+  seo_details: SeoDetails
+  category_details: CustomCategoryDetails
+}
