@@ -34,7 +34,7 @@ const generateProductsRoute = async (
     } = await getProductsList({ countryCode })
 
     const productsSitemap = products?.map((product) => ({
-      url: `${BASE_URL}/jewelry/${product.handle}`,
+      url: `https://dolgins.com/jewelry/${product.handle}`,
       lastModified:
         product.updated_at || product.created_at || new Date().toISOString(),
       priority: 0.7,
@@ -52,7 +52,7 @@ const generateCollectionRoute = async (): Promise<Sitemap[] | null> => {
     const { collections } = await getCollectionsList()
 
     const collectionSitemap = collections?.map((collection) => ({
-      url: `${BASE_URL}/collections/${collection.handle}`,
+      url: `https://dolgins.com/collections/${collection.handle}`,
       lastModified:
         collection.updated_at ||
         collection.created_at ||
@@ -101,7 +101,7 @@ const generateCategoryRoutes = async (): Promise<Sitemap[] | null> => {
       route.push(productCategory.handle)
 
       categoryRoutes.push({
-        url: `${BASE_URL}/t/${route.join('/')}`,
+        url: `https://dolgins.com/t/${route.join('/')}`,
         lastModified: productCategory.updated_at,
         priority: 0.8,
       })
@@ -118,47 +118,47 @@ const generateStaticSitemap = async (): Promise<Sitemap[] | null> => {
   try {
     return [
       {
-        url: `${BASE_URL}`,
+        url: `https://dolgins.com`,
         lastModified: new Date().toISOString(),
         priority: 1,
       },
       {
-        url: `${BASE_URL}/store`,
+        url: `https://dolgins.com/store`,
         lastModified: new Date().toISOString(),
         priority: 0.9,
       },
       {
-        url: `${BASE_URL}/about`,
+        url: `https://dolgins.com/about`,
         lastModified: new Date().toISOString(),
         priority: 0.7,
       },
       {
-        url: `${BASE_URL}/contact`,
+        url: `https://dolgins.com/contact`,
         lastModified: new Date().toISOString(),
         priority: 0.7,
       },
       {
-        url: `${BASE_URL}/policy`,
+        url: `https://dolgins.com/policy`,
         lastModified: new Date().toISOString(),
         priority: 0.7,
       },
       {
-        url: `${BASE_URL}/results`,
+        url: `https://dolgins.com/results`,
         lastModified: new Date().toISOString(),
         priority: 0.6,
       },
       {
-        url: `${BASE_URL}/search`,
+        url: `https://dolgins.com/search`,
         lastModified: new Date().toISOString(),
         priority: 0.6,
       },
       {
-        url: `${BASE_URL}/blogs`,
+        url: `https://dolgins.com/blogs`,
         lastModified: new Date().toISOString(),
         priority: 0.5,
       },
       {
-        url: `${BASE_URL}/jewelry-insurance-appraisal`,
+        url: `https://dolgins.com/jewelry-insurance-appraisal`,
         lastModified: new Date().toISOString(),
         priority: 0.5,
       },

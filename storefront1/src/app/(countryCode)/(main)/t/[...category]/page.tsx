@@ -76,6 +76,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     const title = product_categories
       .map((category: StoreProductCategory) => category.name)
+      .reverse()
       .join(" | ")
 
     const description =
@@ -86,7 +87,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${title} | Dolgins Jewelry`,
       description,
       alternates: {
-        canonical: `${params.category.join("/")}`,
+        canonical: `/t/${params.category.join("/")}`,
       },
     }
   } catch (error) {
