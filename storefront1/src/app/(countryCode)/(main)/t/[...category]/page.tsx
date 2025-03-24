@@ -134,14 +134,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     category
   )) as unknown as CustomCategory
 
-<<<<<<< HEAD
     const title = product_categories
       .map((category: StoreProductCategory) => category.name)
       .reverse()
       .join(" | ")
-=======
-  const categoryUrl = await buildCategoryUrl(product_category)
->>>>>>> aff4cf53ecc6a20ba9d4efed22e0a94c00e5a7e3
 
   const openGraphImages: OGProps[] = [
     {
@@ -154,7 +150,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
   ]
 
-<<<<<<< HEAD
     return {
       title: `${title} | Dolgins Jewelry`,
       description,
@@ -164,75 +159,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
   } catch (error) {
     notFound()
-=======
-  const twitterImages: OGProps[] = [
-    {
-      url:
-        product_category?.seo_details?.metaSocial?.find(
-          (meta) => meta.socialNetwork === "Twitter"
-        )?.image ||
-        product_category?.seo_details?.metaImage ||
-        product_category?.category_details?.thumbnail ||
-        "",
-      width: 1600,
-      height: 1200,
-    },
-  ]
-
-  return {
-    title: product_category?.seo_details?.metaTitle || product_category?.name,
-    description:
-      product_category?.seo_details?.metaDescription ||
-      product_category?.description,
-    keywords: product_category?.seo_details?.keywords,
-    robots: product_category?.seo_details?.metaRobots,
-    openGraph: {
-      title: product_category?.seo_details?.metaTitle || product_category?.name,
-      description:
-        product_category?.seo_details?.metaDescription ||
-        product_category?.description,
-      url: `${BASE_URL}/categoria/${product_category?.handle}`,
-      siteName: SITE_NAME,
-      images: [...openGraphImages],
-      locale: "pt_BR",
-      type: "website",
-    },
-    facebook: {
-      admins: FB_USER_ID,
-      appId: FB_APP_ID as unknown as undefined,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title:
-        product_category?.seo_details?.metaSocial?.find(
-          (meta) => meta.socialNetwork === "Twitter"
-        )?.title ||
-        product_category?.seo_details?.metaTitle ||
-        product_category?.name,
-      description:
-        product_category?.seo_details?.metaSocial?.find(
-          (meta) => meta.socialNetwork === "Twitter"
-        )?.description ||
-        product_category?.seo_details?.metaDescription ||
-        product_category?.description,
-      images: [...twitterImages],
-      site: SITE_NAME,
-      siteId: TWITTER_SITE_ID,
-      creator: TWITTER_CREATER,
-      creatorId: TWITTER_SITE_ID,
-    },
-    viewport: product_category?.seo_details?.metaViewport,
-    alternates: {
-      canonical:
-        product_category?.seo_details?.canonicalURL?.trim() || categoryUrl,
-    },
-    metadataBase: new URL(`${BASE_URL}/categoria/${product_category?.handle}`),
-    applicationName: APPLICATION_NAME,
-    authors: [{ name: "The Special Character" }],
-    publisher: PUBLISHER,
-    generator: GENERATOR,
-    referrer: "origin-when-cross-origin",
->>>>>>> aff4cf53ecc6a20ba9d4efed22e0a94c00e5a7e3
   }
 }
 
