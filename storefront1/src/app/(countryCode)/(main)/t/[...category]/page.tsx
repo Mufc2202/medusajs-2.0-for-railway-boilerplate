@@ -134,10 +134,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     category
   )) as unknown as CustomCategory
 
-    const title = product_categories
-      .map((category: StoreProductCategory) => category.name)
-      .reverse()
-      .join(" | ")
+  const categoryUrl = await buildCategoryUrl(product_category)
 
   const openGraphImages: OGProps[] = [
     {
@@ -150,15 +147,73 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
   ]
 
-    return {
-      title: `${title} | Dolgins Jewelry`,
-      description,
-      alternates: {
-        canonical: `/t/${params.category.join("/")}`,
-      },
-    }
-  } catch (error) {
-    notFound()
+  const twitterImages: OGProps[] = [
+    {
+      url:
+        product_category?.seo_details?.metaSocial?.find(
+          (meta) => meta.socialNetwork === "Twitter"
+        )?.image ||
+        product_category?.seo_details?.metaImage ||
+        product_category?.category_details?.thumbnail ||
+        "",
+      width: 1600,
+      height: 1200,
+    },
+  ]
+
+  return {
+    title: product_category?.seo_details?.metaTitle || product_category?.name,
+    description:
+      product_category?.seo_details?.metaDescription ||
+      product_category?.description,
+    keywords: product_category?.seo_details?.keywords,
+    robots: product_category?.seo_details?.metaRobots,
+    openGraph: {
+      title: product_category?.seo_details?.metaTitle || product_category?.name,
+      description:
+        product_category?.seo_details?.metaDescription ||
+        product_category?.description,
+      url: `${BASE_URL}/categoria/${product_category?.handle}`,
+      siteName: SITE_NAME,
+      images: [...openGraphImages],
+      locale: "pt_BR",
+      type: "website",
+    },
+    facebook: {
+      admins: FB_USER_ID,
+      appId: FB_APP_ID as unknown as undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title:
+        product_category?.seo_details?.metaSocial?.find(
+          (meta) => meta.socialNetwork === "Twitter"
+        )?.title ||
+        product_category?.seo_details?.metaTitle ||
+        product_category?.name,
+      description:
+        product_category?.seo_details?.metaSocial?.find(
+          (meta) => meta.socialNetwork === "Twitter"
+        )?.description ||
+        product_category?.seo_details?.metaDescription ||
+        product_category?.description,
+      images: [...twitterImages],
+      site: SITE_NAME,
+      siteId: TWITTER_SITE_ID,
+      creator: TWITTER_CREATER,
+      creatorId: TWITTER_SITE_ID,
+    },
+    viewport: product_category?.seo_details?.metaViewport,
+    alternates: {
+      canonical:
+        product_category?.seo_details?.canonicalURL?.trim() || categoryUrl,
+    },
+    metadataBase: new URL(`${BASE_URL}/categoria/${product_category?.handle}`),
+    applicationName: APPLICATION_NAME,
+    authors: [{ name: "The Special Character" }],
+    publisher: PUBLISHER,
+    generator: GENERATOR,
+    referrer: "origin-when-cross-origin",
   }
 }
 
