@@ -1005,6 +1005,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@next/third-parties@npm:^15.2.4":
+  version: 15.2.4
+  resolution: "@next/third-parties@npm:15.2.4"
+  dependencies:
+    third-party-capital: 1.0.20
+  peerDependencies:
+    next: ^13.0.0 || ^14.0.0 || ^15.0.0
+    react: ^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0
+  checksum: 89bfd03f09e5155dccf81cf1a7b2ff34e0a7a5cadeb4b6de8428a8f5ca0b54b07798e18464a1abea6fe8372f9e1ebe81119bf5c04d8852822638ed8790b2ed75
+  languageName: node
+  linkType: hard
+
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -7850,6 +7862,7 @@ __metadata:
     "@medusajs/ui": latest
     "@medusajs/ui-preset": latest
     "@meilisearch/instant-meilisearch": ^0.7.1
+    "@next/third-parties": ^15.2.4
     "@paypal/paypal-js": ^5.0.6
     "@paypal/react-paypal-js": ^7.8.1
     "@playwright/test": ^1.41.1
@@ -10680,6 +10693,13 @@ __metadata:
   dependencies:
     any-promise: ^1.0.0
   checksum: 84e1b804bfec49f3531215f17b4a6e50fd4397b5f7c1bccc427b9c656e1ecfb13ea79d899930184f78bc2f57285c54d9a50a590c8868f4f0cef5c1d9f898b05e
+  languageName: node
+  linkType: hard
+
+"third-party-capital@npm:1.0.20":
+  version: 1.0.20
+  resolution: "third-party-capital@npm:1.0.20"
+  checksum: ef5eae00bdb82b538b9f628a011fc294cd6f4bafdbb46d88f3d1a72e8c3b9e2cc2a547fdb62bc16bdd847e9da3dac2df676b154c64914f6c90ea15aac6ce0a6a
   languageName: node
   linkType: hard
 

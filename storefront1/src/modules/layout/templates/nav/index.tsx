@@ -232,7 +232,7 @@ export default function Nav({ cartData }: { cartData: StoreCart | null }) {
                         href="tel:9132282808"
                         className="inline-block rounded-md shadow bg-dolginsblue py-2 px-4 text-center text-white hover:bg-dolginslightblue"
                       >
-                        <span className="text-sm">Don't Call</span>
+                        <span className="text-sm">Call</span>
                       </a>
                       <a
                         id="TextMobileNavTag"
