@@ -117,7 +117,7 @@ export async function GET() {
             : product.title;
 
           xml += `    <item>
-      <g:id>${escapeXml(variantId.slice(-50))}</g:id>
+      <g:id>${escapeXml(variantId.slice(-49))}</g:id>
       <g:title>${wrapInCDATA(variantTitle ?? "")}</g:title>
       <g:description>${wrapInCDATA(cleanDescription)}</g:description>
       <g:link>${escapeXml(`https://dolgins.com/jewelry/${product.handle}?variant=${variant.id}`)}</g:link>
