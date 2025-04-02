@@ -25,9 +25,10 @@ function wrapInCDATA(text: string): string {
   return `<![CDATA[${safeText}]]>`;
 }
 
-function sanitizeDescription(description: string | null): string {
-  if (!description) return '';
-  const stripped = stripHtml(description);
+function sanitizeDescription(description: string | null, subtitle: string | null): string {
+  if (!description && !subtitle) return '';
+  const textToUse = description || subtitle || '';
+  const stripped = stripHtml(textToUse);
   return stripped.substring(0, 5000); // Google's limit
 }
 
@@ -62,7 +63,7 @@ export async function GET() {
 
     validProducts.forEach((product) => {
       try {
-        const cleanDescription = sanitizeDescription(product.description)
+        const cleanDescription = sanitizeDescription(product.description, product.subtitle)
         const googleCategory = product.metadata?.googleCategory as string;
 
 
@@ -122,7 +123,7 @@ export async function GET() {
       <g:description>${wrapInCDATA(cleanDescription)}</g:description>
       <g:link>${escapeXml(`https://dolgins.com/jewelry/${product.handle}?variant=${variant.id}`)}</g:link>
       <g:image_link>${escapeXml(product.thumbnail ?? "")}</g:image_link>
-      <g:availability>${isInStock ? "in_stock" : "backorder"}</g:availability>
+      <g:availability>in_stock</g:availability>
       <g:price>${formatPrice(variantPrice)}</g:price>
       <g:brand>Dolgins Fine Jewelry</g:brand>
       <g:condition>new</g:condition>
