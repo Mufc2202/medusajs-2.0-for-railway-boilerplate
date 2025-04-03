@@ -41,15 +41,11 @@ const PaymentContainer: React.FC<PaymentContainerProps> = ({
           <div className="flex items-center gap-x-4">
             <Radio checked={selectedPaymentOptionId === paymentProviderId} />
             <Text className="text-base-regular">
-              {paymentInfoMap[paymentProviderId]?.title || paymentProviderId}
+              Please check the circle to acknowledge payment will be completed
+              via cash, check, Zelle, or wire transfer. An E-mail will be sent
+              with details about how to setup your payment.
             </Text>
-            {isManual(paymentProviderId) && isDevelopment && (
-              <PaymentTest className="hidden small:block" />
-            )}
           </div>
-          <span className="justify-self-end text-ui-fg-base">
-            {paymentInfoMap[paymentProviderId]?.icon}
-          </span>
         </div>
         {isManual(paymentProviderId) && isDevelopment && (
           <PaymentTest className="small:hidden text-[10px]" />

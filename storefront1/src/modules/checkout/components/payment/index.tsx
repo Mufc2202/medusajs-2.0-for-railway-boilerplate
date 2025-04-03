@@ -226,7 +226,7 @@ const Payment = ({
         <div className={isOpen ? "hidden" : "block"}>
           {cart && paymentReady && activeSession ? (
             <div className="flex items-start gap-x-1 w-full">
-              <div className="flex flex-col w-1/3">
+              <div className="flex flex-col">
                 <Text className="txt-medium-plus text-ui-fg-base mb-1">
                   Payment method
                 </Text>
@@ -234,29 +234,10 @@ const Payment = ({
                   className="txt-medium text-ui-fg-subtle"
                   data-testid="payment-method-summary"
                 >
-                  {paymentInfoMap[selectedPaymentMethod]?.title ||
-                    selectedPaymentMethod}
+                  Acknowledged payment will be completed via cash, check, Zelle,
+                  or wire transfer. An E-mail will be sent with details about
+                  how to setup your payment.
                 </Text>
-              </div>
-              <div className="flex flex-col w-1/3">
-                <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                  Payment details
-                </Text>
-                <div
-                  className="flex gap-2 txt-medium text-ui-fg-subtle items-center"
-                  data-testid="payment-details-summary"
-                >
-                  <Container className="flex items-center h-7 w-fit p-2 bg-ui-button-neutral-hover">
-                    {paymentInfoMap[selectedPaymentMethod]?.icon || (
-                      <CreditCard />
-                    )}
-                  </Container>
-                  <Text>
-                    {isStripeFunc(selectedPaymentMethod) && cardBrand
-                      ? cardBrand
-                      : "Another step will appear"}
-                  </Text>
-                </div>
               </div>
             </div>
           ) : paidByGiftcard ? (

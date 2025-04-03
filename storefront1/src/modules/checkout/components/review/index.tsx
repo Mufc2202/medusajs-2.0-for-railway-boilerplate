@@ -39,9 +39,10 @@ const Review = ({ cart }: { cart: any }) => {
             <div className="w-full">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
                 By clicking the Place Order button, you confirm that you have
-                read, understand and accept our Terms of Use, Terms of Sale and
-                Returns Policy and acknowledge that you have read Medusa
-                Store&apos;s Privacy Policy.
+                read, understand and accept our terms and conditions. Please
+                contact Dolgins Fine Jewelry if you have any questions or
+                concerns. Otherwise, expect to receive an E-mail to setup your
+                payment.
               </Text>
             </div>
           </div>
