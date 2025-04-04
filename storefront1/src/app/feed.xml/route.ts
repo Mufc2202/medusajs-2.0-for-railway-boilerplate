@@ -55,8 +55,8 @@ export async function GET() {
     <description>Dolgins's Google Merchant RSS Feed</description>\n`;
 
   if (allProducts) {
-    const validProducts = allProducts.filter(product => 
-      product?.metadata?.googleCategory && 
+    const validProducts = allProducts.filter(product =>
+      product?.metadata?.googleCategory &&
       typeof product.metadata.googleCategory === 'string' &&
       product.metadata.googleCategory.trim() !== ''
     );
@@ -86,11 +86,11 @@ export async function GET() {
       <g:description>${wrapInCDATA(cleanDescription)}</g:description>
       <g:link>${escapeXml(`https://dolgins.com/jewelry/${product.handle}`)}</g:link>
       <g:image_link>${escapeXml(product.thumbnail ?? "")}</g:image_link>
-      <g:availability>test</g:availability>
+      <g:availability>in_stock</g:availability>
       <g:price>${formatPrice(price)}</g:price>
       <g:brand>Dolgins Fine Jewelry</g:brand>
       <g:condition>new</g:condition>
-      <g:gender>${wrapInCDATA(googleCategory)}</g:gender>
+      <g:gender>${wrapInCDATA(googleGender)}</g:gender>
       <g:color>${wrapInCDATA(googleColor)}</g:color>
       <g:age_group>adult</g:age_group>
       <g:google_product_category>${wrapInCDATA(googleCategory)}</g:google_product_category>`
@@ -115,8 +115,8 @@ export async function GET() {
           const variantPrice = variant.calculated_price?.calculated_amount;
           const isInStock = (variant?.inventory_quantity ?? 0) > 0;
           const variantId = `${product.id}_${variant.id}`;
-          
-          const variantTitle = variant.title 
+
+          const variantTitle = variant.title
             ? `${product.title} - ${variant.title}`
             : product.title;
 
@@ -154,7 +154,7 @@ export async function GET() {
                 .replace(/[^a-z0-9]/g, '_') // Replace non-alphanumeric chars with underscore
                 .replace(/_+/g, '_') // Replace multiple underscores with single
                 .replace(/^_|_$/g, ''); // Remove leading/trailing underscores
-              
+
               if (optionName) {
                 xml += `\n      <g:${escapeXml(optionName)}>${wrapInCDATA(option.value)}</g:${escapeXml(optionName)}>`
               }
