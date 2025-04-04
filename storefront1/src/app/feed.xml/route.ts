@@ -65,6 +65,8 @@ export async function GET() {
       try {
         const cleanDescription = sanitizeDescription(product.description, product.subtitle)
         const googleCategory = product.metadata?.googleCategory as string;
+        const googleGender = product.metadata?.googleGender as string;
+        const googleColor = product.metadata?.googleColor as string;
 
 
         // Handle products with no variants
@@ -84,11 +86,12 @@ export async function GET() {
       <g:description>${wrapInCDATA(cleanDescription)}</g:description>
       <g:link>${escapeXml(`https://dolgins.com/jewelry/${product.handle}`)}</g:link>
       <g:image_link>${escapeXml(product.thumbnail ?? "")}</g:image_link>
-      <g:availability>in_stock</g:availability>
+      <g:availability>test</g:availability>
       <g:price>${formatPrice(price)}</g:price>
       <g:brand>Dolgins Fine Jewelry</g:brand>
       <g:condition>new</g:condition>
-      <g:gender>unisex</g:gender>
+      <g:gender>${wrapInCDATA(googleCategory)}</g:gender>
+      <g:color>${wrapInCDATA(googleColor)}</g:color>
       <g:age_group>adult</g:age_group>
       <g:google_product_category>${wrapInCDATA(googleCategory)}</g:google_product_category>`
 
