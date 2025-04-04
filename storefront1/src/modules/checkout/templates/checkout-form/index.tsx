@@ -1,3 +1,4 @@
+import { isManual } from "@lib/constants"
 import { listCartShippingMethods } from "@lib/data/fulfillment"
 import { listCartPaymentMethods } from "@lib/data/payment"
 import { HttpTypes } from "@medusajs/types"
@@ -32,12 +33,18 @@ export default async function CheckoutForm({
         </div>
 
         <div>
-          <Shipping cart={cart} availableShippingMethods={shippingMethods} />
+          <Shipping
+            cart={cart}
+            availableShippingMethods={shippingMethods}
+            availablePaymentMethods={paymentMethods}
+          />
         </div>
 
-        <div>
-          <Payment cart={cart} availablePaymentMethods={paymentMethods} />
-        </div>
+        {paymentMethods.length === 1 && isManual(paymentMethods[0].id) && (
+          <div>
+            <Payment cart={cart} availablePaymentMethods={paymentMethods} />
+          </div>
+        )}
 
         <div>
           <Review cart={cart} />

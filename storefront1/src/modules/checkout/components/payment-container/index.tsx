@@ -21,7 +21,7 @@ const PaymentContainer: React.FC<PaymentContainerProps> = ({
   paymentInfoMap,
   disabled = false,
 }) => {
-  const isDevelopment = process.env.NODE_ENV === "development"
+  // const isDevelopment = process.env.NODE_ENV === "development"
 
   return (
     <>
@@ -47,7 +47,7 @@ const PaymentContainer: React.FC<PaymentContainerProps> = ({
             </Text>
           </div>
         </div>
-        {isManual(paymentProviderId) && isDevelopment && (
+        {isManual(paymentProviderId) && (
           <PaymentTest className="small:hidden text-[10px]" />
         )}
       </RadioGroup.Option>

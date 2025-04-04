@@ -14,7 +14,6 @@ import PaymentContainer from "@modules/checkout/components/payment-container"
 import { isStripe as isStripeFunc, paymentInfoMap } from "@lib/constants"
 import { StripeContext } from "@modules/checkout/components/payment-wrapper"
 import { initiatePaymentSession } from "@lib/data/cart"
-import { PaymentSession } from "@medusajs/medusa"
 
 const Payment = ({
   cart,

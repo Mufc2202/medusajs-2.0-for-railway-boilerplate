@@ -9,18 +9,21 @@ import Radio from "@modules/common/components/radio"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
-import { setShippingMethod } from "@lib/data/cart"
+import { initiatePaymentSession, setShippingMethod } from "@lib/data/cart"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
+import { isManual } from "@lib/constants"
 
 type ShippingProps = {
   cart: HttpTypes.StoreCart
   availableShippingMethods: HttpTypes.StoreCartShippingOption[] | null
+  availablePaymentMethods: any[]
 }
 
 const Shipping: React.FC<ShippingProps> = ({
   cart,
   availableShippingMethods,
+  availablePaymentMethods,
 }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -40,8 +43,24 @@ const Shipping: React.FC<ShippingProps> = ({
     router.push(pathname + "?step=delivery", { scroll: false })
   }
 
-  const handleSubmit = () => {
-    router.push(pathname + "?step=payment", { scroll: false })
+  const handleSubmit = async () => {
+    if (
+      availablePaymentMethods.length === 1 &&
+      isManual(availablePaymentMethods[0].id)
+    ) {
+      const activeSession = cart.payment_collection?.payment_sessions?.find(
+        (paymentSession: any) => paymentSession.status === "pending"
+      )
+      if (!activeSession) {
+        await initiatePaymentSession(cart, {
+          provider_id: availablePaymentMethods[0].id,
+        })
+      }
+
+      router.push(pathname + "?step=review", { scroll: false })
+    } else {
+      router.push(pathname + "?step=payment", { scroll: false })
+    }
   }
 
   const set = async (id: string) => {
