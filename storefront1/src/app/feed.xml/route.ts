@@ -40,6 +40,13 @@ function formatPrice(price: number | string | null | undefined): string {
   return `${price.toFixed(2)} USD`;
 }
 
+function validateMetadataField(value: unknown): string | null {
+  if (!value || typeof value !== 'string' || value.trim() === '') {
+    return null;
+  }
+  return value.trim();
+}
+
 export async function GET() {
   const { response } = await getProductsList({
     countryCode: DEFAULT_REGION,
@@ -64,10 +71,17 @@ export async function GET() {
     validProducts.forEach((product) => {
       try {
         const cleanDescription = sanitizeDescription(product.description, product.subtitle)
-        const googleCategory = product.metadata?.googleCategory as string;
-        const googleGender = product.metadata?.googleGender as string;
-        const googleColor = product.metadata?.googleColor as string;
+        const googleCategory = validateMetadataField(product.metadata?.googleCategory);
+        const googleGender = validateMetadataField(product.metadata?.googleGender);
+        const googleColor = validateMetadataField(product.metadata?.googleColor);
 
+        // Add debug logging
+        console.log(`Product ${product.id} (${product.title}) metadata:`, {
+          googleCategory,
+          googleGender,
+          googleColor,
+          allMetadata: product.metadata
+        });
 
         // Handle products with no variants
         if (!product.variants || product.variants.length === 0) {
@@ -77,10 +91,7 @@ export async function GET() {
 
           const price = cheapestPrice?.calculated_price ?? cheapestPrice?.original_price ?? 0;
 
-          // Try getting price directly from variants
-          const variantPrice = product.variants?.[0]?.prices?.[0]?.amount;
-
-          xml += `    <item>
+          let itemXml = `    <item>
       <g:id>${escapeXml(product.id)}</g:id>
       <g:title>${wrapInCDATA(product.title ?? "")}</g:title>
       <g:description>${wrapInCDATA(cleanDescription)}</g:description>
@@ -89,24 +100,38 @@ export async function GET() {
       <g:availability>in_stock</g:availability>
       <g:price>${formatPrice(price)}</g:price>
       <g:brand>Dolgins Fine Jewelry</g:brand>
-      <g:condition>new</g:condition>
-      <g:gender>${wrapInCDATA(googleGender)}</g:gender>
-      <g:color>${wrapInCDATA(googleColor)}</g:color>
-      <g:age_group>adult</g:age_group>
-      <g:google_product_category>${wrapInCDATA(googleCategory)}</g:google_product_category>`
+      <g:condition>new</g:condition>`
+
+          // Only add gender if it exists and has a value
+          if (googleGender) {
+            itemXml += `\n      <g:gender>${wrapInCDATA(googleGender)}</g:gender>`
+          }
+
+          // Only add color if it exists and has a value
+          if (googleColor) {
+            itemXml += `\n      <g:color>${wrapInCDATA(googleColor)}</g:color>`
+          }
+
+          itemXml += `\n      <g:age_group>adult</g:age_group>
+      <g:google_product_category>${wrapInCDATA(googleCategory ?? "")}</g:google_product_category>`
 
           if (product.material) {
-            xml += `\n      <g:material>${wrapInCDATA(String(product.material))}</g:material>`
+            itemXml += `\n      <g:material>${wrapInCDATA(String(product.material))}</g:material>`
           }
 
           // Add additional images
           product.images?.slice(0, 10).forEach(img => {
             if (img.url) {
-              xml += `\n      <g:additional_image_link>${escapeXml(img.url)}</g:additional_image_link>`
+              itemXml += `\n      <g:additional_image_link>${escapeXml(img.url)}</g:additional_image_link>`
             }
           })
 
-          xml += '\n    </item>\n'
+          itemXml += '\n    </item>\n'
+          
+          // Debug log the XML for this product
+          console.log(`Generated XML for product ${product.id}:`, itemXml);
+          
+          xml += itemXml
           return; // Skip the rest of the processing for this product
         }
 
@@ -120,7 +145,7 @@ export async function GET() {
             ? `${product.title} - ${variant.title}`
             : product.title;
 
-          xml += `    <item>
+          let itemXml = `    <item>
       <g:id>${escapeXml(variantId.slice(-49))}</g:id>
       <g:title>${wrapInCDATA(variantTitle ?? "")}</g:title>
       <g:description>${wrapInCDATA(cleanDescription)}</g:description>
@@ -129,22 +154,32 @@ export async function GET() {
       <g:availability>in_stock</g:availability>
       <g:price>${formatPrice(variantPrice)}</g:price>
       <g:brand>Dolgins Fine Jewelry</g:brand>
-      <g:condition>new</g:condition>
-      <g:gender>unisex</g:gender>
-      <g:age_group>adult</g:age_group>
-      <g:google_product_category>${wrapInCDATA(googleCategory)}</g:google_product_category>
+      <g:condition>new</g:condition>`
+
+          // Only add gender if it exists and has a value
+          if (googleGender) {
+            itemXml += `\n      <g:gender>${wrapInCDATA(googleGender)}</g:gender>`
+          }
+
+          // Only add color if it exists and has a value
+          if (googleColor) {
+            itemXml += `\n      <g:color>${wrapInCDATA(googleColor)}</g:color>`
+          }
+
+          itemXml += `\n      <g:age_group>adult</g:age_group>
+      <g:google_product_category>${wrapInCDATA(googleCategory ?? "")}</g:google_product_category>
       <g:item_group_id>${escapeXml(product.id)}</g:item_group_id>`
 
           if (variant.height) {
-            xml += `\n      <g:size>${escapeXml(String(variant.height))}</g:size>`
+            itemXml += `\n      <g:size>${escapeXml(String(variant.height))}</g:size>`
           }
 
           if (variant.weight) {
-            xml += `\n      <g:shipping_weight>${escapeXml(String(variant.weight))} kg</g:shipping_weight>`
+            itemXml += `\n      <g:shipping_weight>${escapeXml(String(variant.weight))} kg</g:shipping_weight>`
           }
 
           if (product.material) {
-            xml += `\n      <g:material>${wrapInCDATA(String(product.material))}</g:material>`
+            itemXml += `\n      <g:material>${wrapInCDATA(String(product.material))}</g:material>`
           }
 
           // Add variant-specific options
@@ -156,7 +191,7 @@ export async function GET() {
                 .replace(/^_|_$/g, ''); // Remove leading/trailing underscores
 
               if (optionName) {
-                xml += `\n      <g:${escapeXml(optionName)}>${wrapInCDATA(option.value)}</g:${escapeXml(optionName)}>`
+                itemXml += `\n      <g:${escapeXml(optionName)}>${wrapInCDATA(option.value)}</g:${escapeXml(optionName)}>`
               }
             }
           })
@@ -164,11 +199,16 @@ export async function GET() {
           // Add additional images
           product.images?.slice(0, 10).forEach(img => {
             if (img.url) {
-              xml += `\n      <g:additional_image_link>${escapeXml(img.url)}</g:additional_image_link>`
+              itemXml += `\n      <g:additional_image_link>${escapeXml(img.url)}</g:additional_image_link>`
             }
           })
 
-          xml += '\n    </item>\n'
+          itemXml += '\n    </item>\n'
+          
+          // Debug log the XML for this variant
+          console.log(`Generated XML for variant ${variantId}:`, itemXml);
+          
+          xml += itemXml
         })
       } catch (error) {
         console.error(`Error processing product ${product.id}:`, error)
