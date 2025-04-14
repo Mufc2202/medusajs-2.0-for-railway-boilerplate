@@ -65,6 +65,28 @@ export const getProductsList = cache(async function ({
       nextPage: null,
     }
   }
+
+  // Debug logging
+  console.log('getProductsList params:', {
+    limit,
+    offset,
+    region_id: region.id,
+    queryParams,
+    category_id: queryParams?.category_id
+  })
+
+  // Ensure category_id is properly formatted
+  const formattedQueryParams = {
+    ...queryParams,
+    category_id: queryParams?.category_id?.[0] || undefined // Take the first category ID if it's an array
+  }
+
+  // Debug logging
+  console.log('getProductsList formatted params:', {
+    ...formattedQueryParams,
+    category_id: formattedQueryParams.category_id
+  })
+
   return sdk.store.product
     .list(
       {
@@ -72,12 +94,39 @@ export const getProductsList = cache(async function ({
         offset,
         region_id: region.id,
         fields:
-          "*variants.calculated_price,+metadata,*seo_details,*seo_details.metaSocial,*variants.inventory_quantity",
-        ...queryParams,
+          "*variants.calculated_price,+metadata,*seo_details,*seo_details.metaSocial,*variants.inventory_quantity,*categories",
+        ...formattedQueryParams,
       },
       { next: { tags: ["products"] } }
     )
-    .then(({ products, count }) => {
+    .then((response) => {
+      // Debug logging
+      console.log('getProductsList API response:', response)
+
+      const { products, count } = response
+
+      // Debug logging for each product's categories
+      console.log('Product categories:')
+      products.forEach(product => {
+        console.log(`Product ${product.id} (${product.title}):`, {
+          categories: product.categories?.map(cat => ({
+            id: cat.id,
+            name: cat.name
+          }))
+        })
+      })
+
+      // Debug logging
+      console.log('getProductsList processed response:', {
+        count,
+        productCount: products.length,
+        firstProduct: products[0] ? {
+          id: products[0].id,
+          title: products[0].title,
+          categories: products[0].categories
+        } : null
+      })
+
       const nextPage = count > offset + limit ? pageParam + 1 : null
 
       return {
@@ -85,7 +134,7 @@ export const getProductsList = cache(async function ({
           products,
           count,
         },
-        nextPage: nextPage,
+        nextPage,
         queryParams,
       }
     })
@@ -112,27 +161,45 @@ export const getProductsListWithSort = cache(async function ({
 }> {
   const limit = queryParams?.limit || 12
 
+  // Debug logging
+  console.log('getProductsListWithSort params:', {
+    page,
+    queryParams,
+    sortBy,
+    countryCode,
+    category_id: queryParams?.category_id
+  })
+
   const {
     response: { products, count },
   } = await getProductsList({
-    pageParam: 0,
+    pageParam: page + 1, // Add 1 because page is 0-based but pageParam is 1-based
     queryParams: {
       ...queryParams,
+      limit,
     },
     countryCode,
   })
 
   const sortedProducts = sortProducts(products, sortBy)
 
-  const pageParam = (page - 1) * limit
+  // Debug logging
+  console.log('getProductsListWithSort response:', {
+    count,
+    productCount: sortedProducts.length,
+    firstProduct: sortedProducts[0] ? {
+      id: sortedProducts[0].id,
+      title: sortedProducts[0].title,
+      categories: sortedProducts[0].categories
+    } : null,
+    category_id: queryParams?.category_id
+  })
 
-  const nextPage = count > pageParam + limit ? pageParam + limit : null
-
-  const paginatedProducts = sortedProducts.slice(pageParam, pageParam + limit)
+  const nextPage = count > (page + 1) * limit ? page + 1 : null
 
   return {
     response: {
-      products: paginatedProducts,
+      products: sortedProducts,
       count,
     },
     nextPage,

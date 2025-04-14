@@ -11,7 +11,7 @@ import { HttpTypes } from "@medusajs/types"
 import Repair from "@modules/categories/repair"
 import Custom from "@modules/categories/custom"
 import Watch from "@modules/categories/watch"
-
+import Diamond from "@modules/categories/diamond"
 export default function CategoryTemplate({
   categories,
   sortBy,
@@ -54,6 +54,16 @@ export default function CategoryTemplate({
   if (category.name === "Watch Repair")
     return (
       <Watch
+        sort={sort}
+        pageNumber={pageNumber}
+        category={category}
+        countryCode={countryCode}
+      />
+    )
+
+  if (category.name === "Diamonds")
+    return (
+      <Diamond
         sort={sort}
         pageNumber={pageNumber}
         category={category}

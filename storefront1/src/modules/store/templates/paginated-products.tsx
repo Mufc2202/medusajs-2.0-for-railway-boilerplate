@@ -53,16 +53,31 @@ export default async function PaginatedProducts({
     return null
   }
 
-  let {
-    response: { products, count },
+  // First, get the total count of products to determine if the requested page is valid
+  const {
+    response: { count },
   } = await getProductsListWithSort({
-    page,
+    page: 0,
     queryParams,
     sortBy,
     countryCode,
   })
 
   const totalPages = Math.ceil(count / PRODUCT_LIMIT)
+
+  // If the requested page is beyond the available pages, use page 1
+  if (page > totalPages && totalPages > 0) {
+    page = 1
+  }
+
+  let {
+    response: { products },
+  } = await getProductsListWithSort({
+    page: page - 1,
+    queryParams,
+    sortBy,
+    countryCode,
+  })
 
   return (
     <>
