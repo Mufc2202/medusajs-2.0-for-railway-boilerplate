@@ -54,7 +54,7 @@ const navigation = {
       ],
     },
     {
-      name: "Services",
+      name: "In-Person",
       featured: [
         {
           name: "Sell Us Your Jewelry & Gold",
