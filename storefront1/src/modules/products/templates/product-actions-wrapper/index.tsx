@@ -21,5 +21,15 @@ export default async function ProductActionsWrapper({
     return null
   }
 
+  // Check if the product is in the Jewelry Repair category
+  const isJewelryRepair = product.categories?.some(
+    (category) => category.name === "Jewelry Repair"
+  )
+
+  // If this is a Jewelry Repair product, don't show the price or add to cart button
+  if (isJewelryRepair) {
+    return null
+  }
+
   return <ProductActions product={product} region={region} />
 }

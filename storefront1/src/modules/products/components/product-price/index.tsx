@@ -10,6 +10,16 @@ export default function ProductPrice({
   product: HttpTypes.StoreProduct
   variant?: HttpTypes.StoreProductVariant
 }) {
+  // Check if the product is in the Jewelry Repair category
+  const isJewelryRepair = product.categories?.some(
+    (category) => category.name === "Jewelry Repair"
+  )
+
+  // If this is a Jewelry Repair product, don't show the price
+  if (isJewelryRepair) {
+    return null
+  }
+
   const { cheapestPrice, variantPrice } = getProductPrice({
     product,
     variantId: variant?.id,

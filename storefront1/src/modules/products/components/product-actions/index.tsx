@@ -44,7 +44,16 @@ export default function ProductActions({
 }: ProductActionsProps) {
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [isAdding, setIsAdding] = useState(false)
-  // const countryCode = useParams().countryCode as string
+
+  // Check if the product is in the Jewelry Repair category
+  const isJewelryRepair = product.categories?.some(
+    (category) => category.name === "Jewelry Repair"
+  )
+
+  // If this is a Jewelry Repair product, don't show the price or add to cart button
+  if (isJewelryRepair) {
+    return null
+  }
 
   // If there is only 1 variant, preselect the options
   useEffect(() => {
@@ -99,7 +108,10 @@ export default function ProductActions({
 
   const actionsRef = useRef<HTMLDivElement>(null)
 
-  const inView = useIntersection(actionsRef, "0px")
+  const inView = useIntersection(
+    actionsRef as React.RefObject<HTMLDivElement>,
+    "0px"
+  )
 
   // add the selected variant to the cart
   const handleAddToCart = async () => {

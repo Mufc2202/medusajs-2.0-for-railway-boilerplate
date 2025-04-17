@@ -26,6 +26,11 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
     return notFound()
   }
 
+  // Check if the product is in the Jewelry Repair category
+  const isJewelryRepair = product.categories?.some(
+    (category) => category.name === "Jewelry Repair"
+  )
+
   return (
     <>
       <div
@@ -41,17 +46,19 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         </div>
         <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-12">
           <ProductOnboardingCta />
-          <Suspense
-            fallback={
-              <ProductActions
-                disabled={true}
-                product={product}
-                region={region}
-              />
-            }
-          >
-            <ProductActionsWrapper id={product.id} region={region} />
-          </Suspense>
+          {!isJewelryRepair ? (
+            <Suspense
+              fallback={
+                <ProductActions
+                  disabled={true}
+                  product={product}
+                  region={region}
+                />
+              }
+            >
+              <ProductActionsWrapper id={product.id} region={region} />
+            </Suspense>
+          ) : null}
         </div>
       </div>
       <div

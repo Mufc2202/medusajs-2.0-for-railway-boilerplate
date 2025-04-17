@@ -29,6 +29,11 @@ export default async function ProductPreview({
     product: pricedProduct,
   })
 
+  // Check if the product is in the Jewelry Repair category
+  const isJewelryRepair = product.categories?.some(
+    (category) => category.name === "Jewelry Repair"
+  )
+
   return (
     <LocalizedClientLink href={`/jewelry/${product.handle}`} className="group">
       <div data-testid="product-wrapper">
@@ -43,7 +48,9 @@ export default async function ProductPreview({
             {product.title}
           </Text>
           <div className="flex items-center gap-x-2">
-            {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
+            {cheapestPrice && !isJewelryRepair && (
+              <PreviewPrice price={cheapestPrice} />
+            )}
           </div>
         </div>
       </div>
