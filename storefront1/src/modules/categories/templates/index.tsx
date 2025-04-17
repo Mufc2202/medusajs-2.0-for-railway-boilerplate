@@ -12,6 +12,7 @@ import Repair from "@modules/categories/repair"
 import Custom from "@modules/categories/custom"
 import Watch from "@modules/categories/watch"
 import Diamond from "@modules/categories/diamond"
+
 export default function CategoryTemplate({
   categories,
   sortBy,
