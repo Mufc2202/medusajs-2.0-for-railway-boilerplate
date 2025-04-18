@@ -62,6 +62,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     }
   } catch (error) {
+    console.error("metadata error", error)
     notFound()
   }
 }
@@ -70,6 +71,8 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   const { sortBy, page } = searchParams
 
   const { product_categories } = await getCategoryByHandle(params.category)
+
+  console.error("product_categories", product_categories)
 
   if (!product_categories) {
     notFound()

@@ -66,26 +66,12 @@ export const getProductsList = cache(async function ({
     }
   }
 
-  // Debug logging
-  console.log('getProductsList params:', {
-    limit,
-    offset,
-    region_id: region.id,
-    queryParams,
-    category_id: queryParams?.category_id
-  })
-
   // Ensure category_id is properly formatted
   const formattedQueryParams = {
     ...queryParams,
     category_id: queryParams?.category_id?.[0] || undefined // Take the first category ID if it's an array
   }
 
-  // Debug logging
-  console.log('getProductsList formatted params:', {
-    ...formattedQueryParams,
-    category_id: formattedQueryParams.category_id
-  })
 
   return sdk.store.product
     .list(
@@ -100,32 +86,7 @@ export const getProductsList = cache(async function ({
       { next: { tags: ["products"] } }
     )
     .then((response) => {
-      // Debug logging
-      console.log('getProductsList API response:', response)
-
       const { products, count } = response
-
-      // Debug logging for each product's categories
-      console.log('Product categories:')
-      products.forEach(product => {
-        console.log(`Product ${product.id} (${product.title}):`, {
-          categories: product.categories?.map(cat => ({
-            id: cat.id,
-            name: cat.name
-          }))
-        })
-      })
-
-      // Debug logging
-      console.log('getProductsList processed response:', {
-        count,
-        productCount: products.length,
-        firstProduct: products[0] ? {
-          id: products[0].id,
-          title: products[0].title,
-          categories: products[0].categories
-        } : null
-      })
 
       const nextPage = count > offset + limit ? pageParam + 1 : null
 
@@ -161,15 +122,6 @@ export const getProductsListWithSort = cache(async function ({
 }> {
   const limit = queryParams?.limit || 12
 
-  // Debug logging
-  console.log('getProductsListWithSort params:', {
-    page,
-    queryParams,
-    sortBy,
-    countryCode,
-    category_id: queryParams?.category_id
-  })
-
   const {
     response: { products, count },
   } = await getProductsList({
@@ -182,18 +134,6 @@ export const getProductsListWithSort = cache(async function ({
   })
 
   const sortedProducts = sortProducts(products, sortBy)
-
-  // Debug logging
-  console.log('getProductsListWithSort response:', {
-    count,
-    productCount: sortedProducts.length,
-    firstProduct: sortedProducts[0] ? {
-      id: sortedProducts[0].id,
-      title: sortedProducts[0].title,
-      categories: sortedProducts[0].categories
-    } : null,
-    category_id: queryParams?.category_id
-  })
 
   const nextPage = count > (page + 1) * limit ? page + 1 : null
 
