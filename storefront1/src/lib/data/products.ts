@@ -69,9 +69,13 @@ export const getProductsList = cache(async function ({
   // Ensure category_id is properly formatted
   const formattedQueryParams = {
     ...queryParams,
-    category_id: queryParams?.category_id?.[0] || undefined // Take the first category ID if it's an array
   }
 
+  if (Array.isArray(queryParams?.category_id)) {
+    formattedQueryParams.category_id = queryParams.category_id[0]
+  } else if (typeof queryParams?.category_id === "string") {
+    formattedQueryParams.category_id = queryParams.category_id
+  }
 
   return sdk.store.product
     .list(
@@ -134,6 +138,8 @@ export const getProductsListWithSort = cache(async function ({
   })
 
   const sortedProducts = sortProducts(products, sortBy)
+
+  console.warn("sortedProducts", sortedProducts)
 
   const nextPage = count > (page + 1) * limit ? page + 1 : null
 

@@ -99,9 +99,9 @@ export default async function Diamond({
           </div>
         </section>
       </div>
-      {/*    <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<div>Loading...</div>}>
         <PricingTable />
-      </Suspense> */}
+      </Suspense>
 
       <DolginsCTA
         title="Let's Design Some Jewelry"

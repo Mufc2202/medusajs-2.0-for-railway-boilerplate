@@ -1,4 +1,7 @@
-import { FetchPricingData } from "./shape-selector-server"
+"use client"
+
+import { useState } from "react"
+
 import Round from "@images/diamond/DiamondShapes/round.svg"
 import Oval from "@images/diamond/DiamondShapes/oval.svg"
 import Pear from "@images/diamond/DiamondShapes/pear.svg"
@@ -9,6 +12,8 @@ import Emerald from "@images/diamond/DiamondShapes/emerald.svg"
 import Radiant from "@images/diamond/DiamondShapes/radiant.svg"
 import Cushion from "@images/diamond/DiamondShapes/cushion.svg"
 import Asscher from "@images/diamond/DiamondShapes/asscher.svg"
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react"
+import Image from "next/image"
 
 export interface DiamondShape {
   name: string
@@ -130,38 +135,92 @@ const formatPrice = (amount: number) => {
   }).format(amount)
 }
 
-async function handleShapeSelect(formData: FormData) {
-  "use server"
-  const shapeName = formData.get("shape")
-  const shape =
-    diamondShapes.find((s) => s.name === shapeName) || diamondShapes[0]
-  const priceData = await FetchPricingData(shape)
-  return { shape, priceData }
-}
-
 export default function PricingTable() {
   let selectedShape = diamondShapes[0]
-  let priceData: PriceData[] = []
+  const [priceData, setPricePrice] = useState<PriceData[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+
+  async function onShapeSelect(shape: DiamondShape) {
+    setIsLoading(true)
+
+    try {
+      const res = await fetch(
+        `/api/prices-by-category?category_id=${shape.category_id}`
+      )
+      if (!res.ok) {
+        throw new Error("Failed to fetch pricing data")
+      }
+      const pricingData = await res.json()
+      console.info("Located shape res", pricingData)
+      setPricePrice(pricingData)
+    } catch (error) {
+      console.error("Error fetching pricing data:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <div className="flex flex-col items-center gap-4 p-4">
-      <form action={handleShapeSelect}>
-        <select
-          name="shape"
-          className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-          defaultValue={selectedShape.name}
-          onChange={(e) => e.target.form?.requestSubmit()}
-        >
-          {diamondShapes.map((shape) => (
-            <option key={shape.name} value={shape.name}>
-              {shape.name}
-            </option>
-          ))}
-        </select>
-        <button type="submit" className="hidden">
-          Submit
-        </button>
-      </form>
+      <Menu as="div" className="flex justify-center">
+        <div>
+          <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+            <div className="flex items-center gap-2">
+              <Image
+                src={selectedShape.imageSrc}
+                alt={selectedShape.imageAlt}
+                width={20}
+                height={20}
+                className="object-contain"
+              />
+              {selectedShape.name}
+            </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="size-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m19.5 8.25-7.5 7.5-7.5-7.5"
+              />
+            </svg>
+          </MenuButton>
+        </div>
+
+        <MenuItems className="mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+          <div className="py-1">
+            {diamondShapes.map((shape) => (
+              <MenuItem
+                key={shape.name}
+                as="button"
+                className={({ active }) =>
+                  `flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${
+                    active ? "bg-gray-100" : ""
+                  }`
+                }
+                onClick={() => onShapeSelect(shape)}
+              >
+                <Image
+                  src={shape.imageSrc}
+                  alt={shape.imageAlt}
+                  width={20}
+                  height={20}
+                  className="object-contain"
+                />
+                {shape.name}
+              </MenuItem>
+            ))}
+          </div>
+        </MenuItems>
+      </Menu>
+
+      {isLoading ? <p>Loading...</p> : null}
+      <pre>{JSON.stringify({ priceData }, null, 2)}</pre>
 
       <div className="mt-4 w-full max-w-4xl rounded-lg bg-dolginsblue p-4">
         <table className="w-full text-white">

@@ -31,6 +31,11 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
     (category) => category.name === "Jewelry Repair"
   )
 
+  // Check if the product is in the Jewelry Repair category
+  const isDiamond = product.categories?.some(
+    (category) => category.name === "Diamond"
+  )
+
   return (
     <>
       <div
@@ -64,7 +69,9 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
       <div
         className="content-container my-16 small:my-32"
         data-testid="related-products-container"
-      ></div>
+      >
+        {!isDiamond ? <h1>Testing</h1> : null}
+      </div>
     </>
   )
 }
