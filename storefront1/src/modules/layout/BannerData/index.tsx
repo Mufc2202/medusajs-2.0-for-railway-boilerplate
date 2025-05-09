@@ -22,7 +22,7 @@ type Props = {
 }
 
 export const BannerData = ({ data }: Props) => {
-  const bannerData = data?.bannerList?.filter((item) => item.isActive)
+  const bannerData = data?.bannerList?.filter((item) => item.isActive) || []
 
   return (
     <>
@@ -38,7 +38,7 @@ export const BannerData = ({ data }: Props) => {
         modules={[Autoplay]}
         className="mySwiper"
       >
-        {bannerData.map((item) => {
+        {bannerData?.map((item) => {
           return (
             <SwiperSlide key={item.id}>
               <div className="bg-dolginsblue">

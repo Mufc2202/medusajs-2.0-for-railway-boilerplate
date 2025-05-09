@@ -1,11 +1,9 @@
 import Image from "next/image"
-import Link from "next/link"
 import { Suspense } from "react"
 import PaginatedProducts from "@modules/store/templates/paginated-products"
 import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
 import PageHeader from "@modules/layout/components/page-header"
 import DolginsCTA from "@modules/layout/components/dolgins-cta"
-import Testimonial from "@modules/layout/components/testimonial"
 import { StoreProductCategory } from "@medusajs/types"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import DiamondTop1 from "@images/diamond/diamond-top-1.jpg"
@@ -13,6 +11,7 @@ import DiamondTop2 from "@images/diamond/diamond-top-2.jpg"
 import DiamondTop3 from "@images/diamond/diamond-top-3.jpg"
 import DiamondTop4 from "@images/diamond/diamond-top-4.jpg"
 import DiamondTop5 from "@images/diamond/diamond-top-5.jpg"
+import PricingTable from "./diamondPricingTable"
 
 const collections = [
   {
@@ -100,6 +99,9 @@ export default async function Diamond({
           </div>
         </section>
       </div>
+      {/*    <Suspense fallback={<div>Loading...</div>}>
+        <PricingTable />
+      </Suspense> */}
 
       <DolginsCTA
         title="Let's Design Some Jewelry"

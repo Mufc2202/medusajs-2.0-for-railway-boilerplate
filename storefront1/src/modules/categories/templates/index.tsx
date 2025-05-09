@@ -61,15 +61,15 @@ export default function CategoryTemplate({
       />
     )
 
-  // if (category.name === "Diamonds")
-  //   return (
-  //     <Diamond
-  //       sort={sort}
-  //       pageNumber={pageNumber}
-  //       category={category}
-  //       countryCode={countryCode}
-  //     />
-  //   )
+  if (category.name === "Diamonds")
+    return (
+      <Diamond
+        sort={sort}
+        pageNumber={pageNumber}
+        category={category}
+        countryCode={countryCode}
+      />
+    )
 
   return (
     <div
