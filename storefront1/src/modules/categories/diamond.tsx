@@ -99,9 +99,6 @@ export default async function Diamond({
           </div>
         </section>
       </div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <PricingTable />
-      </Suspense>
 
       <DolginsCTA
         title="Let's Design Some Jewelry"
@@ -124,6 +121,9 @@ export default async function Diamond({
             page={pageNumber ? parseInt(pageNumber) : 1}
             countryCode={countryCode}
           />
+        </Suspense>
+        <Suspense fallback={<div>Loading...</div>}>
+          <PricingTable />
         </Suspense>
       </div>
       <DolginsCTA

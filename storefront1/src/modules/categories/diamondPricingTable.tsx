@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useCallback, useState } from "react"
 
 import Round from "@images/diamond/DiamondShapes/round.svg"
 import Oval from "@images/diamond/DiamondShapes/oval.svg"
@@ -135,15 +135,71 @@ const formatPrice = (amount: number) => {
   }).format(amount)
 }
 
+const FallbackTable = ({ shape }: { shape: DiamondShape }) => {
+  const sizes = [
+    "0.5",
+    "0.75",
+    "1.0",
+    "1.25",
+    "1.5",
+    "2.0",
+    "2.5",
+    "3.0",
+    "4.0",
+    "5.0",
+  ]
+
+  return (
+    <div className="mt-4 w-full max-w-4xl rounded-lg bg-dolginsblue p-4">
+      <table className="w-full text-white">
+        <caption className="mb-4 text-lg font-semibold">
+          Estimated {shape.name} Diamond Prices
+          <p className="mt-2 text-sm text-white/80">{shape.description}</p>
+        </caption>
+        <thead>
+          <tr className="border-b border-white/20">
+            <th className="px-4 py-2 text-left">Size</th>
+            <th className="px-4 py-2 text-left">Highest Quality</th>
+            <th className="px-4 py-2 text-left">Great Quality & Value</th>
+            <th className="px-4 py-2 text-left">Love That Size</th>
+            <th className="px-4 py-2 text-left">Laboratory Created</th>
+            <th className="px-4 py-2 text-left">Link</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sizes.map((size, index) => (
+            <tr
+              key={size}
+              className={`border-b border-white/10 ${
+                index % 2 === 0 ? "bg-white/5" : ""
+              }`}
+            >
+              <td className="px-4 py-2 text-center">{size}</td>
+              <td className="px-4 py-2 text-center">-</td>
+              <td className="px-4 py-2 text-center">-</td>
+              <td className="px-4 py-2 text-center">-</td>
+              <td className="px-4 py-2 text-center">-</td>
+              <td className="px-4 py-2 text-center">-</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
 export default function PricingTable() {
-  let selectedShape = diamondShapes[0]
+  const [selectedShape, setSelectedShape] = useState<DiamondShape>(
+    diamondShapes[0]
+  )
   const [priceData, setPricePrice] = useState<PriceData[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
-  async function onShapeSelect(shape: DiamondShape) {
+  const onShapeSelect = useCallback(async (shape: DiamondShape) => {
     setIsLoading(true)
 
     try {
+      setSelectedShape(shape)
       const res = await fetch(
         `/api/prices-by-category?category_id=${shape.category_id}`
       )
@@ -158,11 +214,15 @@ export default function PricingTable() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    onShapeSelect(diamondShapes[0])
+  }, [onShapeSelect])
 
   return (
     <div className="flex flex-col items-center gap-4 p-4">
-      <Menu as="div" className="flex justify-center">
+      <Menu as="div" className="relative flex justify-center">
         <div>
           <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
             <div className="flex items-center gap-2">
@@ -171,7 +231,8 @@ export default function PricingTable() {
                 alt={selectedShape.imageAlt}
                 width={20}
                 height={20}
-                className="object-contain"
+                unoptimized
+                className="object-contain w-8 h-8"
               />
               {selectedShape.name}
             </div>
@@ -192,14 +253,14 @@ export default function PricingTable() {
           </MenuButton>
         </div>
 
-        <MenuItems className="mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+        <MenuItems className="absolute left-1/2 z-50 mt-2 w-36 -translate-x-1/2 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
           <div className="py-1">
             {diamondShapes.map((shape) => (
               <MenuItem
                 key={shape.name}
                 as="button"
                 className={({ active }) =>
-                  `flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${
+                  `flex items-center justify-center gap-2 mx-auto py-2 text-sm text-gray-700 hover:bg-gray-100 ${
                     active ? "bg-gray-100" : ""
                   }`
                 }
@@ -210,7 +271,8 @@ export default function PricingTable() {
                   alt={shape.imageAlt}
                   width={20}
                   height={20}
-                  className="object-contain"
+                  unoptimized
+                  className="object-contain w-8 h-8"
                 />
                 {shape.name}
               </MenuItem>
@@ -219,78 +281,79 @@ export default function PricingTable() {
         </MenuItems>
       </Menu>
 
-      {isLoading ? <p>Loading...</p> : null}
-      <pre>{JSON.stringify({ priceData }, null, 2)}</pre>
-
-      <div className="mt-4 w-full max-w-4xl rounded-lg bg-dolginsblue p-4">
-        <table className="w-full text-white">
-          <caption className="mb-4 text-lg font-semibold">
-            Estimated {selectedShape.name} Diamond Prices
-            <p className="mt-2 text-sm text-white/80">
-              {selectedShape.description}
-            </p>
-          </caption>
-          <thead>
-            <tr className="border-b border-white/20">
-              <th className="px-4 py-2 text-left">Size</th>
-              <th className="px-4 py-2 text-left">Highest Quality</th>
-              <th className="px-4 py-2 text-left">Great Quality & Value</th>
-              <th className="px-4 py-2 text-left">Love That Size</th>
-              <th className="px-4 py-2 text-left">Laboratory Created</th>
-              <th className="px-4 py-2 text-left">Link</th>
-            </tr>
-          </thead>
-          <tbody>
-            {priceData.map((row: PriceData, index: number) => (
-              <tr
-                key={row.size}
-                className={`border-b border-white/10 ${
-                  index % 2 === 0 ? "bg-white/5" : ""
-                }`}
-              >
-                <td className="px-4 py-2 text-center">{row.size}</td>
-                <td className="px-4 py-2 text-center">
-                  {row.prices.best || "-"}
-                </td>
-                <td className="px-4 py-2 text-center">
-                  {row.prices.better || "-"}
-                </td>
-                <td className="px-4 py-2 text-center">
-                  {row.prices.good || "-"}
-                </td>
-                <td className="px-4 py-2 text-center">
-                  {row.prices.lab || "-"}
-                </td>
-                <td className="px-4 py-2 text-center">
-                  {row.link ? (
-                    <a
-                      href={row.link}
-                      className="text-blue-500 hover:text-blue-600"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        className="size-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
-                        />
-                      </svg>
-                    </a>
-                  ) : null}
-                </td>
+      {isLoading || priceData.length === 0 ? (
+        <FallbackTable shape={selectedShape} />
+      ) : (
+        <div className="mt-4 w-full max-w-4xl rounded-lg bg-dolginsblue p-4">
+          <table className="w-full text-white">
+            <caption className="mb-4 text-lg font-semibold">
+              Estimated {selectedShape.name} Diamond Prices
+              <p className="mt-2 text-sm text-white/80">
+                {selectedShape.description}
+              </p>
+            </caption>
+            <thead>
+              <tr className="border-b border-white/20">
+                <th className="px-4 py-2 text-left">Size</th>
+                <th className="px-4 py-2 text-left">Highest Quality</th>
+                <th className="px-4 py-2 text-left">Great Quality & Value</th>
+                <th className="px-4 py-2 text-left">Love That Size</th>
+                <th className="px-4 py-2 text-left">Laboratory Created</th>
+                <th className="px-4 py-2 text-left">Link</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {priceData.map((row: PriceData, index: number) => (
+                <tr
+                  key={row.size}
+                  className={`border-b border-white/10 ${
+                    index % 2 === 0 ? "bg-white/5" : ""
+                  }`}
+                >
+                  <td className="px-4 py-2 text-center">{row.size}</td>
+                  <td className="px-4 py-2 text-center">
+                    {row.prices.best || "-"}
+                  </td>
+                  <td className="px-4 py-2 text-center">
+                    {row.prices.better || "-"}
+                  </td>
+                  <td className="px-4 py-2 text-center">
+                    {row.prices.good || "-"}
+                  </td>
+                  <td className="px-4 py-2 text-center">
+                    {row.prices.lab || "-"}
+                  </td>
+                  <td className="px-4 py-2 text-center">
+                    {row.link ? (
+                      <a
+                        href={row.link}
+                        className="text-blue-500 hover:text-blue-600"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.5"
+                          stroke="currentColor"
+                          className="size-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
+                          />
+                        </svg>
+                      </a>
+                    ) : null}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
 }

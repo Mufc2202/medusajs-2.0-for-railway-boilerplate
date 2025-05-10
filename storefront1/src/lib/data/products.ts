@@ -139,8 +139,6 @@ export const getProductsListWithSort = cache(async function ({
 
   const sortedProducts = sortProducts(products, sortBy)
 
-  console.warn("sortedProducts", sortedProducts)
-
   const nextPage = count > (page + 1) * limit ? page + 1 : null
 
   return {
