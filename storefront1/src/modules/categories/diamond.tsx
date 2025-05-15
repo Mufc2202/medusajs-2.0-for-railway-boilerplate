@@ -166,7 +166,7 @@ export default async function Diamond({
 
         <section
           aria-labelledby="collection-heading"
-          className="relative -mt-96 sm:mt-0 pt-4"
+          className="relative sm:mt-0 pt-4"
         >
           <div className="mx-auto grid max-w-md grid-cols-1 gap-y-6 px-4 sm:max-w-7xl sm:grid-cols-3 sm:gap-x-6 sm:gap-y-0 sm:px-6 lg:gap-x-8 lg:px-8">
             {collections.map((collection) => (

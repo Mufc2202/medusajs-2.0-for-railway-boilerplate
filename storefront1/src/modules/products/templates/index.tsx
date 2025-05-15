@@ -1,5 +1,5 @@
 import React, { Suspense } from "react"
-
+import Link from "next/link"
 import ImageGallery from "@modules/products/components/image-gallery"
 import ProductActions from "@modules/products/components/product-actions"
 import ProductOnboardingCta from "@modules/products/components/product-onboarding-cta"
@@ -67,10 +67,18 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         </div>
       </div>
       <div
-        className="content-container my-16 small:my-32"
+        className="content-container my-8 small:my-16"
         data-testid="related-products-container"
       >
-        {!isDiamond ? <h1>Testing</h1> : null}
+        {!isDiamond ? (
+          <div className="flex justify-center">
+            <a href="/lab-diamonds-v-natural">
+              <button className="mt-5 min-w-[10rem] rounded-md bg-dolginslightblue bg-gradient-to-br from-dolginsblue px-5 py-3 font-bold text-white shadow-xl shadow-gold">
+                Learn More About Lab Grown Vs Natural Diamonds
+              </button>
+            </a>
+          </div>
+        ) : null}
       </div>
     </>
   )
