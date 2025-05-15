@@ -204,18 +204,18 @@ export default async function Diamond({
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke="currentColor"
               className="mt-1 size-5 flex-none text-gold"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
               />
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
               />
             </svg>
@@ -232,13 +232,13 @@ export default async function Diamond({
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke="currentColor"
               className="mt-1 size-5 flex-none text-gold"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971Z"
               />
             </svg>
@@ -260,13 +260,13 @@ export default async function Diamond({
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke="currentColor"
               className="mt-1 size-5 flex-none text-gold"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"
               />
             </svg>
@@ -350,7 +350,7 @@ export default async function Diamond({
           jewelry including an engagement ring or as accents.
         </p>
         <div className="mx-auto max-w-7xl">
-          <div className="-mx-6 grid grid-cols-2 gap-0.5 overflow-hidden sm:mx-0 sm:rounded-2xl md:grid-cols-3 lg:grid-cols-4">
+          <div className="mx-3 grid grid-cols-1 gap-0.5 overflow-hidden sm:mx-0 sm:rounded-2xl md:grid-cols-3 lg:grid-cols-4">
             {shapePosts.map((shape, index) => (
               <div
                 key={shape.name}
@@ -391,9 +391,9 @@ export default async function Diamond({
           alike to understand the quality of a diamond. It is not perfect, but
           it is a good starting point and the standard by which I grade.
         </p>
-        <div className="grid grid-cols-12 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-8">
           {/* Large box - Carat Weight */}
-          <div className="col-span-8 row-span-2 bg-dolginsblue rounded-lg p-6">
+          <div className="md:col-span-8 md:row-span-2 bg-dolginsblue rounded-lg p-6">
             <div className="flex items-center gap-4 mb-4">
               <h3 className="text-2xl font-serif text-white border-b-2 border-gold pb-2">
                 Carat Weight
@@ -408,7 +408,7 @@ export default async function Diamond({
           </div>
 
           {/* Medium box - Cut */}
-          <div className="col-span-4 bg-dolginsblue/85 rounded-lg p-6">
+          <div className="md:col-span-4 bg-dolginsblue/85 rounded-lg p-6">
             <div className="flex items-center gap-4 mb-4">
               <h3 className="text-xl font-serif text-white border-b-2 border-gold pb-2">
                 Cut
@@ -422,7 +422,7 @@ export default async function Diamond({
           </div>
 
           {/* Small box - Color */}
-          <div className="col-span-4 bg-dolginsblue/85 rounded-lg p-6">
+          <div className="md:col-span-4 bg-dolginsblue/85 rounded-lg p-6">
             <div className="flex items-center gap-4 mb-4">
               <h3 className="text-xl font-serif text-white border-b-2 border-gold pb-2">
                 Color
@@ -435,7 +435,7 @@ export default async function Diamond({
           </div>
 
           {/* Medium box - Clarity */}
-          <div className="col-span-8 bg-dolginsblue rounded-lg p-6">
+          <div className="md:col-span-8 bg-dolginsblue rounded-lg p-6">
             <div className="flex items-center gap-4 mb-4">
               <h3 className="text-2xl font-serif text-white border-b-2 border-gold pb-2">
                 Clarity
@@ -450,7 +450,7 @@ export default async function Diamond({
           </div>
 
           {/* Small box - Certification */}
-          <div className="col-span-4 bg-dolginsblue/85 rounded-lg p-6">
+          <div className="md:col-span-4 bg-dolginsblue/85 rounded-lg p-6">
             <div className="flex items-center gap-4 mb-4">
               <h3 className="text-xl font-serif text-white border-b-2 border-gold pb-2">
                 Certification

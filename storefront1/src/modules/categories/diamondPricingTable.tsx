@@ -285,73 +285,75 @@ export default function PricingTable() {
         <FallbackTable shape={selectedShape} />
       ) : (
         <div className="mt-4 w-full max-w-4xl rounded-lg bg-dolginsblue p-4">
-          <table className="w-full text-white">
-            <caption className="mb-4 text-lg font-semibold">
-              Estimated {selectedShape.name} Diamond Prices
-              <p className="mt-2 text-sm text-white/80">
-                {selectedShape.description}
-              </p>
-            </caption>
-            <thead>
-              <tr className="border-b border-white/20">
-                <th className="px-4 py-2 text-left">Size</th>
-                <th className="px-4 py-2 text-left">Highest Quality</th>
-                <th className="px-4 py-2 text-left">Great Quality & Value</th>
-                <th className="px-4 py-2 text-left">Love That Size</th>
-                <th className="px-4 py-2 text-left">Laboratory Created</th>
-                <th className="px-4 py-2 text-left">Link</th>
-              </tr>
-            </thead>
-            <tbody>
-              {priceData.map((row: PriceData, index: number) => (
-                <tr
-                  key={row.size}
-                  className={`border-b border-white/10 ${
-                    index % 2 === 0 ? "bg-white/5" : ""
-                  }`}
-                >
-                  <td className="px-4 py-2 text-center">{row.size}</td>
-                  <td className="px-4 py-2 text-center">
-                    {row.prices.best || "-"}
-                  </td>
-                  <td className="px-4 py-2 text-center">
-                    {row.prices.better || "-"}
-                  </td>
-                  <td className="px-4 py-2 text-center">
-                    {row.prices.good || "-"}
-                  </td>
-                  <td className="px-4 py-2 text-center">
-                    {row.prices.lab || "-"}
-                  </td>
-                  <td className="px-4 py-2 text-center">
-                    {row.link ? (
-                      <a
-                        href={row.link}
-                        className="text-blue-500 hover:text-blue-600"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="1.5"
-                          stroke="currentColor"
-                          className="size-6"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
-                          />
-                        </svg>
-                      </a>
-                    ) : null}
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[640px] text-white">
+              <caption className="mb-4 text-lg font-semibold">
+                Estimated {selectedShape.name} Diamond Prices
+                <p className="mt-2 text-sm text-white/80">
+                  {selectedShape.description}
+                </p>
+              </caption>
+              <thead>
+                <tr className="border-b border-white/20">
+                  <th className="px-4 py-2 text-left">Size</th>
+                  <th className="px-4 py-2 text-left">Highest Quality</th>
+                  <th className="px-4 py-2 text-left">Great Quality & Value</th>
+                  <th className="px-4 py-2 text-left">Love That Size</th>
+                  <th className="px-4 py-2 text-left">Laboratory Created</th>
+                  <th className="px-4 py-2 text-left">Link</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {priceData.map((row: PriceData, index: number) => (
+                  <tr
+                    key={row.size}
+                    className={`border-b border-white/10 ${
+                      index % 2 === 0 ? "bg-white/5" : ""
+                    }`}
+                  >
+                    <td className="px-4 py-2 text-center">{row.size}</td>
+                    <td className="px-4 py-2 text-center">
+                      {row.prices.best || "-"}
+                    </td>
+                    <td className="px-4 py-2 text-center">
+                      {row.prices.better || "-"}
+                    </td>
+                    <td className="px-4 py-2 text-center">
+                      {row.prices.good || "-"}
+                    </td>
+                    <td className="px-4 py-2 text-center">
+                      {row.prices.lab || "-"}
+                    </td>
+                    <td className="px-4 py-2 text-center">
+                      {row.link ? (
+                        <a
+                          href={row.link}
+                          className="text-blue-500 hover:text-blue-600"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                            className="size-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
+                            />
+                          </svg>
+                        </a>
+                      ) : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
