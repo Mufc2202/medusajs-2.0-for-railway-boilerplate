@@ -110,43 +110,65 @@ export const getProductsList = cache(async function ({
  * It will then return the paginated products based on the page and limit parameters.
  */
 export const getProductsListWithSort = cache(async function ({
-  page = 0,
+  pageParam = 1,
   queryParams,
-  sortBy = "created_at",
   countryCode,
 }: {
-  page?: number
+  pageParam?: number
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
-  sortBy?: SortOptions
   countryCode: string
 }): Promise<{
   response: { products: HttpTypes.StoreProduct[]; count: number }
   nextPage: number | null
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
 }> {
-  const limit = queryParams?.limit || 12
+  const limit = queryParams?.limit || 100
+  const validPageParam = Math.max(pageParam, 1)
+  const offset = (validPageParam - 1) * limit
+  const region = await getRegion(countryCode)
 
-  const {
-    response: { products, count },
-  } = await getProductsList({
-    pageParam: page + 1, // Add 1 because page is 0-based but pageParam is 1-based
-    queryParams: {
-      ...queryParams,
-      limit,
-    },
-    countryCode,
-  })
-
-  const sortedProducts = sortProducts(products, sortBy)
-
-  const nextPage = count > (page + 1) * limit ? page + 1 : null
-
-  return {
-    response: {
-      products: sortedProducts,
-      count,
-    },
-    nextPage,
-    queryParams,
+  if (!region) {
+    return {
+      response: { products: [], count: 0 },
+      nextPage: null,
+    }
   }
+
+  // Ensure category_id is properly formatted
+  const formattedQueryParams = {
+    ...queryParams,
+  }
+
+  if (Array.isArray(queryParams?.category_id)) {
+    formattedQueryParams.category_id = queryParams.category_id[0]
+  } else if (typeof queryParams?.category_id === "string") {
+    formattedQueryParams.category_id = queryParams.category_id
+  }
+
+  return sdk.store.product
+    .list(
+      {
+        limit,
+        offset,
+        region_id: region.id,
+        fields:
+          "*variants.calculated_price,+metadata,*seo_details,*seo_details.metaSocial,*variants.inventory_quantity,*categories",
+        ...formattedQueryParams,
+      },
+      { next: { tags: ["products"], revalidate: 300 } }
+    )
+    .then((response) => {
+      const { products, count } = response
+
+      const nextPage = count > offset + limit ? pageParam + 1 : null
+
+      return {
+        response: {
+          products,
+          count,
+        },
+        nextPage,
+        queryParams,
+      }
+    })
 })

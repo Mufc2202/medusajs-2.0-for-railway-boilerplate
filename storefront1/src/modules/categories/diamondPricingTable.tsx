@@ -195,30 +195,37 @@ export default function PricingTable() {
   const [priceData, setPricePrice] = useState<PriceData[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
-  const onShapeSelect = useCallback(async (shape: DiamondShape) => {
-    setIsLoading(true)
+  const onShapeSelect = useCallback(
+    async (shape: DiamondShape) => {
+      if (shape.category_id === selectedShape.category_id) return // Prevent unnecessary API calls
+      setIsLoading(true)
 
-    try {
-      setSelectedShape(shape)
-      const res = await fetch(
-        `/api/prices-by-category?category_id=${shape.category_id}`
-      )
-      if (!res.ok) {
-        throw new Error("Failed to fetch pricing data")
+      try {
+        setSelectedShape(shape)
+        const res = await fetch(
+          `/api/prices-by-category?category_id=${shape.category_id}`
+        )
+        if (!res.ok) {
+          throw new Error("Failed to fetch pricing data")
+        }
+        const pricingData = await res.json()
+        console.info("Located shape res", pricingData)
+        setPricePrice(pricingData)
+      } catch (error) {
+        console.error("Error fetching pricing data:", error)
+      } finally {
+        setIsLoading(false)
       }
-      const pricingData = await res.json()
-      console.info("Located shape res", pricingData)
-      setPricePrice(pricingData)
-    } catch (error) {
-      console.error("Error fetching pricing data:", error)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
+    },
+    [selectedShape.category_id]
+  ) // Only depend on the category_id
 
   useEffect(() => {
-    onShapeSelect(diamondShapes[0])
-  }, [onShapeSelect])
+    if (!priceData.length) {
+      // Only fetch if we don't have data
+      onShapeSelect(diamondShapes[0])
+    }
+  }, []) // Empty dependency array since we only want this to run once on mount
 
   return (
     <div className="flex flex-col items-center gap-4 p-4">

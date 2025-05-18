@@ -10,6 +10,10 @@ const formatPrice = (amount: number) => {
   }).format(amount)
 }
 
+// Cache for storing pricing data
+const pricingCache = new Map<string, { data: any; timestamp: number }>()
+const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes in milliseconds
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const category_id = searchParams.get("category_id")
@@ -19,6 +23,12 @@ export async function GET(request: Request) {
       { error: "Category ID parameter is required" },
       { status: 400 }
     )
+  }
+
+  // Check cache first
+  const cachedData = pricingCache.get(category_id)
+  if (cachedData && Date.now() - cachedData.timestamp < CACHE_DURATION) {
+    return NextResponse.json(cachedData.data)
   }
 
   try {
@@ -58,6 +68,12 @@ export async function GET(request: Request) {
       },
       link: `/products/${product.handle}`,
     }))
+
+    // Store in cache
+    pricingCache.set(category_id, {
+      data: pricingData,
+      timestamp: Date.now(),
+    })
 
     return NextResponse.json(pricingData)
   } catch (error) {
