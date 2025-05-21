@@ -175,112 +175,108 @@ export const getProductsListWithSort = cache(async function ({
     })
 })
 
-export const listProducts = cache(
-  async ({
-    pageParam = 1,
-    queryParams,
-    countryCode,
-  }: {
-    pageParam?: number
-    queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
-    countryCode: string
-  }): Promise<{
-    response: { products: HttpTypes.StoreProduct[]; count: number }
-    nextPage: number | null
-    queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
-  }> => {
-    const limit = queryParams?.limit || 12
-    const _pageParam = Math.max(pageParam, 1)
-    const offset = (_pageParam - 1) * limit
-    const region = await getRegion(countryCode)
+export const listProducts = async ({
+  pageParam = 1,
+  queryParams,
+  countryCode,
+}: {
+  pageParam?: number
+  queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
+  countryCode: string
+}): Promise<{
+  response: { products: HttpTypes.StoreProduct[]; count: number }
+  nextPage: number | null
+  queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
+}> => {
+  const limit = queryParams?.limit || 12
+  const _pageParam = Math.max(pageParam, 1)
+  const offset = (_pageParam - 1) * limit
+  const region = await getRegion(countryCode)
 
-    if (!region) {
-      return {
-        response: { products: [], count: 0 },
-        nextPage: null,
-      }
-    }
-
-    const headers = {
-      ...(await getAuthHeaders()),
-    }
-
-    const next = {
-      ...(await getCacheOptions("products", 300)),
-    }
-
-    return sdk.client
-      .fetch<{ products: HttpTypes.StoreProduct[]; count: number }>(
-        `/store/products`,
-        {
-          method: "GET",
-          query: {
-            limit,
-            offset,
-            region_id: region.id,
-            fields: "*variants.calculated_price",
-            ...queryParams,
-          },
-          headers,
-          next,
-          cache: "force-cache",
-        }
-      )
-      .then(({ products, count }) => {
-        const nextPage = count > offset + limit ? pageParam + 1 : null
-
-        return {
-          response: {
-            products,
-            count,
-          },
-          nextPage: nextPage,
-          queryParams,
-        }
-      })
-  }
-)
-
-export const getProductsListWithSortDefault = cache(
-  async ({
-    page = 1,
-    queryParams,
-    sortBy = "created_at",
-    countryCode,
-  }: {
-    page?: number
-    queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
-    sortBy?: SortOptions
-    countryCode: string
-  }): Promise<{
-    response: { products: HttpTypes.StoreProduct[]; count: number }
-    nextPage: number | null
-    queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
-  }> => {
-    const limit = queryParams?.limit || 12
-
-    const {
-      response: { products, count },
-    } = await listProducts({
-      pageParam: page,
-      queryParams: {
-        ...queryParams,
-        limit,
-      },
-      countryCode,
-    })
-
-    const sortedProducts = sortProducts(products, sortBy)
-
-    const nextPage = count > page * limit ? page + 1 : null
-
+  if (!region) {
     return {
-      response: {
-        products: sortedProducts,
-        count,
-      },
-      nextPage,
-      queryParams,
+      response: { products: [], count: 0 },
+      nextPage: null,
     }
   }
-)
+
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  const next = {
+    ...(await getCacheOptions("products", 300)),
+  }
+
+  return sdk.client
+    .fetch<{ products: HttpTypes.StoreProduct[]; count: number }>(
+      `/store/products`,
+      {
+        method: "GET",
+        query: {
+          limit,
+          offset,
+          region_id: region.id,
+          fields: "*variants.calculated_price",
+          ...queryParams,
+        },
+        headers,
+        next,
+        cache: "force-cache",
+      }
+    )
+    .then(({ products, count }) => {
+      const nextPage = count > offset + limit ? pageParam + 1 : null
+
+      return {
+        response: {
+          products,
+          count,
+        },
+        nextPage: nextPage,
+        queryParams,
+      }
+    })
+}
+
+export const getProductsListWithSortDefault = async ({
+  page = 1,
+  queryParams,
+  sortBy = "created_at",
+  countryCode,
+}: {
+  page?: number
+  queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
+  sortBy?: SortOptions
+  countryCode: string
+}): Promise<{
+  response: { products: HttpTypes.StoreProduct[]; count: number }
+  nextPage: number | null
+  queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
+}> => {
+  const limit = queryParams?.limit || 12
+
+  const {
+    response: { products, count },
+  } = await listProducts({
+    pageParam: page,
+    queryParams: {
+      ...queryParams,
+      limit,
+    },
+    countryCode,
+  })
+
+  const sortedProducts = sortProducts(products, sortBy)
+
+  const nextPage = count > page * limit ? page + 1 : null
+
+  return {
+    response: {
+      products: sortedProducts,
+      count,
+    },
+    nextPage,
+    queryParams,
+  }
+}
