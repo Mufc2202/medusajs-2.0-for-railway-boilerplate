@@ -11,14 +11,14 @@ export const metadata: Metadata = {
 }
 
 type Params = {
-  searchParams: {
+  searchParams: Promise<{
     sortBy?: SortOptions
     page?: string
-  }
+  }>
 }
 
 export default async function StorePage({ searchParams }: Params) {
-  const { sortBy, page } = searchParams
+  const { sortBy, page } = await searchParams
 
   return <StoreTemplate sortBy={sortBy} page={page} countryCode={countryCode} />
 }

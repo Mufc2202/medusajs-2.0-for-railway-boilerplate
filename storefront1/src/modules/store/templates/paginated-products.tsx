@@ -1,4 +1,4 @@
-import { getProductsListWithSort } from "@lib/data/products"
+import { getProductsListWithSortDefault } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
 import ProductPreview from "@modules/products/components/product-preview"
 import { Pagination } from "@modules/store/components/pagination"
@@ -53,31 +53,40 @@ export default async function PaginatedProducts({
     return null
   }
 
-  // First, get the total count of products to determine if the requested page is valid
   const {
-    response: { count },
-  } = await getProductsListWithSort({
-    page: 0,
+    response: { products, count },
+  } = await getProductsListWithSortDefault({
+    page,
     queryParams,
     sortBy,
     countryCode,
   })
+
+  // // First, get the total count of products to determine if the requested page is valid
+  // const {
+  //   response: { count },
+  // } = await getProductsListWithSort({
+  //   page: 0,
+  //   queryParams,
+  //   sortBy,
+  //   countryCode,
+  // })
 
   const totalPages = Math.ceil(count / PRODUCT_LIMIT)
 
-  // If the requested page is beyond the available pages, use page 1
-  if (page > totalPages && totalPages > 0) {
-    page = 1
-  }
+  // // If the requested page is beyond the available pages, use page 1
+  // if (page > totalPages && totalPages > 0) {
+  //   page = 1
+  // }
 
-  let {
-    response: { products },
-  } = await getProductsListWithSort({
-    page: page - 1,
-    queryParams,
-    sortBy,
-    countryCode,
-  })
+  // let {
+  //   response: { products },
+  // } = await getProductsListWithSort({
+  //   page: page - 1,
+  //   queryParams,
+  //   sortBy,
+  //   countryCode,
+  // })
 
   return (
     <>
