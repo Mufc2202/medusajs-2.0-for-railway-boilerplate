@@ -61,8 +61,7 @@ export const getCacheTag = async (tag: string): Promise<string> => {
 }
 
 export const getCacheOptions = async (
-  tag: string,
-  revalidate?: number
+  tag: string
 ): Promise<{ tags: string[] } | {}> => {
   if (typeof window !== "undefined") {
     return {}
@@ -74,5 +73,5 @@ export const getCacheOptions = async (
     return {}
   }
 
-  return { tags: [`${cacheTag}`], revalidate: revalidate }
+  return { tags: [`${cacheTag}`] }
 }

@@ -205,7 +205,8 @@ export const listProducts = async ({
   }
 
   const next = {
-    ...(await getCacheOptions("products", 300)),
+    ...(await getCacheOptions("products")),
+    revalidate: 300,
   }
 
   return sdk.client
@@ -222,6 +223,7 @@ export const listProducts = async ({
         },
         headers,
         next,
+        cache: "force-cache",
       }
     )
     .then(({ products, count }) => {
