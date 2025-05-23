@@ -72,7 +72,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
       >
         {!isDiamond ? (
           <div className="flex justify-center">
-            <a href="/lab-diamonds-v-natural">
+            <a href="/learn/lab-diamonds-v-natural">
               <button className="mt-5 min-w-[10rem] rounded-md bg-dolginslightblue bg-gradient-to-br from-dolginsblue px-5 py-3 font-bold text-white shadow-xl shadow-gold">
                 Learn More About Lab Grown Vs Natural Diamonds
               </button>

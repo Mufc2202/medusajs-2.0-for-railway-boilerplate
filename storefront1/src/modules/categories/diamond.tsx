@@ -248,7 +248,7 @@ export default async function Diamond({
                 Honest Assessments.
               </strong>{" "}
               I want to find the best diamond for you. Whethers that is a{" "}
-              <Link className="text-gold" href="/lab-diamonds-v-natural">
+              <Link className="text-gold" href="/learn/lab-diamonds-v-natural">
                 lab-grown or a natural.
               </Link>{" "}
               I can help you determine the most appropriate size and quality for
