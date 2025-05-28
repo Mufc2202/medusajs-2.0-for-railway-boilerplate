@@ -25,17 +25,15 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
   if (!product || !product.id) {
     return notFound()
   }
-
   // Check if the product is in the Jewelry Repair category
   const isJewelryRepair = product.categories?.some(
     (category) => category.name === "Jewelry Repair"
   )
 
-  // Check if the product is in the Jewelry Repair category
-  const isDiamond = product.categories?.some(
-    (category) => category.name === "Diamond"
-  )
-
+  // Check if the product is in the Diamonds category
+  const isDiamond = product.categories?.some((category) => {
+    return category.name === "Diamond" || category.name === "Diamonds"
+  })
   return (
     <>
       <div
@@ -72,13 +70,21 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
       >
         {!isDiamond ? (
           <div className="flex justify-center">
+            <a href="/learn/metals">
+              <button className="mt-5 min-w-[10rem] rounded-md bg-dolginslightblue bg-gradient-to-br from-dolginsblue px-5 py-3 font-bold text-white shadow-xl shadow-gold">
+                Learn More About Jewelry Metals
+              </button>
+            </a>
+          </div>
+        ) : (
+          <div className="flex justify-center">
             <a href="/learn/lab-diamonds-v-natural">
               <button className="mt-5 min-w-[10rem] rounded-md bg-dolginslightblue bg-gradient-to-br from-dolginsblue px-5 py-3 font-bold text-white shadow-xl shadow-gold">
                 Learn More About Lab Grown Vs Natural Diamonds
               </button>
             </a>
           </div>
-        ) : null}
+        )}
       </div>
     </>
   )

@@ -52,6 +52,14 @@ const RepairFAQSchema = {
         text: "No, we limit ourselves to fine jewelry. For us to work on silver jewelry, we have to charge about the same as we would for a gold or platinum piece, which most people are not willing to pay. Also, fine jewelry uses techniques and materials which wear better and are easier to repair versus costume jewelry. If a piece of silver or costume jewelry breaks, I suggest returning it to wherever it was purchased. As a rule: the less expensive the piece of jewelry, the more difficult the repair.",
       },
     },
+    {
+      "@type": "Question",
+      name: "What jewelry metals do you most commonly repair?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "We work in yellow, white, and rose gold in 10, 14, and 18 karat as well as platinum.",
+      },
+    },
   ],
 }
 
@@ -352,6 +360,40 @@ const Repair = (props: any) => {
                     can almost always fix them, but some repairs we do not
                     suggest completing because the price of a new piece may be
                     less.
+                  </p>
+                </details>
+              </div>
+              <div className="py-5">
+                <details className="group">
+                  <summary className="flex cursor-pointer list-none items-center justify-between font-medium">
+                    <span>
+                      What jewelry metals do you most commonly repair?
+                    </span>
+                    <span className="transition group-open:rotate-180">
+                      <svg
+                        fill="none"
+                        height="24"
+                        shapeRendering="geometricPrecision"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
+                        viewBox="0 0 24 24"
+                        width="24"
+                      >
+                        <path d="M6 9l6 6 6-6"></path>
+                      </svg>
+                    </span>
+                  </summary>
+                  <p className="group-open:animate-fadeIn mt-3 text-neutral-600">
+                    We work in yellow, white, and rose gold in 10, 14, and 18
+                    karat as well as platinum.{" "}
+                    <Link
+                      className="text-dolginslightblue"
+                      href="/learn/metals"
+                    >
+                      Here is a link to more information on jewelry metals.
+                    </Link>
                   </p>
                 </details>
               </div>

@@ -3,11 +3,9 @@ import Image from "next/image"
 import { Fragment } from "react"
 import DolginsCTA from "@modules/layout/components/dolgins-cta"
 import PageHeader from "@modules/layout/components/page-header"
-import MarquiseDiamondWithTweezers from "@images/labgrownVnatural/Marquise-Diamond-With-Tweezers.jpg"
 import ImageCTA from "@images/labgrownVnatural/CTA.jpg"
 import Bracelet18KY from "@images/learning/metals/18k-metal-bracelet.jpg"
 import ButtonBack1 from "@images/learning/metals/Button-Back-Prong-Engagement-Ring-1.jpg"
-import ButtonBack2 from "@images/learning/metals/Button-Back-Prong-Engagement-Ring-2.jpg"
 import ButtonBack3 from "@images/learning/metals/Button-Back-Prong-Engagement-Ring-3.jpg"
 import ButtonBack4 from "@images/learning/metals/Button-Back-Prong-Engagement-Ring-4.jpg"
 
@@ -21,6 +19,54 @@ export async function generateMetadata(): Promise<Metadata> {
   return metadata
 }
 
+const features = [
+  {
+    name: "22 or 24 Karat Gold",
+    description:
+      "I love jewelry made in high karat gold. It looks stunning and rich; however, do not wear it everyday.",
+  },
+  {
+    name: "Silver",
+    description:
+      "Can be more affordable than gold but is not as durable. Also, a bit more limited because it is so malleable and requires high heat to work on.",
+  },
+  {
+    name: "18 Karat White Gold",
+    description:
+      "I am not a fan. If you want white gold, go with 14 karat. If you want a white metal, go with platinum. The yellow shows through a bit more meaning the metal to look good you need to keep it plated.",
+  },
+  {
+    name: "10 Karat White or Yellow Gold",
+    description:
+      "We can always cast a piece in 10 karat gold but more frequently use 14 karat gold. Sometimes for a more affordable price point or really heavy signet rings, we will use 10 karat gold.",
+  },
+  {
+    name: "18 Karat Rose Gold",
+    description:
+      "It is just too soft. If you want rose gold, go with 14 karat.",
+  },
+  {
+    name: "Tungsten",
+    description:
+      "We have sold tungsten rings in past but currently do not. They shatter at inopportune times.",
+  },
+  {
+    name: "Colbalt",
+    description:
+      "A great alternative to the traditional precious metals for jewelry. We cannot repair or work on a colbalt ring but do sell them.",
+  },
+  ,
+  {
+    name: "18 Karat Green Gold",
+    description:
+      "We have used it as an accent metal in some of our jewelry. The main issue is that it does not look green enough.",
+  },
+  {
+    name: "Palladium",
+    description:
+      "Palladium was an alternative to plainum but is not more expensive in addition to being more difficult to work on because it is brittle.",
+  },
+]
 interface Tier {
   name: string
   id: string
@@ -65,11 +111,11 @@ const comparisons: Comparison[] = [
   {
     name: "Durability",
     tiers: {
-      Platinum: "Most Durable",
-      "14 Karat Yellow Gold": "Very Durable",
-      "18 Karat Yellow Gold": "Durable",
-      "14 Karat White Gold": "Very Durable",
-      "14 Karat Rose Gold": "Very Durable",
+      Platinum: "Most malleable (will bend and flex) but does not wear down",
+      "14 Karat Yellow Gold": "A bit malleable and will wear down",
+      "18 Karat Yellow Gold": "Somewhat malleable and will wear down quicker",
+      "14 Karat White Gold": "A bit malleable and will wear down",
+      "14 Karat Rose Gold": "A bit malleable and will wear down",
     },
     explanation:
       "Platinum is the most durable precious metal, making it ideal for everyday wear. 14K gold offers a good balance of durability and purity, while 18K gold is softer but more pure.",
@@ -77,10 +123,10 @@ const comparisons: Comparison[] = [
   {
     name: "Color",
     tiers: {
-      Platinum: "White/Silver",
-      "14 Karat Yellow Gold": "Rich Yellow",
+      Platinum: "White/Silver - but matte",
+      "14 Karat Yellow Gold": "Rich Yellow - Can Be Polished",
       "18 Karat Yellow Gold": "Deep Yellow",
-      "14 Karat White Gold": "White/Silver",
+      "14 Karat White Gold": "White/Silver With Yellow Hues",
       "14 Karat Rose Gold": "Pink/Rose",
     },
     explanation:
@@ -123,18 +169,6 @@ const comparisons: Comparison[] = [
       "Platinum is naturally hypoallergenic. Gold allergies are rare but possible, especially with white gold which contains nickel. Rose gold's copper content can cause reactions in some individuals.",
   },
   {
-    name: "Weight",
-    tiers: {
-      Platinum: "Heaviest",
-      "14 Karat Yellow Gold": "Light",
-      "18 Karat Yellow Gold": "Light",
-      "14 Karat White Gold": "Light",
-      "14 Karat Rose Gold": "Light",
-    },
-    explanation:
-      "Platinum is the densest precious metal, making it feel substantial. Gold alloys are lighter but still provide a satisfying weight for fine jewelry.",
-  },
-  {
     name: "Trademark",
     tiers: {
       Platinum: "PT, PLAT, PT950, PT900",
@@ -172,73 +206,114 @@ export function Metals() {
           <h2 className="text-center text-white mb-8 text-2xl">
             Metals For Jewelry We Like The Most & Why
           </h2>
-          <div className="overflow-x-auto">
-            <div className="overflow-hidden rounded-2xl bg-white shadow-xl border border-gold">
-              <table className="w-full">
-                <caption className="sr-only">Jewelry Metals Comparison</caption>
-                <thead>
-                  <tr className="border-b border-gold bg-dolginslightblue/5">
-                    <th
-                      scope="col"
-                      className="py-6 pl-6 pr-3 text-left text-sm font-semibold text-dolginsblue"
-                    >
-                      Feature
-                    </th>
-                    {tiers.map((tier) => (
+          <div className="overflow-x-auto -mx-4 sm:-mx-6 lg:-mx-8">
+            <div className="inline-block min-w-full py-2 align-middle px-4 sm:px-6 lg:px-8">
+              <div className="overflow-hidden rounded-2xl bg-white shadow-xl border border-gold">
+                <table className="min-w-full divide-y divide-gold">
+                  <caption className="sr-only">
+                    Jewelry Metals Comparison
+                  </caption>
+                  <thead>
+                    <tr className="border-b border-gold bg-dolginslightblue/5">
                       <th
-                        key={tier.id}
                         scope="col"
-                        className="px-6 py-6 text-left text-sm font-semibold text-dolginsblue"
+                        className="py-6 pl-6 pr-3 text-left text-sm font-semibold text-dolginsblue whitespace-nowrap"
                       >
-                        {tier.name}
+                        Feature
                       </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gold">
-                  {comparisons.map((comparison, idx) => (
-                    <Fragment key={comparison.name}>
-                      <tr
-                        className={classNames(
-                          idx % 2 === 0 ? "bg-white" : "bg-dolginslightblue/5"
-                        )}
-                      >
+                      {tiers.map((tier) => (
                         <th
-                          scope="row"
-                          className="py-4 pl-6 pr-3 text-left text-sm font-medium text-dolginsblue"
+                          key={tier.id}
+                          scope="col"
+                          className="px-6 py-6 text-left text-sm font-semibold text-dolginsblue whitespace-nowrap"
                         >
-                          {comparison.name}
+                          {tier.name}
                         </th>
-                        {tiers.map((tier) => (
-                          <td
-                            key={tier.id}
-                            className="px-6 py-4 text-sm text-gray-600"
-                          >
-                            {comparison.tiers[tier.name]}
-                          </td>
-                        ))}
-                      </tr>
-                      <tr
-                        className={classNames(
-                          idx % 2 === 0 ? "bg-white" : "bg-dolginslightblue/5"
-                        )}
-                      >
-                        <td
-                          colSpan={tiers.length + 1}
-                          className="px-6 py-3 text-sm text-gray-600 border-t border-gold"
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gold">
+                    {comparisons.map((comparison, idx) => (
+                      <Fragment key={comparison.name}>
+                        <tr
+                          className={classNames(
+                            idx % 2 === 0 ? "bg-white" : "bg-dolginslightblue/5"
+                          )}
                         >
-                          <p className="italic pl-6">
-                            {comparison.explanation}
-                          </p>
-                        </td>
-                      </tr>
-                    </Fragment>
-                  ))}
-                </tbody>
-              </table>
+                          <th
+                            scope="row"
+                            className="py-4 pl-6 pr-3 text-left text-sm font-medium text-dolginsblue whitespace-nowrap"
+                          >
+                            {comparison.name}
+                          </th>
+                          {tiers.map((tier) => (
+                            <td
+                              key={tier.id}
+                              className="px-6 py-4 text-sm text-gray-600 whitespace-normal"
+                            >
+                              {comparison.tiers[tier.name]}
+                            </td>
+                          ))}
+                        </tr>
+                        <tr
+                          className={classNames(
+                            idx % 2 === 0 ? "bg-white" : "bg-dolginslightblue/5"
+                          )}
+                        >
+                          <td
+                            colSpan={tiers.length + 1}
+                            className="px-6 py-3 text-sm text-gray-600 border-t border-gold"
+                          >
+                            <p className="italic pl-6 break-words whitespace-pre-wrap">
+                              {comparison.explanation}
+                            </p>
+                          </td>
+                        </tr>
+                      </Fragment>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
+      </div>
+      <div>
+        <div className="flex flex-row gap-4 justify-center items-center py-8">
+          <Image
+            src={ButtonBack1}
+            alt="Button Back Prong Engagement Ring In Yellow Gold"
+            className="w-1/3 aspect-square object-cover rounded-2xl"
+          />
+          <Image
+            src={ButtonBack4}
+            alt="Button Back Prong Engagement Ring In White Gold or Platinum"
+            className="w-1/3 aspect-square object-cover rounded-2xl"
+          />
+          <Image
+            src={ButtonBack3}
+            alt="Button Back Prong Engagement Ring In Rose Gold"
+            className="w-1/3 aspect-square object-cover rounded-2xl"
+          />
+        </div>
+      </div>
+      <div className="content-container py-12 small:py-24">
+        <div className="flex justify-between mb-8 border-b-2 border-gold">
+          <h2 className="text-5xl font-serif font-gold tracking-tight pb-2">
+            Other Metals We Work With On A More Limited Basis
+          </h2>
+        </div>
+        <dl className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 text-base/7 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+          {features.map((feature) => {
+            if (!feature) return null
+            return (
+              <div key={feature.name}>
+                <dt className="font-semibold text-gray-900">{feature.name}</dt>
+                <dd className="mt-1 text-gray-600">{feature.description}</dd>
+              </div>
+            )
+          })}
+        </dl>
       </div>
       <div>
         <DolginsCTA
