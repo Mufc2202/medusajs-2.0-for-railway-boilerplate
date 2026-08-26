@@ -1,12 +1,11 @@
 import type { SubscriberArgs, SubscriberConfig } from '@medusajs/framework'
 import { ProductEvents } from '@medusajs/utils'
-import { MeiliSearchService } from '@rokmohar/medusa-plugin-meilisearch'
 
 export default async function productDeleteHandler({ event: { data }, container }: SubscriberArgs<{ id: string }>) {
     const productId = data.id
 
     // Check if MeiliSearch service is available
-    let meiliSearchService: MeiliSearchService
+    let meiliSearchService: any
     try {
         meiliSearchService = container.resolve('@rokmohar/medusa-plugin-meilisearch')
     } catch (error) {

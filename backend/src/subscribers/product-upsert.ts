@@ -1,8 +1,7 @@
 import type { SubscriberArgs, SubscriberConfig } from '@medusajs/framework';
 import { IProductModuleService } from '@medusajs/framework/types';
 import { Modules } from '@medusajs/framework/utils';
-import { ProductEvents, SearchUtils } from '@medusajs/framework/utils';
-import { MeiliSearchService } from '@rokmohar/medusa-plugin-meilisearch';
+import { ProductEvents } from '@medusajs/framework/utils';
 
 export default async function productUpsertHandler({ event: { data }, container }: SubscriberArgs<{ id: string }>) {
   const productId = data.id;
@@ -10,7 +9,7 @@ export default async function productUpsertHandler({ event: { data }, container 
   const productModuleService: IProductModuleService = container.resolve(Modules.PRODUCT);
   
   // Check if MeiliSearch service is available
-  let meiliSearchService: MeiliSearchService;
+  let meiliSearchService: any;
   try {
     meiliSearchService = container.resolve('@rokmohar/medusa-plugin-meilisearch');
   } catch (error) {
@@ -19,7 +18,7 @@ export default async function productUpsertHandler({ event: { data }, container 
   }
 
   const product = await productModuleService.retrieveProduct(productId);
-  await meiliSearchService.addDocuments('products', [product], SearchUtils.indexTypes.PRODUCTS);
+  await meiliSearchService.addDocuments('products', [product], 'products');
 }
 
 export const config: SubscriberConfig = {

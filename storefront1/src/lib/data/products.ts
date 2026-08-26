@@ -43,21 +43,101 @@ export const getProductByHandle = cache(async function (
     .then(({ products }) => products[0])
 })
 
+export type StoreProductListParams = HttpTypes.FindParams &
+  HttpTypes.StoreProductParams & {
+    category_id?: string | string[]
+    collection_id?: string | string[]
+    is_giftcard?: boolean
+    tags?: string[]
+  }
+
 export const getProductsList = cache(async function ({
   pageParam = 1,
+  page,
   queryParams,
   countryCode,
 }: {
   pageParam?: number
-  queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
+  page?: number
+  queryParams?: StoreProductListParams
   countryCode: string
 }): Promise<{
   response: { products: HttpTypes.StoreProduct[]; count: number }
   nextPage: number | null
-  queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
+  queryParams?: StoreProductListParams
 }> {
   const limit = queryParams?.limit || 10000
-  const validPageParam = Math.max(pageParam, 1)
+  const validPageParam = Math.max(page ?? pageParam, 1)
+  const offset = (validPageParam - 1) * limit
+  const region = await getRegion(countryCode)
+
+  if (!region) {
+    return {
+      response: { products: [], count: 0 },
+      nextPage: null,
+    }
+  }
+
+  // Ensure category_id is properly formatted
+  const formattedQueryParams = {
+    ...queryParams,
+  }
+
+  if (Array.isArray(queryParams?.category_id)) {
+    formattedQueryParams.category_id = queryParams.category_id[0]
+  } else if (typeof queryParams?.category_id === "string") {
+    formattedQueryParams.category_id = queryParams.category_id
+  }
+
+  return sdk.store.product
+    .list(
+      {
+        limit,
+        offset,
+        region_id: region.id,
+        fields:
+          "*variants.calculated_price,+metadata,*seo_details,*seo_details.metaSocial,*variants.inventory_quantity,*categories",
+        ...formattedQueryParams,
+      },
+      { next: { tags: ["products"] } }
+    )
+    .then((response) => {
+      const { products, count } = response
+
+      const nextPage = count > offset + limit ? (page ?? pageParam) + 1 : null
+
+      return {
+        response: {
+          products,
+          count,
+        },
+        nextPage,
+        queryParams,
+      }
+    })
+})
+
+/**
+ * This will fetch 100 products to the Next.js cache and sort them based on the sortBy parameter.
+ * It will then return the paginated products based on the page and limit parameters.
+ */
+export const getProductsListWithSort = cache(async function ({
+  pageParam = 1,
+  page,
+  queryParams,
+  countryCode,
+}: {
+  pageParam?: number
+  page?: number
+  queryParams?: StoreProductListParams
+  countryCode: string
+}): Promise<{
+  response: { products: HttpTypes.StoreProduct[]; count: number }
+  nextPage: number | null
+  queryParams?: StoreProductListParams
+}> {
+  const limit = queryParams?.limit || 100
+  const validPageParam = Math.max(page ?? pageParam, 1)
   const offset = (validPageParam - 1) * limit
   const region = await getRegion(countryCode)
 
@@ -107,86 +187,18 @@ export const getProductsList = cache(async function ({
     })
 })
 
-/**
- * This will fetch 100 products to the Next.js cache and sort them based on the sortBy parameter.
- * It will then return the paginated products based on the page and limit parameters.
- */
-export const getProductsListWithSort = cache(async function ({
-  pageParam = 1,
-  queryParams,
-  countryCode,
-}: {
-  pageParam?: number
-  queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
-  countryCode: string
-}): Promise<{
-  response: { products: HttpTypes.StoreProduct[]; count: number }
-  nextPage: number | null
-  queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
-}> {
-  const limit = queryParams?.limit || 100
-  const validPageParam = Math.max(pageParam, 1)
-  const offset = (validPageParam - 1) * limit
-  const region = await getRegion(countryCode)
-
-  if (!region) {
-    return {
-      response: { products: [], count: 0 },
-      nextPage: null,
-    }
-  }
-
-  // Ensure category_id is properly formatted
-  const formattedQueryParams = {
-    ...queryParams,
-  }
-
-  if (Array.isArray(queryParams?.category_id)) {
-    formattedQueryParams.category_id = queryParams.category_id[0]
-  } else if (typeof queryParams?.category_id === "string") {
-    formattedQueryParams.category_id = queryParams.category_id
-  }
-
-  return sdk.store.product
-    .list(
-      {
-        limit,
-        offset,
-        region_id: region.id,
-        fields:
-          "*variants.calculated_price,+metadata,*seo_details,*seo_details.metaSocial,*variants.inventory_quantity,*categories",
-        ...formattedQueryParams,
-      },
-      { next: { tags: ["products"], revalidate: 300 } }
-    )
-    .then((response) => {
-      const { products, count } = response
-
-      const nextPage = count > offset + limit ? pageParam + 1 : null
-
-      return {
-        response: {
-          products,
-          count,
-        },
-        nextPage,
-        queryParams,
-      }
-    })
-})
-
 export const listProducts = async ({
   pageParam = 1,
   queryParams,
   countryCode,
 }: {
   pageParam?: number
-  queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
+  queryParams?: StoreProductListParams
   countryCode: string
 }): Promise<{
   response: { products: HttpTypes.StoreProduct[]; count: number }
   nextPage: number | null
-  queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
+  queryParams?: StoreProductListParams
 }> => {
   const limit = queryParams?.limit || 12
   const _pageParam = Math.max(pageParam, 1)

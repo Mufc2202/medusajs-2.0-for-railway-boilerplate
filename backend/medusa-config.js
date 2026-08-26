@@ -53,7 +53,7 @@ const medusaConfig = {
     },
     {
       key: Modules.FILE,
-      resolve: "@medusajs/file",
+      resolve: "@medusajs/medusa/file",
       options: {
         providers: [
           ...(MINIO_ENDPOINT && MINIO_ACCESS_KEY && MINIO_SECRET_KEY
@@ -71,7 +71,7 @@ const medusaConfig = {
               ]
             : [
                 {
-                  resolve: "@medusajs/file-local",
+                  resolve: "@medusajs/medusa/file-local",
                   id: "local",
                   options: {
                     upload_dir: "static",
@@ -92,14 +92,14 @@ const medusaConfig = {
           },
           {
             key: Modules.EVENT_BUS,
-            resolve: "@medusajs/event-bus-redis",
+            resolve: "@medusajs/medusa/event-bus-redis",
             options: {
               redisUrl: REDIS_URL,
             },
           },
           {
             key: Modules.WORKFLOW_ENGINE,
-            resolve: "@medusajs/workflow-engine-redis",
+            resolve: "@medusajs/medusa/workflow-engine-redis",
             options: {
               redis: {
                 url: REDIS_URL,
@@ -113,7 +113,7 @@ const medusaConfig = {
       ? [
           {
             key: Modules.NOTIFICATION,
-            resolve: "@medusajs/notification",
+            resolve: "@medusajs/medusa/notification",
             options: {
               providers: [
                 ...(SENDGRID_API_KEY && SENDGRID_FROM_EMAIL
@@ -151,7 +151,7 @@ const medusaConfig = {
       ? [
           {
             key: Modules.PAYMENT,
-            resolve: "@medusajs/payment",
+            resolve: "@medusajs/medusa/payment",
             options: {
               providers: [
                 {
@@ -167,6 +167,8 @@ const medusaConfig = {
           },
         ]
       : []),
+  ],
+  plugins: [
     ...(MEILISEARCH_HOST && MEILISEARCH_API_KEY
       ? [
           {
@@ -200,7 +202,6 @@ const medusaConfig = {
         ]
       : []),
   ],
-  plugins: [],
 };
 
 console.log(JSON.stringify(medusaConfig, null, 2));

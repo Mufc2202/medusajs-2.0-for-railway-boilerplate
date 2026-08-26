@@ -18,11 +18,12 @@ import Markdown from "react-markdown"
 import rehypeRaw from "rehype-raw"
 
 type Props = {
-  data: { bannerList: BannerProps[] }
+  data?: { bannerList?: BannerProps[]; banners?: BannerProps[] }
 }
 
 export const BannerData = ({ data }: Props) => {
-  const bannerData = data?.bannerList?.filter((item) => item.isActive) || []
+  const list = data?.bannerList || data?.banners || []
+  const bannerData = list.filter((item) => item.isActive)
 
   return (
     <>

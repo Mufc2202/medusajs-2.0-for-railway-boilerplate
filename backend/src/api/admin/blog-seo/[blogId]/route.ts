@@ -5,7 +5,6 @@ import { PRODUCT_SEO_MODULE } from "../../../../modules/product-seo";
 import { SeoDetailsTypes } from "../../../../modules/product-seo/models/seo-details";
 import ProductSeoModuleService from "../../../../modules/product-seo/service";
 import { uploadFilesWorkflow } from "@medusajs/medusa/core-flows";
-import { RemoteLink } from "@medusajs/framework/modules-sdk";
 import { BLOG_MODULE } from "modules/blog";
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
@@ -136,7 +135,7 @@ export async function POST(
     const newProductSeo = await productSeoService.retrieveSeoDetails(data.id, {
       relations: ["*", "metaSocial.*"],
     });
-    const remoteLink: RemoteLink = req.scope.resolve(
+    const remoteLink = req.scope.resolve(
       ContainerRegistrationKeys.REMOTE_LINK
     );
     await remoteLink.create({

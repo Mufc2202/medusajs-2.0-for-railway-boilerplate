@@ -7,6 +7,9 @@ import { getRegion, listRegions } from "@lib/data/regions"
 import { HttpTypes, StoreProductCategory } from "@medusajs/types"
 import { MetadataRoute } from "next"
 
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
 export const BASE_URL =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
 
@@ -240,35 +243,40 @@ const findCountryCodes = async () => {
 
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const countryCodes = await findCountryCodes()
+  try {
+    const countryCodes = await findCountryCodes()
 
-  let staticPages: Sitemap[] = []
-  let dynamicPages: Sitemap[] = []
+    let staticPages: Sitemap[] = []
+    let dynamicPages: Sitemap[] = []
 
-  if (countryCodes && countryCodes?.length) {
-    for (let i = 0; i < countryCodes.length; i++) {
-      const currentCountryCode = countryCodes[i]!
-      const dynamicSitemap: Sitemap[] | null =
-        await generateSitemapByCountryCode(currentCountryCode)
-      const staticSitemap: Sitemap[] | null =
-        await generateStaticSitemap()
-      if (dynamicSitemap) dynamicPages = [...dynamicSitemap]
-      if (staticSitemap) staticPages = [...staticSitemap]
+    if (countryCodes && countryCodes?.length) {
+      for (let i = 0; i < countryCodes.length; i++) {
+        const currentCountryCode = countryCodes[i]!
+        const dynamicSitemap: Sitemap[] | null =
+          await generateSitemapByCountryCode(currentCountryCode)
+        const staticSitemap: Sitemap[] | null =
+          await generateStaticSitemap()
+        if (dynamicSitemap) dynamicPages = [...dynamicSitemap]
+        if (staticSitemap) staticPages = [...staticSitemap]
+      }
+    } else {
+      const sitemap: Sitemap[] | null = await generateSitemapByCountryCode(
+        DEFAULT_REGION
+      )
+      if (sitemap) dynamicPages = [...dynamicPages, ...sitemap]
     }
-  } else {
-    const sitemap: Sitemap[] | null = await generateSitemapByCountryCode(
-      DEFAULT_REGION
-    )
-    if (sitemap) dynamicPages = [...dynamicPages, ...sitemap]
+
+    const categoryRoutes = await generateCategoryRoutes()
+
+    if (categoryRoutes) {
+      dynamicPages.push(...categoryRoutes)
+    }
+
+    return [...staticPages, ...dynamicPages]
+  } catch (error) {
+    console.error("Error generating sitemap:", error)
+    return (await generateStaticSitemap()) || []
   }
-
-  const categoryRoutes = await generateCategoryRoutes()
-
-  if (categoryRoutes) {
-    dynamicPages.push(...categoryRoutes)
-  }
-
-  return [...staticPages, ...dynamicPages]
 }
 
 

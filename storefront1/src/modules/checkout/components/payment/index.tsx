@@ -146,7 +146,7 @@ const Payment = ({
           {!paidByGiftcard && availablePaymentMethods?.length && (
             <>
               <RadioGroup
-                value={selectedPaymentMethod}
+                value={selectedPaymentMethod || ""}
                 onChange={(value: string) => setSelectedPaymentMethod(value)}
               >
                 {availablePaymentMethods

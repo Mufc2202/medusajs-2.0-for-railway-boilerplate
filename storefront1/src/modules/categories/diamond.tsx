@@ -133,7 +133,7 @@ export default async function Diamond({
 }: {
   category: StoreProductCategory
   sort?: string
-  pageNumber?: string
+  pageNumber?: number | string
   countryCode: string
 }) {
   const parentCategory = category
@@ -310,7 +310,11 @@ export default async function Diamond({
           <PaginatedProducts
             categoryId={categoryId}
             sortBy={sort as SortOptions}
-            page={pageNumber ? parseInt(pageNumber) : 1}
+            page={
+              typeof pageNumber === "string"
+                ? parseInt(pageNumber)
+                : pageNumber || 1
+            }
             countryCode={countryCode}
           />
         </Suspense>

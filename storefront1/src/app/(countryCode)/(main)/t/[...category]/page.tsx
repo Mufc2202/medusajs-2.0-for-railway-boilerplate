@@ -50,57 +50,65 @@ type OGProps = {
 }
 
 export async function generateStaticParams() {
-  const product_categories = await listCategories()
+  try {
+    const product_categories = await listCategories()
 
-  if (!product_categories) {
+    if (!product_categories) {
+      return []
+    }
+
+    const countryCodes = await listRegions().then((regions: StoreRegion[]) =>
+      regions?.map((r) => r.countries?.map((c) => c.iso_2)).flat()
+    )
+
+    if (!countryCodes || !countryCodes.length) {
+      return []
+    }
+
+    const categoryHandleMap = new Map<string, string>() // id => handle
+    for (const productCategory of product_categories) {
+      categoryHandleMap.set(productCategory.id, productCategory.handle)
+      if (productCategory.parent_category) {
+        categoryHandleMap.set(
+          productCategory.parent_category.id,
+          productCategory.parent_category.handle
+        )
+      }
+    }
+
+    const staticParams = []
+
+    for (const countryCode of countryCodes) {
+      for (const productCategory of product_categories) {
+        // up to 3 levels supported
+        const route = [] as string[]
+
+        if (productCategory.parent_category?.parent_category_id) {
+          const grandparent = categoryHandleMap.get(
+            productCategory.parent_category.parent_category_id
+          )
+          if (grandparent) route.push(grandparent)
+        }
+        if (productCategory.parent_category_id) {
+          const parent = categoryHandleMap.get(productCategory.parent_category_id)
+          if (parent) route.push(parent)
+        }
+        route.push(productCategory.handle)
+
+        staticParams.push({
+          countryCode,
+          category: route,
+        })
+      }
+    }
+
+    return staticParams
+  } catch (e) {
     return []
   }
-
-  const countryCodes = await listRegions().then((regions: StoreRegion[]) =>
-    regions?.map((r) => r.countries?.map((c) => c.iso_2)).flat()
-  )
-
-  const categoryHandleMap = new Map<string, string>() // id => handle
-  for (const productCategory of product_categories) {
-    categoryHandleMap.set(productCategory.id, productCategory.handle)
-    if (productCategory.parent_category) {
-      categoryHandleMap.set(
-        productCategory.parent_category.id,
-        productCategory.parent_category.handle
-      )
-    }
-  }
-
-  const staticParams = []
-
-  for (const countryCode of countryCodes) {
-    for (const productCategory of product_categories) {
-      // up to 3 levels supported
-      const route = [] as string[]
-
-      if (productCategory.parent_category?.parent_category_id) {
-        const grandparent = categoryHandleMap.get(
-          productCategory.parent_category.parent_category_id
-        )
-        if (grandparent) route.push(grandparent)
-      }
-      if (productCategory.parent_category_id) {
-        const parent = categoryHandleMap.get(productCategory.parent_category_id)
-        if (parent) route.push(parent)
-      }
-      route.push(productCategory.handle)
-
-      staticParams.push({
-        countryCode,
-        category: route,
-      })
-    }
-  }
-
-  return staticParams
 }
 
-export const dynamicParams = false // don't allow any route
+export const dynamicParams = true
 
 const buildCategoryUrl = async (category: CustomCategory) => {
   const categoryPathIds = category?.parent_category?.mpath?.split(".")

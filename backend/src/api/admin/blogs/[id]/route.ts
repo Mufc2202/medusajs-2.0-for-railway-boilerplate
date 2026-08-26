@@ -9,7 +9,6 @@ import { BLOG_MODULE } from "../../../../modules/blog";
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
 import { uploadFilesWorkflow } from "@medusajs/medusa/core-flows";
 import type { FileDTO } from "@medusajs/framework/types";
-import { RemoteLink } from "@medusajs/framework/modules-sdk";
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   try {
@@ -51,7 +50,7 @@ export async function PUT(
   try {
     const blogModuleService: BlogModuleService = req.scope.resolve(BLOG_MODULE);
     const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
-    const remoteLink: RemoteLink = req.scope.resolve(
+    const remoteLink = req.scope.resolve(
       ContainerRegistrationKeys.REMOTE_LINK
     );
     const blogId = req.params.id;

@@ -3,7 +3,6 @@ import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import rehypeRaw from "rehype-raw"
 import styles from "./MarkdownRenderer.module.css" // Import your CSS module
-import { AlignVerticalDistributeCenter } from "lucide-react"
 import clsx from "clsx"
 import { cn } from "@lib/utils"
 

@@ -1,8 +1,7 @@
 "use client"
 
 import { Badge, Heading, Input, Label, Text, Tooltip } from "@medusajs/ui"
-import React from "react"
-import { useFormState } from "react-dom"
+import React, { useActionState } from "react"
 
 import { applyPromotions, submitPromotionForm } from "@lib/data/cart"
 import { convertToLocale } from "@lib/util/money"
@@ -50,7 +49,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
     }
   }
 
-  const [message, formAction] = useFormState(submitPromotionForm, null)
+  const [message, formAction] = useActionState(submitPromotionForm, null)
 
   return (
     <div className="w-full bg-white flex flex-col">
@@ -129,7 +128,10 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
                               "percentage"
                                 ? `${promotion.application_method.value}%`
                                 : convertToLocale({
-                                    amount: promotion.application_method.value,
+                                    amount:
+                                      typeof promotion.application_method.value === "string"
+                                        ? parseFloat(promotion.application_method.value)
+                                        : promotion.application_method.value,
                                     currency_code:
                                       promotion.application_method
                                         .currency_code,

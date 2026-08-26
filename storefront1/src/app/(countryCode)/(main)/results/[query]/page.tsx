@@ -12,24 +12,25 @@ export const metadata: Metadata = {
 }
 
 type Params = {
-  params: { query: string }
-  searchParams: {
+  params: Promise<{ countryCode?: string; query: string }>
+  searchParams: Promise<{
     sortBy?: SortOptions
     page?: string
-  }
+  }>
 }
 
-export default async function SearchResults({ params, searchParams }: Params) {
-  const { query } = params
-  const { sortBy, page } = searchParams
+export default async function SearchResults(props: Params) {
+  const params = await props.params
+  const searchParams = await props.searchParams
 
-  const hits = await search(query).then((data) => data)
+  const query = decodeURIComponent(params?.query || "")
+  const { sortBy, page } = searchParams || {}
+
+  const hits = await search(query)
 
   const ids = hits
-    .map((h) => h.objectID || h.id)
-    .filter((id): id is string => {
-      return typeof id === "string"
-    })
+    .map((h) => (h.objectID || h.id) as string)
+    .filter((id): id is string => typeof id === "string")
 
   return (
     <SearchResultsTemplate
@@ -37,7 +38,7 @@ export default async function SearchResults({ params, searchParams }: Params) {
       ids={ids}
       sortBy={sortBy}
       page={page}
-      countryCode={countryCode}
+      countryCode={params?.countryCode || countryCode}
     />
   )
 }

@@ -213,7 +213,7 @@ export function Buying() {
                       <svg
                         fill="none"
                         height="24"
-                        shape-rendering="geometricPrecision"
+                        shapeRendering="geometricPrecision"
                         stroke="currentColor"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -244,7 +244,7 @@ export function Buying() {
                       <svg
                         fill="none"
                         height="24"
-                        shape-rendering="geometricPrecision"
+                        shapeRendering="geometricPrecision"
                         stroke="currentColor"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -276,7 +276,7 @@ export function Buying() {
                       <svg
                         fill="none"
                         height="24"
-                        shape-rendering="geometricPrecision"
+                        shapeRendering="geometricPrecision"
                         stroke="currentColor"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -308,7 +308,7 @@ export function Buying() {
                       <svg
                         fill="none"
                         height="24"
-                        shape-rendering="geometricPrecision"
+                        shapeRendering="geometricPrecision"
                         stroke="currentColor"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -334,7 +334,7 @@ export function Buying() {
                       <svg
                         fill="none"
                         height="24"
-                        shape-rendering="geometricPrecision"
+                        shapeRendering="geometricPrecision"
                         stroke="currentColor"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -363,7 +363,7 @@ export function Buying() {
                       <svg
                         fill="none"
                         height="24"
-                        shape-rendering="geometricPrecision"
+                        shapeRendering="geometricPrecision"
                         stroke="currentColor"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -394,7 +394,7 @@ export function Buying() {
                       <svg
                         fill="none"
                         height="24"
-                        shape-rendering="geometricPrecision"
+                        shapeRendering="geometricPrecision"
                         stroke="currentColor"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -423,7 +423,7 @@ export function Buying() {
                       <svg
                         fill="none"
                         height="24"
-                        shape-rendering="geometricPrecision"
+                        shapeRendering="geometricPrecision"
                         stroke="currentColor"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -452,7 +452,7 @@ export function Buying() {
                       <svg
                         fill="none"
                         height="24"
-                        shape-rendering="geometricPrecision"
+                        shapeRendering="geometricPrecision"
                         stroke="currentColor"
                         strokeLinecap="round"
                         strokeLinejoin="round"
