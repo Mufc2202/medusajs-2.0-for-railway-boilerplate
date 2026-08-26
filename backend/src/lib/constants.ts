@@ -14,10 +14,10 @@ export const IS_DEV = process.env.NODE_ENV === "development";
  */
 export const BACKEND_URL =
   process.env.BACKEND_PUBLIC_URL ??
-  process.env.MEDUSA_ADMIN_BACKEND_URL ??
   process.env.MEDUSA_BACKEND_URL ??
+  process.env.MEDUSA_ADMIN_BACKEND_URL ??
   process.env.RAILWAY_PUBLIC_DOMAIN_VALUE ??
-  "http://localhost:9000";
+  "https://backend.dolgins.com";
 
 /**
  * Database URL for Postgres instance used by the backend
