@@ -43,8 +43,20 @@ class MinioFileProviderService extends AbstractFileProviderService {
   constructor({ logger }: InjectedDependencies, options: MinioFileProviderOptions) {
     super()
     this.logger_ = logger
+    const rawEndpoint = (options.endPoint || '').replace(/^https?:\/\//i, '').replace(/\/+$/, '')
+    let host = rawEndpoint
+    let port = 443
+    let useSSL = true
+
+    if (rawEndpoint.includes(':')) {
+      const [h, p] = rawEndpoint.split(':')
+      host = h
+      port = parseInt(p, 10) || 443
+      useSSL = port === 443 || process.env.SSL === 'true'
+    }
+
     this.config_ = {
-      endPoint: options.endPoint,
+      endPoint: host,
       accessKey: options.accessKey,
       secretKey: options.secretKey,
       bucket: options.bucket
@@ -54,11 +66,11 @@ class MinioFileProviderService extends AbstractFileProviderService {
     this.bucket = this.config_.bucket || DEFAULT_BUCKET
     this.logger_.info(`MinIO service initialized with bucket: ${this.bucket}`)
 
-    // Initialize Minio client with hardcoded SSL settings
+    // Initialize Minio client with sanitized settings
     this.client = new Client({
-      endPoint: this.config_.endPoint,
-      port: 443,
-      useSSL: true,
+      endPoint: host,
+      port,
+      useSSL,
       accessKey: this.config_.accessKey,
       secretKey: this.config_.secretKey
     })
@@ -177,7 +189,11 @@ class MinioFileProviderService extends AbstractFileProviderService {
       )
 
       // Generate URL using the endpoint and bucket
-      const url = `https://${this.config_.endPoint}/${this.bucket}/${fileKey}`
+      const baseUrl =
+        process.env.MINIO_S3_FILE_URL ||
+        process.env.MINIO_FILE_URL ||
+        `https://${this.config_.endPoint}/${this.bucket}`
+      const url = `${baseUrl.replace(/\/+$/, '')}/${fileKey}`
 
       this.logger_.info(`Successfully uploaded file ${fileKey} to MinIO bucket ${this.bucket}`)
 

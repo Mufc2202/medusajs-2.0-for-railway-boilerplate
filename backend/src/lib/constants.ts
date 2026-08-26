@@ -14,6 +14,8 @@ export const IS_DEV = process.env.NODE_ENV === "development";
  */
 export const BACKEND_URL =
   process.env.BACKEND_PUBLIC_URL ??
+  process.env.MEDUSA_ADMIN_BACKEND_URL ??
+  process.env.MEDUSA_BACKEND_URL ??
   process.env.RAILWAY_PUBLIC_DOMAIN_VALUE ??
   "http://localhost:9000";
 
@@ -73,10 +75,14 @@ export const COOKIE_SECRET = assertValue(
 /**
  * (optional) Minio configuration for file storage
  */
-export const MINIO_ENDPOINT = process.env.MINIO_ENDPOINT;
-export const MINIO_ACCESS_KEY = process.env.MINIO_ACCESS_KEY;
-export const MINIO_SECRET_KEY = process.env.MINIO_SECRET_KEY;
-export const MINIO_BUCKET = process.env.MINIO_BUCKET; // Optional, if not set bucket will be called: medusa-media
+export const MINIO_ENDPOINT =
+  process.env.MINIO_ENDPOINT ?? process.env.MINIO_S3_ENDPOINT;
+export const MINIO_ACCESS_KEY =
+  process.env.MINIO_ACCESS_KEY ?? process.env.MINIO_S3_ACCESS_KEY_ID;
+export const MINIO_SECRET_KEY =
+  process.env.MINIO_SECRET_KEY ?? process.env.MINIO_S3_SECRET_ACCESS_KEY;
+export const MINIO_BUCKET =
+  process.env.MINIO_BUCKET ?? process.env.MINIO_S3_BUCKET; // Optional, if not set bucket will be called: medusa-media
 
 /**
  * (optional) Resend API Key and from Email - do not set if using SendGrid
@@ -115,4 +121,6 @@ export const WORKER_MODE =
 /**
  * Disable Admin
  */
-export const SHOULD_DISABLE_ADMIN = process.env.MEDUSA_DISABLE_ADMIN === "true";
+export const SHOULD_DISABLE_ADMIN =
+  process.env.MEDUSA_DISABLE_ADMIN === "true" ||
+  process.env.DISABLE_MEDUSA_ADMIN === "true";
