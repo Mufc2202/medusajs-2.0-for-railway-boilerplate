@@ -1392,6 +1392,8 @@ const PriceCalculatorPage = () => {
                     <Table.HeaderCell>Offered Price</Table.HeaderCell>
                     <Table.HeaderCell>Status</Table.HeaderCell>
                     <Table.HeaderCell>Revisions</Table.HeaderCell>
+                    <Table.HeaderCell>Created At</Table.HeaderCell>
+                    <Table.HeaderCell>Updated At</Table.HeaderCell>
                     <Table.HeaderCell className="text-right pr-6">Actions</Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
@@ -1416,14 +1418,9 @@ const PriceCalculatorPage = () => {
                         }}
                       >
                         <Table.Cell className="pl-6">
-                          <div>
-                            <Text className="font-semibold text-xs text-ui-fg-base hover:text-ui-fg-interactive transition-colors">
-                              {q.title}
-                            </Text>
-                            <Text className="text-[10px] text-ui-fg-muted">
-                              {new Date(q.created_at).toLocaleDateString()}
-                            </Text>
-                          </div>
+                          <Text className="font-semibold text-xs text-ui-fg-base hover:text-ui-fg-interactive transition-colors">
+                            {q.title}
+                          </Text>
                         </Table.Cell>
 
                         <Table.Cell>
@@ -1465,6 +1462,32 @@ const PriceCalculatorPage = () => {
                           <Badge size="xsmall" color="grey">
                             Rev #{revisionsCount}
                           </Badge>
+                        </Table.Cell>
+
+                        <Table.Cell>
+                          <div>
+                            <Text className="text-xs text-ui-fg-base font-medium">
+                              {new Date(q.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                            </Text>
+                            <Text className="text-[10px] text-ui-fg-muted">
+                              {new Date(q.created_at).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
+                            </Text>
+                          </div>
+                        </Table.Cell>
+
+                        <Table.Cell>
+                          {q.updated_at && new Date(q.updated_at).getTime() - new Date(q.created_at).getTime() > 1000 ? (
+                            <div>
+                              <Text className="text-xs text-ui-fg-base font-medium">
+                                {new Date(q.updated_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                              </Text>
+                              <Text className="text-[10px] text-ui-fg-muted">
+                                {new Date(q.updated_at).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
+                              </Text>
+                            </div>
+                          ) : (
+                            <Text className="text-xs text-ui-fg-muted">—</Text>
+                          )}
                         </Table.Cell>
 
                         <Table.Cell className="text-right pr-6" onClick={(e) => e.stopPropagation()}>
@@ -1905,6 +1928,29 @@ const PriceCalculatorPage = () => {
                   </Text>
                 </div>
 
+                {/* Quote Timestamps & Status Strip */}
+                <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-xl bg-ui-bg-subtle border border-ui-border-base text-xs">
+                  <div className="flex items-center gap-6">
+                    <div>
+                      <span className="text-[10px] text-ui-fg-muted block uppercase font-bold tracking-wider">Created At</span>
+                      <span className="font-semibold text-ui-fg-base">
+                        {recalcQuote.created_at ? new Date(recalcQuote.created_at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }) : "—"}
+                      </span>
+                    </div>
+                    <div className="h-6 w-px bg-ui-border-base" />
+                    <div>
+                      <span className="text-[10px] text-ui-fg-muted block uppercase font-bold tracking-wider">Last Updated</span>
+                      <span className="font-semibold text-ui-fg-base">
+                        {recalcQuote.updated_at ? new Date(recalcQuote.updated_at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }) : (recalcQuote.created_at ? new Date(recalcQuote.created_at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }) : "—")}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge size="xsmall" color="grey">Revision #{recalcQuote.revisions?.length || 1}</Badge>
+                    <Badge size="xsmall" color={recalcQuote.status === "accepted" ? "green" : "blue"}>{recalcQuote.status || "offered"}</Badge>
+                  </div>
+                </div>
+
                 {/* 1. Price Comparison Hero Card */}
                 <Container className="p-5 shadow-xs border border-ui-border-base space-y-4">
                   <div className="flex items-center justify-between border-b border-ui-border-base pb-3">
@@ -2253,6 +2299,35 @@ const PriceCalculatorPage = () => {
                   <option value="declined">Declined</option>
                   <option value="expired">Expired</option>
                 </select>
+              </div>
+            </div>
+
+            {/* Created & Updated Timestamps Strip */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-3.5 rounded-xl bg-ui-bg-base border border-ui-border-base text-xs shadow-xs">
+              <div>
+                <span className="text-[10px] text-ui-fg-muted block uppercase font-bold tracking-wider">Created Date</span>
+                <span className="font-semibold text-ui-fg-base">
+                  {selectedQuote?.created_at
+                    ? new Date(selectedQuote.created_at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" })
+                    : "—"}
+                </span>
+              </div>
+              <div>
+                <span className="text-[10px] text-ui-fg-muted block uppercase font-bold tracking-wider">Last Updated</span>
+                <span className="font-semibold text-ui-fg-base">
+                  {selectedQuote?.updated_at
+                    ? new Date(selectedQuote.updated_at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" })
+                    : (selectedQuote?.created_at
+                        ? new Date(selectedQuote.created_at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" })
+                        : "—")}
+                </span>
+              </div>
+              <div>
+                <span className="text-[10px] text-ui-fg-muted block uppercase font-bold tracking-wider">Total Revisions</span>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <Badge size="xsmall" color="grey">Rev #{selectedQuote?.revisions?.length || 1}</Badge>
+                  <span className="text-[11px] text-ui-fg-muted">Active version</span>
+                </div>
               </div>
             </div>
 
