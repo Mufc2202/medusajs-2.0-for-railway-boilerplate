@@ -2,3 +2,5 @@
 .env    
 .env.*
 .agents/
+backend/public/
+.DS_Store
