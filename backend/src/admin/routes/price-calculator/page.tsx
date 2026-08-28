@@ -133,9 +133,9 @@ const PriceCalculatorPage = () => {
   const [isLiveRates, setIsLiveRates] = useState<boolean>(false);
 
   // Calculator state
-  const [mode, setMode] = useState<"retail_selling" | "scrap_buying">("retail_selling");
+  const [mode, setMode] = useState<"retail_selling" | "scrap_buying">("scrap_buying");
   const [items, setItems] = useState<CalculatorItem[]>([defaultItem()]);
-  const [profitMargin, setProfitMargin] = useState<number>(20); // 20% default retail margin
+  const [profitMargin, setProfitMargin] = useState<number | string>(85); // 85% default scrap payout ratio
 
   // Quotes & navigation state
   const [activeTab, setActiveTab] = useState<"calculator" | "quotes">("calculator");
@@ -452,11 +452,13 @@ const PriceCalculatorPage = () => {
     let finalOfferedPrice = 0;
 
     if (mode === "scrap_buying") {
-      const payoutRatio = (profitMargin > 0 && profitMargin <= 100 ? profitMargin : 85) / 100.0;
+      const marginNum = typeof profitMargin === "number" ? profitMargin : parseFloat(profitMargin as string);
+      const payoutRatio = (!isNaN(marginNum) && marginNum >= 0 && marginNum <= 100 ? marginNum : 85) / 100.0;
       finalOfferedPrice = totalBaseMetalCost * payoutRatio;
       profitAmount = totalBaseMetalCost - finalOfferedPrice;
     } else {
-      profitAmount = totalCostPrice * ((profitMargin || 0) / 100.0);
+      const marginNum = typeof profitMargin === "number" ? profitMargin : parseFloat(profitMargin as string);
+      profitAmount = totalCostPrice * ((!isNaN(marginNum) && marginNum >= 0 ? marginNum : 0) / 100.0);
       finalOfferedPrice = totalCostPrice + profitAmount;
     }
 
@@ -469,7 +471,7 @@ const PriceCalculatorPage = () => {
       labor_cost: totalLaborCost,
       stone_cost: totalStoneCost,
       total_cost_price: totalCostPrice,
-      profit_margin_percent: profitMargin,
+      profit_margin_percent: Number(profitMargin) || 0,
       profit_amount: profitAmount,
       final_offered_price: finalOfferedPrice,
       itemResults,
@@ -666,8 +668,8 @@ const PriceCalculatorPage = () => {
 
         // Reset Live Price Calculator form
         setItems([defaultItem()]);
-        setProfitMargin(20);
-        setMode("retail_selling");
+        setProfitMargin(85);
+        setMode("scrap_buying");
 
         fetchQuotes();
         toast.success("Quote Saved Successfully", {
@@ -914,91 +916,20 @@ const PriceCalculatorPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left 8 Cols: Item configuration */}
           <div className="lg:col-span-8 space-y-4">
-            {/* Mode Switch Card */}
-            <Container className="p-4 sm:p-5 shadow-xs border border-ui-border-base space-y-3">
+            {/* Section Header */}
+            <Container className="p-4 sm:p-5 shadow-xs border border-ui-border-base">
               <div>
-                <Heading level="h2" className="text-sm sm:text-base font-semibold text-ui-fg-base">
-                  Calculation Mode
-                </Heading>
-                <Text className="text-xs text-ui-fg-subtle mt-0.5">
-                  Select your transaction type to automatically configure pricing formulas and margins.
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 rounded-md bg-amber-500/10 text-amber-500">
+                    <CurrencyDollar className="w-4 h-4" />
+                  </div>
+                  <Heading level="h2" className="text-sm sm:text-base font-semibold text-ui-fg-base">
+                    Scrap Metal Buy-Back Calculation
+                  </Heading>
+                </div>
+                <Text className="text-xs text-ui-fg-subtle mt-1">
+                  Configure items and precious metal weights to compute live melt valuations and customer payout offers.
                 </Text>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                {/* Mode 1: Custom Jewelry Sale */}
-                <div
-                  onClick={() => {
-                    setMode("retail_selling");
-                    setProfitMargin(20);
-                  }}
-                  className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
-                    mode === "retail_selling"
-                      ? "bg-ui-bg-base border-ui-border-interactive ring-1 ring-ui-border-interactive shadow-xs"
-                      : "bg-ui-bg-subtle/60 border-ui-border-base hover:border-ui-border-strong hover:bg-ui-bg-subtle"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`p-2 rounded-lg ${
-                        mode === "retail_selling"
-                          ? "bg-blue-500/10 text-blue-500"
-                          : "bg-ui-bg-base text-ui-fg-muted"
-                      }`}
-                    >
-                      <Sparkles className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <span
-                        className={`text-xs font-bold block ${
-                          mode === "retail_selling" ? "text-ui-fg-base" : "text-ui-fg-subtle"
-                        }`}
-                      >
-                        Custom Jewelry Sale
-                      </span>
-                      <span className="text-[11px] text-ui-fg-muted block mt-0.5">
-                        Base Metals + Labor + Benchwork + Profit %
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Mode 2: Scrap Metal Buy-Back */}
-                <div
-                  onClick={() => {
-                    setMode("scrap_buying");
-                    setProfitMargin(85);
-                  }}
-                  className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
-                    mode === "scrap_buying"
-                      ? "bg-ui-bg-base border-ui-border-interactive ring-1 ring-ui-border-interactive shadow-xs"
-                      : "bg-ui-bg-subtle/60 border-ui-border-base hover:border-ui-border-strong hover:bg-ui-bg-subtle"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`p-2 rounded-lg ${
-                        mode === "scrap_buying"
-                          ? "bg-amber-500/10 text-amber-500"
-                          : "bg-ui-bg-base text-ui-fg-muted"
-                      }`}
-                    >
-                      <CurrencyDollar className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <span
-                        className={`text-xs font-bold block ${
-                          mode === "scrap_buying" ? "text-ui-fg-base" : "text-ui-fg-subtle"
-                        }`}
-                      >
-                        Scrap Metal Buy-Back
-                      </span>
-                      <span className="text-[11px] text-ui-fg-muted block mt-0.5">
-                        Melt Valuation × Refiner Payout %
-                      </span>
-                    </div>
-                  </div>
-                </div>
               </div>
             </Container>
 
@@ -1182,20 +1113,39 @@ const PriceCalculatorPage = () => {
                 <div className="flex items-center gap-3">
                   <input
                     type="range"
-                    min={mode === "retail_selling" ? "0" : "50"}
+                    min="0"
                     max={mode === "retail_selling" ? "200" : "100"}
                     step="1"
-                    value={profitMargin}
-                    onChange={(e) => setProfitMargin(parseFloat(e.target.value) || 0)}
+                    value={profitMargin === "" ? 0 : Number(profitMargin)}
+                    onChange={(e) => setProfitMargin(Number(e.target.value))}
                     className="w-28 sm:w-36 accent-ui-fg-interactive cursor-pointer"
                   />
                   <div className="flex items-center gap-1">
                     <Input
                       type="number"
                       min="0"
-                      max="500"
+                      max={mode === "retail_selling" ? "500" : "100"}
                       value={profitMargin}
-                      onChange={(e) => setProfitMargin(parseFloat(e.target.value) || 0)}
+                      onChange={(e) => {
+                        const raw = e.target.value;
+                        if (raw === "") {
+                          setProfitMargin("");
+                          return;
+                        }
+                        const formatted =
+                          raw.length > 1 && raw.startsWith("0") && !raw.startsWith("0.")
+                            ? raw.replace(/^0+/, "") || "0"
+                            : raw;
+                        const parsed = parseFloat(formatted);
+                        setProfitMargin(isNaN(parsed) ? "" : parsed);
+                      }}
+                      onBlur={() => {
+                        if (profitMargin === "" || isNaN(Number(profitMargin))) {
+                          setProfitMargin(0);
+                        } else {
+                          setProfitMargin(Number(profitMargin));
+                        }
+                      }}
                       className="w-16 text-center font-bold text-xs"
                     />
                     <span className="text-xs font-semibold text-ui-fg-subtle">%</span>
@@ -1283,7 +1233,7 @@ const PriceCalculatorPage = () => {
 
                 {mode === "scrap_buying" && (
                   <div className="flex justify-between text-amber-600 font-semibold">
-                    <span>Refiner Payout ({profitMargin}% of Melt):</span>
+                    <span>Refiner Payout ({profitMargin || 0}% of Melt):</span>
                     <span>${calculationSummary.final_offered_price.toFixed(2)}</span>
                   </div>
                 )}
@@ -1860,7 +1810,7 @@ const PriceCalculatorPage = () => {
               </div>
               <div className="flex justify-between text-ui-fg-muted">
                 <span>Margin Applied:</span>
-                <span className="font-semibold">{profitMargin}%</span>
+                <span className="font-semibold">{profitMargin || 0}%</span>
               </div>
             </div>
           </Drawer.Body>

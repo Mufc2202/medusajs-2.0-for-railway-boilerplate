@@ -55,6 +55,15 @@ const medusaConfig = {
       resolve: "./src/modules/jewelry-quotes",
     },
     {
+      resolve: "./src/modules/banner",
+    },
+    {
+      resolve: "./src/modules/product-category-details",
+    },
+    {
+      resolve: "./src/modules/product-additional-details",
+    },
+    {
       key: Modules.FILE,
       resolve: "@medusajs/medusa/file",
       options: {

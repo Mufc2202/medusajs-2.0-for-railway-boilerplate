@@ -39,5 +39,25 @@ export default defineMiddlewares({
         authenticate("user", ["session", "bearer"]),
       ],
     },
+    {
+      matcher: "/admin/banner-images*",
+      method: ["POST", "PUT"],
+      middlewares: [upload.array("files")],
+    },
+    {
+      matcher: "/admin/category-seo/**",
+      method: ["PUT", "POST"],
+      middlewares: [upload.array("files")],
+    },
+    {
+      matcher: "/admin/product-category-details/category**",
+      method: ["POST", "PUT"],
+      middlewares: [
+        upload.fields([
+          { name: "thumbnail", maxCount: 1 },
+          { name: "media", maxCount: 10 },
+        ]),
+      ],
+    },
   ],
 });

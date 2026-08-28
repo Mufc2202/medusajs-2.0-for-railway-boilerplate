@@ -48,19 +48,25 @@ export async function POST(
       ...(upload_result?.url && { image: upload_result?.url }),
     });
 
-    if (blog.id && categories && categories.length > 0) {
+    const categoryIds = Array.from(
+      new Set(
+        (Array.isArray(categories) ? categories : []).filter(
+          (c): c is string => typeof c === "string" && c.length > 0
+        )
+      )
+    );
+
+    if (blog.id && categoryIds.length > 0) {
       await Promise.all(
-        categories.map(async (category: string) => {
-          if (category) {
-            await remoteLink.create({
-              [BLOG_MODULE]: {
-                blog_id: blog.id,
-              },
-              [Modules.PRODUCT]: {
-                product_category_id: category,
-              },
-            });
-          }
+        categoryIds.map(async (category: string) => {
+          await remoteLink.create({
+            [BLOG_MODULE]: {
+              blog_id: blog.id,
+            },
+            [Modules.PRODUCT]: {
+              product_category_id: category,
+            },
+          });
         })
       );
     }

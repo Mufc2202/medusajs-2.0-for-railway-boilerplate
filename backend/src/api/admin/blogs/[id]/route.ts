@@ -95,44 +95,79 @@ export async function PUT(
     });
 
     // Step 3: Determine distinct categories to add and delete
-    const newCategoryIds = Array.isArray(newCategories) ? newCategories : [];
+    const newCategoryIds: string[] = Array.isArray(newCategories)
+      ? newCategories.filter((id): id is string => typeof id === "string" && id.length > 0)
+      : [];
 
     const categoriesToDelete = existingCategoryIds.filter(
-      (id) => !newCategoryIds.includes(id || "")
+      (id) => id && !newCategoryIds.includes(id)
     );
 
-    // Step 4: Delete links for categories to be removed
+    const categoriesToAdd = newCategoryIds.filter(
+      (id) => !existingCategoryIds.includes(id)
+    );
+
+    // Step 4: Delete/dismiss links for categories to be removed
     if (categoriesToDelete.length > 0) {
-      const deletePromises = categoriesToDelete.map((categoryId) => {
-        return remoteLink.delete({
+      const deletePromises = categoriesToDelete.map(async (categoryId) => {
+        const linkObj = {
           [BLOG_MODULE]: { blog_id: blogId },
-          [Modules.PRODUCT]: { product_category_id: categoryId || "" },
-        });
+          [Modules.PRODUCT]: { product_category_id: categoryId },
+        };
+        try {
+          if (typeof (remoteLink as any).dismiss === "function") {
+            await (remoteLink as any).dismiss(linkObj);
+          } else {
+            await remoteLink.delete(linkObj);
+          }
+        } catch (delErr) {
+          try {
+            await remoteLink.delete(linkObj);
+          } catch (e) {}
+        }
       });
 
       await Promise.all(deletePromises);
     }
 
-    // Step 5: Add links for new categories
-    if (newCategoryIds.length > 0) {
-      const createPromises = newCategoryIds.map((categoryId) => {
-        return remoteLink.create({
+    // Step 5: Add links ONLY for newly assigned categories that do not already exist
+    if (categoriesToAdd.length > 0) {
+      const createPromises = categoriesToAdd.map(async (categoryId) => {
+        const linkObj = {
           [BLOG_MODULE]: { blog_id: blogId },
           [Modules.PRODUCT]: { product_category_id: categoryId },
-        });
+        };
+        try {
+          await remoteLink.create(linkObj);
+        } catch (createErr) {
+          try {
+            if (typeof (remoteLink as any).restore === "function") {
+              await (remoteLink as any).restore(linkObj);
+            }
+          } catch (restoreErr) {
+            // Already active or restored
+          }
+        }
       });
 
       await Promise.all(createPromises);
     }
 
-    await remoteLink.create({
-      [BLOG_MODULE]: {
-        blog_id: blogId,
-      },
-      [Modules.USER]: {
-        user_id: req.auth_context.actor_id,
-      },
-    });
+    // Ensure author link exists if not already present
+    if (!oldBlog?.user && req.auth_context?.actor_id) {
+      try {
+        await remoteLink.create({
+          [BLOG_MODULE]: {
+            blog_id: blogId,
+          },
+          [Modules.USER]: {
+            user_id: req.auth_context.actor_id,
+          },
+        });
+      } catch (linkErr) {
+        // User link may already exist
+      }
+    }
 
     res.status(200).json(blogUpdate);
   } catch (error) {
