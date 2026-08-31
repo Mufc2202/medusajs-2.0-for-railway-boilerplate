@@ -251,7 +251,7 @@ const InstagramFeedPage = () => {
     fetchPosts();
   }, []);
 
-  const openCreateDrawer = () => {
+  const resetFormState = () => {
     setEditingPost(null);
     setFormCaption("");
     setFormPermalink("https://www.instagram.com/dolgins_jewelry/");
@@ -273,6 +273,13 @@ const InstagramFeedPage = () => {
     setFormImagePreview("");
     setFormMetadata(null);
     setEmbedInput("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const openCreateDrawer = () => {
+    resetFormState();
     setIsDrawerOpen(true);
   };
 
@@ -470,6 +477,7 @@ const InstagramFeedPage = () => {
       if (res.ok) {
         toast.success(editingPost ? "Post updated successfully" : "Post added to Instagram feed");
         setIsDrawerOpen(false);
+        resetFormState();
         fetchPosts();
       } else {
         const errorData = await res.json().catch(() => ({}));
@@ -794,7 +802,15 @@ const InstagramFeedPage = () => {
       </Container>
 
       {/* Add / Edit Drawer */}
-      <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+      <Drawer
+        open={isDrawerOpen}
+        onOpenChange={(open) => {
+          setIsDrawerOpen(open);
+          if (!open) {
+            resetFormState();
+          }
+        }}
+      >
         <Drawer.Content className="flex flex-col h-full overflow-hidden">
           <Drawer.Header>
             <Drawer.Title>
