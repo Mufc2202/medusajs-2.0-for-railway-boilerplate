@@ -100,3 +100,40 @@ export type CustomCategory = {
   seo_details: SeoDetails
   category_details: CustomCategoryDetails
 }
+
+export type InstagramPostProps = {
+  id: string
+  caption?: string | null
+  media_type: "IMAGE" | "VIDEO" | "CAROUSEL_ALBUM" | string
+  media_url: string
+  thumbnail_url?: string | null
+  permalink?: string | null
+  instagram_id?: string | null
+  likes_count: number
+  comments_count: number
+  is_visible: boolean
+  is_pinned: boolean
+  display_order: number
+  product_id?: string | null
+  product_title?: string | null
+  product_handle?: string | null
+  product_thumbnail?: string | null
+  product_price?: string | null
+  custom_cta_text?: string | null
+  custom_cta_link?: string | null
+  metadata?: Record<string, any> | null
+  carousel_images?: string[] | null
+  video_url?: string | null
+  created_at?: string
+  updated_at?: string
+}
+
+export type InstagramFeedResponse = {
+  handle: string
+  profile_url: string
+  title: string
+  subtitle: string
+  posts: InstagramPostProps[]
+  count: number
+}
+

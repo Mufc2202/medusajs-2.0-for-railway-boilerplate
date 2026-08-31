@@ -45,6 +45,14 @@ export default defineMiddlewares({
       middlewares: [upload.array("files")],
     },
     {
+      matcher: "/admin/instagram-feed*",
+      method: ["POST", "PUT"],
+      middlewares: [
+        upload.array("files"),
+        authenticate("user", ["session", "bearer"]),
+      ],
+    },
+    {
       matcher: "/admin/category-seo/**",
       method: ["PUT", "POST"],
       middlewares: [upload.array("files")],

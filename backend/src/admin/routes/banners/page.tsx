@@ -257,7 +257,7 @@ const BannersPage = () => {
   };
 
   return (
-    <div className="flex flex-col gap-y-3 p-4 sm:p-6 max-w-7xl mx-auto w-full">
+    <div className="flex flex-col gap-y-2">
       <Toaster />
 
       {/* Standard Medusa Container Card */}

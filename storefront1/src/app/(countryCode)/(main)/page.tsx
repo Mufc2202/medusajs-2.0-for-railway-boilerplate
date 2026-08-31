@@ -7,6 +7,8 @@ import { getRegion } from "@lib/data/regions"
 import { countryCode } from "@lib/constants"
 import DolginsCTA from "@modules/layout/components/dolgins-cta"
 import CategoriesGrid from "@modules/layout/components/category-grid"
+import InstagramFeed from "@modules/home/components/instagram-feed"
+import { getInstagramFeed } from "@lib/data/instagram"
 import BuyingRing from "@images/index/buying-ring-money.jpg"
 import Repair from "@images/index/repairing.jpg"
 
@@ -17,8 +19,11 @@ export const metadata: Metadata = {
 }
 
 export default async function Home() {
-  const collections = await getCollectionsWithProducts(countryCode)
-  const region = await getRegion(countryCode)
+  const [collections, region, instagramFeed] = await Promise.all([
+    getCollectionsWithProducts(countryCode),
+    getRegion(countryCode),
+    getInstagramFeed(),
+  ])
 
   if (!collections || !region) {
     return null
@@ -43,6 +48,7 @@ export default async function Home() {
         link="/buying-jewelry"
       />
       <CategoriesGrid />
+      <InstagramFeed feedData={instagramFeed} />
       <DolginsCTA
         title="Let Us Help With Your Jewelry Repairs."
         subtitle="Quality Jewelry Repair"

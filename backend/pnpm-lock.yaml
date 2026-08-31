@@ -80,6 +80,9 @@ importers:
       express:
         specifier: ^4.21.2
         version: 4.21.2
+      instagram-url-direct:
+        specifier: ^2.0.7
+        version: 2.0.7
       medusajs-launch-utils:
         specifier: ^0.0.10
         version: 0.0.10
@@ -5812,6 +5815,9 @@ packages:
   inquirer@8.2.6:
     resolution: {integrity: sha512-M1WuAmb7pn9zdFRtQYk26ZBoY043Sse0wVDdk4Bppr+JOXyQYybdtvK+l9wUibhtjdjvtoiNy8tk+EgsYIUqKg==}
     engines: {node: '>=12.0.0'}
+
+  instagram-url-direct@2.0.7:
+    resolution: {integrity: sha512-SU+wrwY+6w9v53V6kFyfpNB55I8cfEHH9Qv55jP891/TW9AgiYtCtvmyK0EBbwslbgUsG+iT2pnt6UcucZuITA==}
 
   interpret@2.2.0:
     resolution: {integrity: sha512-Ju0Bz/cEia55xDwUWEa8+olFpCiQoypjnQySseKtmjNrnps3P+xfpUmGr90T7yjlVJmOtybRvPXhKMbHr+fWnw==}
@@ -15148,6 +15154,14 @@ snapshots:
       strip-ansi: 6.0.1
       through: 2.3.8
       wrap-ansi: 6.2.0
+
+  instagram-url-direct@2.0.7:
+    dependencies:
+      axios: 1.20.0
+      qs: 6.15.3
+    transitivePeerDependencies:
+      - debug
+      - supports-color
 
   interpret@2.2.0: {}
 

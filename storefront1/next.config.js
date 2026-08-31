@@ -76,6 +76,18 @@ const nextConfig = {
         protocol: "https",
         hostname: "minio-y8ow0kos444ksgsokwckcccw.62.72.3.123.sslip.io",
       },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.cdninstagram.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.fbcdn.net",
+      },
       ...(process.env.NEXT_PUBLIC_MINIO_ENDPOINT
         ? [
             {
