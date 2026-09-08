@@ -263,7 +263,7 @@ const BannersPage = () => {
       {/* Standard Medusa Container Card */}
       <Container className="divide-y p-0 overflow-hidden shadow-xs">
         {/* Header Bar */}
-        <div className="flex items-center justify-between px-6 py-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-6 py-4">
           <div>
             <Heading level="h1" className="text-lg font-semibold text-ui-fg-base">
               Banners
@@ -273,7 +273,7 @@ const BannersPage = () => {
             </Text>
           </div>
 
-          <div className="flex items-center gap-x-2">
+          <div className="flex items-center gap-x-2 shrink-0 self-start sm:self-auto">
             <Button
               variant="secondary"
               size="small"
@@ -290,9 +290,9 @@ const BannersPage = () => {
           </div>
         </div>
 
-        {/* Search & Filter Toolbar (type="text" prevents double magnifying glass icon) */}
+        {/* Search & Filter Toolbar */}
         <div className="px-6 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-ui-bg-subtle/30">
-          <div className="relative flex-1 max-w-xs">
+          <div className="relative flex-1 max-w-xs w-full sm:w-auto">
             <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ui-fg-muted pointer-events-none" />
             <Input
               size="small"
@@ -300,11 +300,11 @@ const BannersPage = () => {
               placeholder="Search banners..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9"
+              className="pl-9 w-full"
             />
           </div>
 
-          <div className="flex items-center gap-x-1.5 self-end sm:self-auto">
+          <div className="flex items-center gap-x-1.5 overflow-x-auto pb-1 sm:pb-0 shrink-0 self-start sm:self-auto max-w-full">
             <Button
               variant={statusFilter === "all" ? "primary" : "secondary"}
               size="small"
@@ -358,110 +358,113 @@ const BannersPage = () => {
             )}
           </div>
         ) : (
-          <Table>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell className="w-[45%]">Banner</Table.HeaderCell>
-                <Table.HeaderCell className="w-[30%]">Destination Link</Table.HeaderCell>
-                <Table.HeaderCell className="w-[20%]">Status</Table.HeaderCell>
-                <Table.HeaderCell className="w-12 text-right">Actions</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {filteredBanners.map((banner) => (
-                <Table.Row key={banner.id} className="h-12">
-                  {/* Banner: Inline Thumbnail + Name + Copy */}
-                  <Table.Cell>
-                    <div className="flex items-center gap-x-3 overflow-hidden py-1">
-                      <div className="w-10 h-8 rounded border border-ui-border-base overflow-hidden bg-ui-bg-subtle shrink-0 flex items-center justify-center">
-                        {banner.image ? (
-                          <img
-                            src={banner.image}
-                            alt={banner.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <Photo className="w-4 h-4 text-ui-fg-muted" />
-                        )}
-                      </div>
-                      <div className="flex flex-col min-w-0">
-                        <span
-                          className="font-medium text-xs text-ui-fg-base truncate block"
-                          title={banner.name}
-                        >
-                          {banner.name}
-                        </span>
-                        {banner.text && (
-                          <span
-                            className="text-[11px] text-ui-fg-subtle truncate block"
-                            title={banner.text}
-                          >
-                            {banner.text}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </Table.Cell>
-
-                  {/* Link Destination */}
-                  <Table.Cell>
-                    {banner.link ? (
-                      <a
-                        href={banner.link}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-ui-fg-interactive hover:underline inline-flex items-center gap-1 text-xs truncate max-w-xs"
-                      >
-                        <span className="truncate">{banner.link}</span>
-                        <ArrowUpRightOnBox className="w-3 h-3 shrink-0" />
-                      </a>
-                    ) : (
-                      <span className="text-xs text-ui-fg-muted italic">—</span>
-                    )}
-                  </Table.Cell>
-
-                  {/* Status Badge */}
-                  <Table.Cell>
-                    <StatusBadge
-                      color={banner.isActive ? "green" : "grey"}
-                      className="cursor-pointer select-none"
-                      onClick={() => handleToggleActive(banner)}
-                    >
-                      {banner.isActive ? "Published" : "Draft"}
-                    </StatusBadge>
-                  </Table.Cell>
-
-                  {/* Actions Menu */}
-                  <Table.Cell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenu.Trigger asChild>
-                        <IconButton variant="transparent" size="small">
-                          <EllipsisHorizontal className="w-4 h-4 text-ui-fg-muted" />
-                        </IconButton>
-                      </DropdownMenu.Trigger>
-                      <DropdownMenu.Content align="end" className="w-40">
-                        <DropdownMenu.Item onClick={() => openEditDrawer(banner)} className="gap-x-2">
-                          <PencilSquare className="w-4 h-4" />
-                          Edit
-                        </DropdownMenu.Item>
-                        <DropdownMenu.Item onClick={() => handleToggleActive(banner)} className="gap-x-2">
-                          {banner.isActive ? "Move to draft" : "Publish"}
-                        </DropdownMenu.Item>
-                        <DropdownMenu.Separator />
-                        <DropdownMenu.Item
-                          onClick={() => handleDeleteBanner(banner.id, banner.name)}
-                          className="gap-x-2 text-ui-fg-error"
-                        >
-                          <Trash className="w-4 h-4" />
-                          Delete
-                        </DropdownMenu.Item>
-                      </DropdownMenu.Content>
-                    </DropdownMenu>
-                  </Table.Cell>
+          <div className="overflow-x-auto w-full">
+            <Table className="w-full min-w-[650px]">
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell className="pl-6 min-w-[220px]">Banner</Table.HeaderCell>
+                  <Table.HeaderCell className="min-w-[180px]">Destination Link</Table.HeaderCell>
+                  <Table.HeaderCell className="w-28 min-w-[110px] whitespace-nowrap">Status</Table.HeaderCell>
+                  <Table.HeaderCell className="w-16 text-right pr-6 whitespace-nowrap">Actions</Table.HeaderCell>
                 </Table.Row>
-              ))}
-            </Table.Body>
-          </Table>
+              </Table.Header>
+              <Table.Body>
+                {filteredBanners.map((banner) => (
+                  <Table.Row key={banner.id} className="h-12 hover:bg-ui-bg-subtle-hover transition-colors">
+                    {/* Banner: Inline Thumbnail + Name + Copy */}
+                    <Table.Cell className="pl-6">
+                      <div className="flex items-center gap-x-3 overflow-hidden py-1">
+                        <div className="w-10 h-8 rounded border border-ui-border-base overflow-hidden bg-ui-bg-subtle shrink-0 flex items-center justify-center">
+                          {banner.image ? (
+                            <img
+                              src={banner.image}
+                              alt={banner.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <Photo className="w-4 h-4 text-ui-fg-muted" />
+                          )}
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <span
+                            className="font-medium text-xs text-ui-fg-base truncate block"
+                            title={banner.name}
+                          >
+                            {banner.name}
+                          </span>
+                          {banner.text && (
+                            <span
+                              className="text-[11px] text-ui-fg-subtle truncate block max-w-xs"
+                              title={banner.text}
+                            >
+                              {banner.text}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </Table.Cell>
+
+                    {/* Link Destination */}
+                    <Table.Cell>
+                      {banner.link ? (
+                        <a
+                          href={banner.link}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-ui-fg-interactive hover:underline inline-flex items-center gap-1 text-xs truncate max-w-[200px] sm:max-w-xs"
+                          title={banner.link}
+                        >
+                          <span className="truncate">{banner.link}</span>
+                          <ArrowUpRightOnBox className="w-3 h-3 shrink-0" />
+                        </a>
+                      ) : (
+                        <span className="text-xs text-ui-fg-muted italic">—</span>
+                      )}
+                    </Table.Cell>
+
+                    {/* Status Badge */}
+                    <Table.Cell className="whitespace-nowrap">
+                      <StatusBadge
+                        color={banner.isActive ? "green" : "grey"}
+                        className="cursor-pointer select-none inline-flex"
+                        onClick={() => handleToggleActive(banner)}
+                      >
+                        {banner.isActive ? "Published" : "Draft"}
+                      </StatusBadge>
+                    </Table.Cell>
+
+                    {/* Actions Menu */}
+                    <Table.Cell className="text-right pr-6 whitespace-nowrap">
+                      <DropdownMenu>
+                        <DropdownMenu.Trigger asChild>
+                          <IconButton variant="transparent" size="small">
+                            <EllipsisHorizontal className="w-4 h-4 text-ui-fg-muted" />
+                          </IconButton>
+                        </DropdownMenu.Trigger>
+                        <DropdownMenu.Content align="end" className="w-40">
+                          <DropdownMenu.Item onClick={() => openEditDrawer(banner)} className="gap-x-2">
+                            <PencilSquare className="w-4 h-4" />
+                            Edit
+                          </DropdownMenu.Item>
+                          <DropdownMenu.Item onClick={() => handleToggleActive(banner)} className="gap-x-2">
+                            {banner.isActive ? "Move to draft" : "Publish"}
+                          </DropdownMenu.Item>
+                          <DropdownMenu.Separator />
+                          <DropdownMenu.Item
+                            onClick={() => handleDeleteBanner(banner.id, banner.name)}
+                            className="gap-x-2 text-ui-fg-error"
+                          >
+                            <Trash className="w-4 h-4" />
+                            Delete
+                          </DropdownMenu.Item>
+                        </DropdownMenu.Content>
+                      </DropdownMenu>
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table>
+          </div>
         )}
       </Container>
 

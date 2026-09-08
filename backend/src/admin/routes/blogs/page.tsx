@@ -378,16 +378,17 @@ const BlogsAdminPage = () => {
             )}
           </div>
         ) : (
-          <Table>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell className="w-[38%]">Article</Table.HeaderCell>
-                <Table.HeaderCell className="w-[24%]">Handle</Table.HeaderCell>
-                <Table.HeaderCell className="w-[24%]">Categories</Table.HeaderCell>
-                <Table.HeaderCell className="w-[14%]">Author</Table.HeaderCell>
-                <Table.HeaderCell className="w-12 text-right">Actions</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
+          <div className="overflow-x-auto w-full">
+            <Table className="w-full min-w-[700px]">
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell className="pl-6 min-w-[240px]">Article</Table.HeaderCell>
+                  <Table.HeaderCell className="min-w-[140px]">Handle</Table.HeaderCell>
+                  <Table.HeaderCell className="min-w-[160px]">Categories</Table.HeaderCell>
+                  <Table.HeaderCell className="min-w-[120px]">Author</Table.HeaderCell>
+                  <Table.HeaderCell className="w-16 text-right pr-6 whitespace-nowrap">Actions</Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
             <Table.Body>
               {filteredBlogs.map((blog) => {
                 const activeCats = (blog.product_categories || [])
@@ -400,7 +401,7 @@ const BlogsAdminPage = () => {
                 return (
                   <Table.Row key={blog.id} className="h-12">
                     {/* Article: Inline Thumbnail + Title + Subtitle */}
-                    <Table.Cell>
+                    <Table.Cell className="pl-6">
                       <div className="flex items-center gap-x-3 overflow-hidden py-1">
                         <div className="w-8 h-8 rounded border border-ui-border-base overflow-hidden bg-ui-bg-subtle shrink-0 flex items-center justify-center">
                           {blog.image ? (
@@ -476,7 +477,7 @@ const BlogsAdminPage = () => {
                     </Table.Cell>
 
                     {/* Actions */}
-                    <Table.Cell className="text-right">
+                    <Table.Cell className="text-right pr-6 whitespace-nowrap">
                       <DropdownMenu>
                         <DropdownMenu.Trigger asChild>
                           <IconButton variant="transparent" size="small">
@@ -514,6 +515,7 @@ const BlogsAdminPage = () => {
               })}
             </Table.Body>
           </Table>
+        </div>
         )}
       </Container>
 

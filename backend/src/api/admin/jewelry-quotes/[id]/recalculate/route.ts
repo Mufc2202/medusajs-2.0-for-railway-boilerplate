@@ -75,6 +75,13 @@ export async function POST(
         ? req.body.profit_margin_percent
         : quote.profit_margin_percent || 0;
 
+    if (req.body.profit_margin_percent !== undefined && req.body.profit_margin_percent > 0) {
+      rawItems = rawItems.map((it: any) => ({
+        ...it,
+        payout_ratio: req.body.profit_margin_percent,
+      }));
+    }
+
     // 4. Calculate updated breakdown
     const breakdown = jewelryService.calculateQuote(
       rawItems,

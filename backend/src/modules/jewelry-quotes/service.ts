@@ -41,8 +41,9 @@ export const DWT_TO_GRAMS = 1.55517384; // 1 Pennyweight = 1.55517 Grams
 
 export interface JewelryItemInput {
   metal_type: "gold" | "silver" | "platinum" | "palladium";
-  purity_karat: string;
+  purity_karat?: string;
   custom_purity_percent?: number;
+  purity_percent?: number;
   weight: number;
   unit: "dwt" | "g" | "ozt" | "tola" | "kg";
   labor_charge_per_unit?: number;
@@ -54,6 +55,9 @@ export interface JewelryItemInput {
   diamond_price_per_carat?: number;
   stone_notes?: string;
   item_title?: string;
+  description?: string;
+  estimated_wholesale_cost?: number;
+  payout_ratio?: number;
 }
 
 export interface SpotPricesMap {
@@ -67,6 +71,7 @@ export interface CalculationBreakdown {
   pure_metal_ozt: number;
   pure_metal_grams: number;
   base_metal_cost: number; // in USD (decimal)
+  estimated_wholesale_cost?: number;
   wastage_cost: number;
   labor_cost: number;
   stone_cost: number;
@@ -76,8 +81,10 @@ export interface CalculationBreakdown {
   final_offered_price: number;
   item_calculations: Array<{
     item_title?: string;
+    description?: string;
     metal_type: string;
-    purity_karat: string;
+    purity_karat?: string;
+    purity_percent?: number;
     purity_factor: number;
     weight_input: number;
     unit: string;
@@ -87,6 +94,11 @@ export interface CalculationBreakdown {
     pure_metal_ozt: number;
     spot_price_per_ozt: number;
     base_metal_cost: number;
+    estimated_wholesale_cost?: number;
+    item_base_valuation?: number;
+    payout_ratio?: number;
+    item_offered_price?: number;
+    individual_profit?: number;
     wastage_cost: number;
     labor_cost: number;
     stone_cost: number;
@@ -129,10 +141,10 @@ class JewelryQuotesModuleService extends MedusaService({
   }
 
   /**
-   * Determine purity fraction (e.g. 14k -> 0.5833)
+   * Determine purity fraction (e.g. 14k -> 0.5833, 58.33% -> 0.5833)
    */
   getPurityFactor(metal: string, karat: string, customPercent?: number): number {
-    if (customPercent && customPercent > 0) {
+    if (customPercent !== undefined && customPercent !== null && customPercent > 0) {
       return customPercent / 100.0;
     }
     const metalPurities = METAL_PURITIES[metal.toLowerCase()];
@@ -154,13 +166,22 @@ class JewelryQuotesModuleService extends MedusaService({
     let totalPureOzt = 0;
     let totalPureGrams = 0;
     let totalBaseMetalCost = 0;
+    let totalWholesaleCost = 0;
     let totalWastageCost = 0;
     let totalLaborCost = 0;
     let totalStoneCost = 0;
+    let totalScrapBuyingOfferedPrice = 0;
+    let totalScrapBuyingProfit = 0;
 
     const itemCalculations = items.map((item) => {
-      const { ozt, grams, dwt } = this.convertWeight(item.weight, item.unit);
-      const purityFactor = this.getPurityFactor(item.metal_type, item.purity_karat, item.custom_purity_percent);
+      const weightNum = Number(item.weight) || 0;
+      const { ozt, grams, dwt } = this.convertWeight(weightNum, item.unit);
+
+      const purityPercent = typeof item.purity_percent === "number"
+        ? item.purity_percent
+        : item.custom_purity_percent;
+
+      const purityFactor = this.getPurityFactor(item.metal_type, item.purity_karat || "", purityPercent);
       const pureOzt = ozt * purityFactor;
       const pureGrams = grams * purityFactor;
 
@@ -187,19 +208,36 @@ class JewelryQuotesModuleService extends MedusaService({
       }
       const stoneCost = stoneCarats * (item.diamond_price_per_carat || 0);
 
+      const estimatedWholesale = Number(item.estimated_wholesale_cost) || 0;
+      const itemBaseValuation = baseMetalCost + estimatedWholesale;
+
+      // Individual item payout ratio (defaults to global margin if not provided)
+      const itemPayoutRatio = typeof item.payout_ratio === "number" && item.payout_ratio >= 0
+        ? item.payout_ratio
+        : (profitMarginPercent > 0 && profitMarginPercent <= 100 ? profitMarginPercent : 85);
+
+      const itemOfferedPrice = itemBaseValuation * (itemPayoutRatio / 100.0);
+      const individualProfit = itemBaseValuation - itemOfferedPrice;
+
+      totalScrapBuyingOfferedPrice += itemOfferedPrice;
+      totalScrapBuyingProfit += individualProfit;
+
       const itemTotalCost = baseMetalCost + wastageCost + laborCost + stoneCost;
 
       totalPureOzt += pureOzt;
       totalPureGrams += pureGrams;
       totalBaseMetalCost += baseMetalCost;
+      totalWholesaleCost += estimatedWholesale;
       totalWastageCost += wastageCost;
       totalLaborCost += laborCost;
       totalStoneCost += stoneCost;
 
       return {
         item_title: item.item_title,
+        description: item.description,
         metal_type: item.metal_type,
         purity_karat: item.purity_karat,
+        purity_percent: purityPercent,
         purity_factor: purityFactor,
         weight_input: item.weight,
         unit: item.unit,
@@ -209,6 +247,11 @@ class JewelryQuotesModuleService extends MedusaService({
         pure_metal_ozt: Number(pureOzt.toFixed(5)),
         spot_price_per_ozt: spotPricePerOzt,
         base_metal_cost: Number(baseMetalCost.toFixed(2)),
+        estimated_wholesale_cost: Number(estimatedWholesale.toFixed(2)),
+        item_base_valuation: Number(itemBaseValuation.toFixed(2)),
+        payout_ratio: itemPayoutRatio,
+        item_offered_price: Number(itemOfferedPrice.toFixed(2)),
+        individual_profit: Number(individualProfit.toFixed(2)),
         wastage_cost: Number(wastageCost.toFixed(2)),
         labor_cost: Number(laborCost.toFixed(2)),
         stone_cost: Number(stoneCost.toFixed(2)),
@@ -222,12 +265,8 @@ class JewelryQuotesModuleService extends MedusaService({
     let finalOfferedPrice = 0;
 
     if (calculationMode === "scrap_buying") {
-      // For scrap buying: profitMarginPercent represents the Payout % (e.g. 85% of melt)
-      const payoutRatio = profitMarginPercent > 0 && profitMarginPercent <= 100 
-        ? profitMarginPercent / 100.0 
-        : 0.85; // Default 85% scrap payout
-      finalOfferedPrice = totalBaseMetalCost * payoutRatio;
-      profitAmount = totalBaseMetalCost - finalOfferedPrice;
+      finalOfferedPrice = totalScrapBuyingOfferedPrice;
+      profitAmount = totalScrapBuyingProfit;
     } else {
       // Retail Custom Sale: Selling Price = Total Cost * (1 + Markup % / 100)
       profitAmount = totalCostPrice * (profitMarginPercent / 100.0);
@@ -238,6 +277,7 @@ class JewelryQuotesModuleService extends MedusaService({
       pure_metal_ozt: Number(totalPureOzt.toFixed(5)),
       pure_metal_grams: Number(totalPureGrams.toFixed(4)),
       base_metal_cost: Number(totalBaseMetalCost.toFixed(2)),
+      estimated_wholesale_cost: Number(totalWholesaleCost.toFixed(2)),
       wastage_cost: Number(totalWastageCost.toFixed(2)),
       labor_cost: Number(totalLaborCost.toFixed(2)),
       stone_cost: Number(totalStoneCost.toFixed(2)),

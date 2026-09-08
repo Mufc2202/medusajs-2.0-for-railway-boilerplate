@@ -106,7 +106,9 @@ const CustomerJewelryQuotesWidget = ({ data }: DetailWidgetProps<AdminCustomer>)
       }
       const ozt = grams / TROY_OZ_TO_GRAMS;
       const dwt = ozt * TROY_OZ_TO_DWT;
-      const purityFactor = PURITY_FACTORS[item.purity_karat] || 1.0;
+      const purityFactor = (item.purity_percent !== undefined && item.purity_percent !== null && !isNaN(Number(item.purity_percent)))
+        ? Number(item.purity_percent) / 100.0
+        : (PURITY_FACTORS[item.purity_karat] || 1.0);
       const pureOzt = ozt * purityFactor;
 
       const spotPricePerOzt = Number((recalcSpotRates as any)[item.metal_type]) || 0;
@@ -123,22 +125,24 @@ const CustomerJewelryQuotesWidget = ({ data }: DetailWidgetProps<AdminCustomer>)
         stoneCarats += Number(item.diamond_points) / 100.0;
       }
       const stoneCost = stoneCarats * (Number(item.diamond_price_per_carat) || 0);
+      const estimatedWholesale = Number(item.estimated_wholesale_cost) || 0;
 
       totalPureOzt += pureOzt;
       totalBaseMetalCost += baseMetalCost;
+      totalWholesaleCost += estimatedWholesale;
       totalWastageCost += wastageCost;
       totalLaborCost += laborCost;
       totalStoneCost += stoneCost;
     });
 
-    const totalCostPrice = totalBaseMetalCost + totalWastageCost + totalLaborCost + totalStoneCost;
+    const totalCostPrice = totalBaseMetalCost + totalWastageCost + totalLaborCost + totalStoneCost + totalWholesaleCost;
     let finalOfferedPrice = 0;
     let profitAmount = 0;
 
     if (recalcQuote.calculation_mode === "scrap_buying") {
       const payoutRatio = (recalcMargin > 0 && recalcMargin <= 100 ? recalcMargin : 85) / 100.0;
-      finalOfferedPrice = totalBaseMetalCost * payoutRatio;
-      profitAmount = totalBaseMetalCost - finalOfferedPrice;
+      finalOfferedPrice = (totalBaseMetalCost + totalWholesaleCost) * payoutRatio;
+      profitAmount = (totalBaseMetalCost + totalWholesaleCost) - finalOfferedPrice;
     } else {
       profitAmount = totalCostPrice * ((Number(recalcMargin) || 0) / 100.0);
       finalOfferedPrice = totalCostPrice + profitAmount;
@@ -617,11 +621,8 @@ const CustomerJewelryQuotesWidget = ({ data }: DetailWidgetProps<AdminCustomer>)
                   <FocusModal.Title className="text-sm font-semibold text-ui-fg-base">
                     Re-calculate Customer Quote
                   </FocusModal.Title>
-                  <Badge
-                    color={recalcQuote.calculation_mode === "scrap_buying" ? "orange" : "blue"}
-                    size="xsmall"
-                  >
-                    {recalcQuote.calculation_mode === "scrap_buying" ? "Scrap Buy-Back" : "Custom Retail"}
+                  <Badge color="orange" size="xsmall">
+                    Buying Jewelry
                   </Badge>
                 </div>
                 <div className="flex items-center gap-x-2">
@@ -701,8 +702,8 @@ const CustomerJewelryQuotesWidget = ({ data }: DetailWidgetProps<AdminCustomer>)
                           recalcSimulation.priceDelta > 0
                             ? "green"
                             : recalcSimulation.priceDelta < 0
-                            ? "red"
-                            : "grey"
+                              ? "red"
+                              : "grey"
                         }
                         className="font-bold text-xs px-3 py-1 shadow-xs"
                       >
@@ -861,7 +862,7 @@ const CustomerJewelryQuotesWidget = ({ data }: DetailWidgetProps<AdminCustomer>)
                     <div>
                       <Heading level="h3" className="text-sm font-semibold text-ui-fg-base">
                         {recalcQuote.calculation_mode === "scrap_buying"
-                          ? "Refiner Payout Rate (%)"
+                          ? "Margin (%)"
                           : "Jeweler Profit Margin (%)"}
                       </Heading>
                     </div>
@@ -901,11 +902,10 @@ const CustomerJewelryQuotesWidget = ({ data }: DetailWidgetProps<AdminCustomer>)
                         key={preset}
                         type="button"
                         onClick={() => setRecalcMargin(preset)}
-                        className={`px-3 py-1 rounded-md text-xs font-medium border transition-all ${
-                          recalcMargin === preset
-                            ? "bg-ui-button-neutral text-ui-fg-on-color border-transparent font-semibold shadow-xs"
-                            : "bg-ui-bg-subtle text-ui-fg-subtle hover:text-ui-fg-base border-ui-border-base hover:bg-ui-bg-base"
-                        }`}
+                        className={`px-3 py-1 rounded-md text-xs font-medium border transition-all ${recalcMargin === preset
+                          ? "bg-ui-button-neutral text-ui-fg-on-color border-transparent font-semibold shadow-xs"
+                          : "bg-ui-bg-subtle text-ui-fg-subtle hover:text-ui-fg-base border-ui-border-base hover:bg-ui-bg-base"
+                          }`}
                       >
                         {preset}% {preset === 100 && "(Keystone)"}
                       </button>
@@ -950,8 +950,8 @@ const CustomerJewelryQuotesWidget = ({ data }: DetailWidgetProps<AdminCustomer>)
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <Text className="text-xs text-ui-fg-subtle">Current Quoted Price</Text>
-                  <Badge size="xsmall" color={selectedQuote?.calculation_mode === "scrap_buying" ? "orange" : "purple"}>
-                    {selectedQuote?.calculation_mode === "scrap_buying" ? "Scrap Buy-Back" : "Custom Retail"}
+                  <Badge size="xsmall" color="orange">
+                    Buying Jewelry
                   </Badge>
                 </div>
                 <Text className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">
@@ -979,8 +979,8 @@ const CustomerJewelryQuotesWidget = ({ data }: DetailWidgetProps<AdminCustomer>)
                   {selectedQuote?.updated_at
                     ? new Date(selectedQuote.updated_at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" })
                     : (selectedQuote?.created_at
-                        ? new Date(selectedQuote.created_at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" })
-                        : "—")}
+                      ? new Date(selectedQuote.created_at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" })
+                      : "—")}
                 </span>
               </div>
               <div>
@@ -1035,28 +1035,49 @@ const CustomerJewelryQuotesWidget = ({ data }: DetailWidgetProps<AdminCustomer>)
                         const weightGrams = itemUnit === "dwt"
                           ? (Number(itemWeight) * 1.55517).toFixed(2)
                           : itemUnit === "ozt"
-                          ? (Number(itemWeight) * 31.1035).toFixed(2)
-                          : Number(itemWeight).toFixed(2);
+                            ? (Number(itemWeight) * 31.1035).toFixed(2)
+                            : Number(itemWeight).toFixed(2);
 
                         return (
                           <div key={idx} className="p-3 rounded-lg border border-ui-border-base bg-ui-bg-base space-y-1.5 shadow-xs">
                             <div className="flex items-center justify-between border-b border-ui-border-base pb-1.5">
                               <Text className="text-xs font-bold text-ui-fg-base">
-                                Item #{idx + 1}: {item.item_title || `${item.metal_type} ${item.purity_karat}`}
+                                Item #{idx + 1}: {item.item_title || `${item.metal_type} ${item.purity_karat || ""}`}
                               </Text>
                               <Badge color="grey" size="xsmall">
-                                {item.metal_type?.toUpperCase()} {item.purity_karat?.toUpperCase()}
+                                {item.metal_type?.toUpperCase()} {item.purity_percent ? `${item.purity_percent}%` : item.purity_karat?.toUpperCase()}
                               </Badge>
                             </div>
-                            <div className="grid grid-cols-2 gap-2 text-xs">
+
+                            {item.description && (
+                              <div className="text-xs text-ui-fg-base font-medium bg-ui-bg-subtle/50 p-1.5 rounded border border-ui-border-base">
+                                {item.description}
+                              </div>
+                            )}
+
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                               <div>
                                 <span className="text-[10px] text-ui-fg-muted block font-semibold">Weight</span>
                                 <span>{itemWeight} {itemUnit} ({weightGrams}g)</span>
                               </div>
                               <div>
-                                <span className="text-[10px] text-ui-fg-muted block font-semibold">Bench & Labor</span>
-                                <span>${item.labor_charge_per_unit || 0}/{itemUnit} + ${item.labor_charge_flat || 0}</span>
+                                <span className="text-[10px] text-ui-fg-muted block font-semibold">Purity (%)</span>
+                                <span>{item.purity_percent ? `${item.purity_percent}%` : item.purity_karat || "N/A"}</span>
                               </div>
+                              {Number(item.estimated_wholesale_cost) > 0 && (
+                                <div>
+                                  <span className="text-[10px] text-ui-fg-muted block font-semibold">Wholesale</span>
+                                  <span>${Number(item.estimated_wholesale_cost).toFixed(2)}</span>
+                                </div>
+                              )}
+                              {item.individual_profit !== undefined && (
+                                <div>
+                                  <span className="text-[10px] text-ui-fg-muted block font-semibold">Profit</span>
+                                  <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                                    +${Number(item.individual_profit).toFixed(2)}
+                                  </span>
+                                </div>
+                              )}
                             </div>
                           </div>
                         );
