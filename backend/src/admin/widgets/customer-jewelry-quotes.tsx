@@ -92,6 +92,7 @@ const CustomerJewelryQuotesWidget = ({ data }: DetailWidgetProps<AdminCustomer>)
     let totalWastageCost = 0;
     let totalLaborCost = 0;
     let totalStoneCost = 0;
+    let totalWholesaleCost = 0;
 
     rawItems.forEach((item: any) => {
       let grams = 0;

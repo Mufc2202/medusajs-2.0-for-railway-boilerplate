@@ -4,11 +4,14 @@ import {
   ProviderUploadFileDTO,
   ProviderDeleteFileDTO,
   ProviderFileResultDTO,
-  ProviderGetFileDTO
+  ProviderGetFileDTO,
+  ProviderUploadStreamDTO,
+  ProviderGetPresignedUploadUrlDTO
 } from '@medusajs/types';
 import { Client } from 'minio';
 import path from 'path';
 import { ulid } from 'ulid';
+import { PassThrough, Readable, Writable } from 'stream';
 
 type InjectedDependencies = {
   logger: Logger
@@ -153,6 +156,14 @@ class MinioFileProviderService extends AbstractFileProviderService {
     }
   }
 
+  protected getFileUrl(fileKey: string): string {
+    const baseUrl =
+      process.env.MINIO_S3_FILE_URL ||
+      process.env.MINIO_FILE_URL ||
+      `https://${this.config_.endPoint}/${this.bucket}`
+    return `${baseUrl.replace(/\/+$/, '')}/${fileKey}`
+  }
+
   async upload(
     file: ProviderUploadFileDTO
   ): Promise<ProviderFileResultDTO> {
@@ -184,16 +195,11 @@ class MinioFileProviderService extends AbstractFileProviderService {
         {
           'Content-Type': file.mimeType,
           'x-amz-meta-original-filename': file.filename,
-          'x-amz-acl': 'public-read'
+          'x-amz-acl': file.access === 'private' ? 'private' : 'public-read'
         }
       )
 
-      // Generate URL using the endpoint and bucket
-      const baseUrl =
-        process.env.MINIO_S3_FILE_URL ||
-        process.env.MINIO_FILE_URL ||
-        `https://${this.config_.endPoint}/${this.bucket}`
-      const url = `${baseUrl.replace(/\/+$/, '')}/${fileKey}`
+      const url = this.getFileUrl(fileKey)
 
       this.logger_.info(`Successfully uploaded file ${fileKey} to MinIO bucket ${this.bucket}`)
 
@@ -210,22 +216,84 @@ class MinioFileProviderService extends AbstractFileProviderService {
     }
   }
 
-  async delete(
-    fileData: ProviderDeleteFileDTO
-  ): Promise<void> {
-    if (!fileData?.fileKey) {
+  async getUploadStream(
+    fileData: ProviderUploadStreamDTO
+  ): Promise<{
+    writeStream: Writable
+    promise: Promise<ProviderFileResultDTO>
+    url: string
+    fileKey: string
+  }> {
+    if (!fileData) {
       throw new MedusaError(
         MedusaError.Types.INVALID_DATA,
-        'No file key provided'
+        'No file data provided'
+      )
+    }
+
+    if (!fileData.filename) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        'No filename provided'
       )
     }
 
     try {
-      await this.client.removeObject(this.bucket, fileData.fileKey)
-      this.logger_.info(`Successfully deleted file ${fileData.fileKey} from MinIO bucket ${this.bucket}`)
+      const parsedFilename = path.parse(fileData.filename)
+      const fileKey = `${parsedFilename.name}-${ulid()}${parsedFilename.ext}`
+      const url = this.getFileUrl(fileKey)
+
+      const pass = new PassThrough()
+
+      const promise = this.client.putObject(
+        this.bucket,
+        fileKey,
+        pass,
+        undefined,
+        {
+          'Content-Type': fileData.mimeType,
+          'x-amz-meta-original-filename': fileData.filename,
+          'x-amz-acl': fileData.access === 'private' ? 'private' : 'public-read'
+        }
+      ).then(() => {
+        this.logger_.info(`Successfully streamed file ${fileKey} to MinIO bucket ${this.bucket}`)
+        return {
+          url,
+          key: fileKey
+        }
+      }).catch((error) => {
+        this.logger_.error(`Failed to stream file ${fileKey} to MinIO: ${error.message}`)
+        throw new MedusaError(
+          MedusaError.Types.UNEXPECTED_STATE,
+          `Failed to stream file: ${error.message}`
+        )
+      })
+
+      return {
+        writeStream: pass,
+        promise,
+        url,
+        fileKey
+      }
     } catch (error) {
-      // Log error but don't throw if file doesn't exist
-      this.logger_.warn(`Failed to delete file ${fileData.fileKey}: ${error.message}`)
+      this.logger_.error(`Failed to initialize upload stream: ${error.message}`)
+      throw error
+    }
+  }
+
+  async delete(
+    fileData: ProviderDeleteFileDTO | ProviderDeleteFileDTO[]
+  ): Promise<void> {
+    const files = Array.isArray(fileData) ? fileData : [fileData]
+    for (const file of files) {
+      if (!file?.fileKey) continue
+      try {
+        await this.client.removeObject(this.bucket, file.fileKey)
+        this.logger_.info(`Successfully deleted file ${file.fileKey} from MinIO bucket ${this.bucket}`)
+      } catch (error) {
+        // Log error but don't throw if file doesn't exist
+        this.logger_.warn(`Failed to delete file ${file.fileKey}: ${error.message}`)
+      }
     }
   }
 
@@ -252,6 +320,85 @@ class MinioFileProviderService extends AbstractFileProviderService {
       throw new MedusaError(
         MedusaError.Types.UNEXPECTED_STATE,
         `Failed to generate presigned URL: ${error.message}`
+      )
+    }
+  }
+
+  async getPresignedUploadUrl(
+    fileData: ProviderGetPresignedUploadUrlDTO
+  ): Promise<ProviderFileResultDTO> {
+    if (!fileData?.filename) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        'No filename provided'
+      )
+    }
+
+    try {
+      const parsedFilename = path.parse(fileData.filename)
+      const fileKey = `${parsedFilename.name}-${ulid()}${parsedFilename.ext}`
+      const expiresIn = fileData.expiresIn || 24 * 60 * 60
+      const url = await this.client.presignedPutObject(
+        this.bucket,
+        fileKey,
+        expiresIn
+      )
+      return {
+        url,
+        key: fileKey
+      }
+    } catch (error) {
+      this.logger_.error(`Failed to generate presigned upload URL: ${error.message}`)
+      throw new MedusaError(
+        MedusaError.Types.UNEXPECTED_STATE,
+        `Failed to generate presigned upload URL: ${error.message}`
+      )
+    }
+  }
+
+  async getDownloadStream(
+    fileData: ProviderGetFileDTO
+  ): Promise<Readable> {
+    if (!fileData?.fileKey) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        'No file key provided'
+      )
+    }
+
+    try {
+      return await this.client.getObject(this.bucket, fileData.fileKey)
+    } catch (error) {
+      this.logger_.error(`Failed to get download stream for ${fileData.fileKey}: ${error.message}`)
+      throw new MedusaError(
+        MedusaError.Types.UNEXPECTED_STATE,
+        `Failed to get download stream: ${error.message}`
+      )
+    }
+  }
+
+  async getAsBuffer(
+    fileData: ProviderGetFileDTO
+  ): Promise<Buffer> {
+    if (!fileData?.fileKey) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        'No file key provided'
+      )
+    }
+
+    try {
+      const stream = await this.client.getObject(this.bucket, fileData.fileKey)
+      const chunks: Buffer[] = []
+      for await (const chunk of stream) {
+        chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
+      }
+      return Buffer.concat(chunks)
+    } catch (error) {
+      this.logger_.error(`Failed to get file as buffer for ${fileData.fileKey}: ${error.message}`)
+      throw new MedusaError(
+        MedusaError.Types.UNEXPECTED_STATE,
+        `Failed to get file as buffer: ${error.message}`
       )
     }
   }
