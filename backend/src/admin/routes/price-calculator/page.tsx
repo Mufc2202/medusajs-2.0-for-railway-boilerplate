@@ -81,6 +81,29 @@ const TROY_OZ_TO_GRAMS = 31.1034768;
 const TROY_OZ_TO_DWT = 20.0;
 const DWT_TO_GRAMS = 1.55517384;
 
+// Refiner settlement rates
+const REFINER_RATES: Record<string, number> = {
+  gold: 0.98,
+  silver: 0.85,
+  platinum: 0.90,
+  palladium: 0.90,
+};
+
+const formatCategoryName = (category: string) => {
+  switch (category) {
+    case "Scrap Metal":
+      return "scrap metal";
+    case "Diamonds/gem stone":
+      return "diamond/gemstone";
+    case "Melee":
+      return "melee";
+    case "Complete Piece":
+      return "complete piece";
+    default:
+      return (category || "scrap metal").toLowerCase();
+  }
+};
+
 const ITEM_CATEGORY_OPTIONS = [
   { value: "Scrap Metal", label: "Scrap Metal" },
   { value: "Diamonds/gem stone", label: "Diamonds / Gemstones" },
@@ -418,8 +441,9 @@ const PriceCalculatorPage = () => {
     let totalProfitAmount = 0;
 
     const itemResults = items.map((item) => {
-      // 1. Weight conversions
-      const weightNum = Number(item.weight) || 0;
+      const isScrapMetal = item.item_title === "Scrap Metal" || !item.item_title;
+      // 1. Weight conversions (only for scrap metal)
+      const weightNum = isScrapMetal ? (Number(item.weight) || 0) : 0;
       let grams = 0;
       switch (item.unit) {
         case "dwt":
@@ -445,16 +469,17 @@ const PriceCalculatorPage = () => {
 
       // 2. Purity factor (from standard purity percent)
       const purityPct = Number(item.purity_percent);
-      const purityFactor = !isNaN(purityPct) && purityPct > 0 ? purityPct / 100.0 : 1.0;
+      const purityFactor = isScrapMetal && !isNaN(purityPct) && purityPct > 0 ? purityPct / 100.0 : 1.0;
 
-      const pureOzt = ozt * purityFactor;
-      const pureGrams = grams * purityFactor;
-      const pureDwt = dwt * purityFactor;
+      const pureOzt = isScrapMetal ? ozt * purityFactor : 0;
+      const pureGrams = isScrapMetal ? grams * purityFactor : 0;
+      const pureDwt = isScrapMetal ? dwt * purityFactor : 0;
 
       const spotPricePerOzt = spotRates[item.metal_type] || 0;
-      const baseMetalCost = pureOzt * spotPricePerOzt;
+      const refinerRate = REFINER_RATES[item.metal_type?.toLowerCase()] ?? 1.0;
+      const baseMetalCost = isScrapMetal ? pureOzt * spotPricePerOzt * refinerRate : 0;
 
-      const wholesaleCost = Number(item.estimated_wholesale_cost) || 0;
+      const wholesaleCost = !isScrapMetal ? (Number(item.estimated_wholesale_cost) || 0) : 0;
       const itemBaseValuation = baseMetalCost + wholesaleCost;
 
       const itemPayoutRatio = (item.payout_ratio !== undefined && item.payout_ratio !== "" && !isNaN(Number(item.payout_ratio)))
@@ -523,8 +548,9 @@ const PriceCalculatorPage = () => {
     let totalProfitAmount = 0;
 
     currentItems.forEach((item: any) => {
+      const isScrapMetal = item.item_title === "Scrap Metal" || !item.item_title;
       let grams = 0;
-      const weight = Number(item.weight) || 0;
+      const weight = isScrapMetal ? (Number(item.weight) || 0) : 0;
       switch (item.unit) {
         case "dwt": grams = weight * DWT_TO_GRAMS; break;
         case "g": grams = weight; break;
@@ -536,18 +562,23 @@ const PriceCalculatorPage = () => {
       const ozt = grams / TROY_OZ_TO_GRAMS;
 
       let purityFactor = 1.0;
-      if (item.purity_percent !== undefined && item.purity_percent !== null && !isNaN(Number(item.purity_percent))) {
-        purityFactor = Number(item.purity_percent) / 100.0;
+      if (isScrapMetal) {
+        if (item.purity_percent !== undefined && item.purity_percent !== null && !isNaN(Number(item.purity_percent))) {
+          purityFactor = Number(item.purity_percent) / 100.0;
+        } else {
+          const metalPurities = PURITY_OPTIONS[item.metal_type] || [];
+          const purityMatch = metalPurities.find((p) => p.value === item.purity_karat);
+          purityFactor = purityMatch ? purityMatch.factor : 1.0;
+        }
       } else {
-        const metalPurities = PURITY_OPTIONS[item.metal_type] || [];
-        const purityMatch = metalPurities.find((p) => p.value === item.purity_karat);
-        purityFactor = purityMatch ? purityMatch.factor : 1.0;
+        purityFactor = 0;
       }
 
-      const pureOzt = ozt * purityFactor;
+      const pureOzt = isScrapMetal ? ozt * purityFactor : 0;
       const spotPricePerOzt = Number((recalcSpotRates as any)[item.metal_type]) || 0;
-      const baseMetalCost = pureOzt * spotPricePerOzt;
-      const wholesaleCost = Number(item.estimated_wholesale_cost) || 0;
+      const refinerRate = REFINER_RATES[item.metal_type?.toLowerCase()] ?? 1.0;
+      const baseMetalCost = isScrapMetal ? pureOzt * spotPricePerOzt * refinerRate : 0;
+      const wholesaleCost = !isScrapMetal ? (Number(item.estimated_wholesale_cost) || 0) : 0;
       const itemValuation = baseMetalCost + wholesaleCost;
 
       const itemPayoutRatio = (item.payout_ratio !== undefined && item.payout_ratio !== "" && !isNaN(Number(item.payout_ratio)))
@@ -598,6 +629,13 @@ const PriceCalculatorPage = () => {
           copy[index].purity_percent = presets[0].percent;
         }
       }
+      if (field === "item_title") {
+        if (value !== "Scrap Metal") {
+          copy[index].weight = "";
+        } else {
+          copy[index].estimated_wholesale_cost = "";
+        }
+      }
       return copy;
     });
   };
@@ -610,6 +648,13 @@ const PriceCalculatorPage = () => {
         const presets = STANDARD_PURITY_PRESETS[value as string] || [];
         if (presets.length > 0) {
           copy[index].purity_percent = presets[0].percent;
+        }
+      }
+      if (field === "item_title") {
+        if (value !== "Scrap Metal") {
+          copy[index].weight = "";
+        } else {
+          copy[index].estimated_wholesale_cost = "";
         }
       }
       return copy;
@@ -973,7 +1018,9 @@ const PriceCalculatorPage = () => {
 
             {/* Items List */}
             <div className="space-y-4">
-              {items.map((item, idx) => (
+              {items.map((item, idx) => {
+                const isScrapMetal = item.item_title === "Scrap Metal" || !item.item_title;
+                return (
                 <Container key={item.id} className="p-4 sm:p-5 shadow-xs border border-ui-border-base relative space-y-4">
                   <div className="flex items-center justify-between border-b border-ui-border-base pb-3">
                     <div className="flex items-center gap-2 flex-1 mr-2">
@@ -1014,155 +1061,202 @@ const PriceCalculatorPage = () => {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    {/* Metal Type */}
-                    <div>
-                      <label className="block text-xs font-medium text-ui-fg-subtle mb-1">Metal Type</label>
-                      <select
-                        value={item.metal_type}
-                        onChange={(e) => updateItem(idx, "metal_type", e.target.value)}
-                        className="w-full text-xs p-2 rounded-md border border-ui-border-base bg-ui-bg-field text-ui-fg-base"
-                      >
-                        {METAL_OPTIONS.map((m) => (
-                          <option key={m.value} value={m.value}>{m.label}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    {/* Standard Editable Purity (%) */}
-                    <div>
-                      <label className="block text-xs font-medium text-ui-fg-subtle mb-1">
-                        Purity (%) *
-                      </label>
-                      <div className="relative">
-                        <Input
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          max="100"
-                          placeholder="e.g. 58.33"
-                          value={item.purity_percent}
-                          onChange={(e) => updateItem(idx, "purity_percent", e.target.value)}
-                          className="text-xs font-medium pr-7"
-                        />
-                        <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-ui-fg-muted pointer-events-none">
-                          %
-                        </span>
-                      </div>
-                      {/* Purity Quick Preset Chips */}
-                      <div className="flex flex-wrap gap-1 mt-1.5">
-                        {(STANDARD_PURITY_PRESETS[item.metal_type] || []).map((preset) => (
-                          <button
-                            key={preset.label}
-                            type="button"
-                            onClick={() => updateItem(idx, "purity_percent", preset.percent)}
-                            className={`px-1.5 py-0.5 rounded text-[10px] border transition-all ${Number(item.purity_percent) === preset.percent
-                              ? "bg-ui-button-neutral text-ui-fg-on-color border-transparent font-bold shadow-xs"
-                              : "bg-ui-bg-subtle text-ui-fg-muted border-ui-border-base hover:text-ui-fg-base hover:bg-ui-bg-base"
-                              }`}
+                  {isScrapMetal ? (
+                    <>
+                      {/* Metal Specifications for Scrap Metal */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        {/* Metal Type */}
+                        <div>
+                          <label className="block text-xs font-medium text-ui-fg-subtle mb-1">Metal Type</label>
+                          <select
+                            value={item.metal_type}
+                            onChange={(e) => updateItem(idx, "metal_type", e.target.value)}
+                            className="w-full text-xs p-2 rounded-md border border-ui-border-base bg-ui-bg-field text-ui-fg-base"
                           >
-                            {preset.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
+                            {METAL_OPTIONS.map((m) => (
+                              <option key={m.value} value={m.value}>{m.label}</option>
+                            ))}
+                          </select>
+                        </div>
 
-                    {/* Weight */}
-                    <div>
-                      <label className="block text-xs font-medium text-ui-fg-subtle mb-1">Weight *</label>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        placeholder="0.00"
-                        value={item.weight}
-                        onChange={(e) => updateItem(idx, "weight", e.target.value)}
-                        className="text-xs font-medium"
-                      />
-                    </div>
+                        {/* Standard Editable Purity (%) */}
+                        <div>
+                          <label className="block text-xs font-medium text-ui-fg-subtle mb-1">
+                            Purity (%) *
+                          </label>
+                          <div className="relative">
+                            <Input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              max="100"
+                              placeholder="e.g. 58.33"
+                              value={item.purity_percent}
+                              onChange={(e) => updateItem(idx, "purity_percent", e.target.value)}
+                              className="text-xs font-medium pr-7"
+                            />
+                            <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-ui-fg-muted pointer-events-none">
+                              %
+                            </span>
+                          </div>
+                          {/* Purity Quick Preset Chips */}
+                          <div className="flex flex-wrap gap-1 mt-1.5">
+                            {(STANDARD_PURITY_PRESETS[item.metal_type] || []).map((preset) => (
+                              <button
+                                key={preset.label}
+                                type="button"
+                                onClick={() => updateItem(idx, "purity_percent", preset.percent)}
+                                className={`px-1.5 py-0.5 rounded text-[10px] border transition-all ${Number(item.purity_percent) === preset.percent
+                                  ? "bg-ui-button-neutral text-ui-fg-on-color border-transparent font-bold shadow-xs"
+                                  : "bg-ui-bg-subtle text-ui-fg-muted border-ui-border-base hover:text-ui-fg-base hover:bg-ui-bg-base"
+                                  }`}
+                              >
+                                {preset.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
 
-                    {/* Unit */}
-                    <div>
-                      <label className="block text-xs font-medium text-ui-fg-subtle mb-1">Weight Unit</label>
-                      <select
-                        value={item.unit}
-                        onChange={(e) => updateItem(idx, "unit", e.target.value)}
-                        className="w-full text-xs p-2 rounded-md border border-ui-border-base bg-ui-bg-field text-ui-fg-base"
-                      >
-                        {UNIT_OPTIONS.map((u) => (
-                          <option key={u.value} value={u.value}>{u.label}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
+                        {/* Weight */}
+                        <div>
+                          <label className="block text-xs font-medium text-ui-fg-subtle mb-1">Weight *</label>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            placeholder="0.00"
+                            value={item.weight}
+                            onChange={(e) => updateItem(idx, "weight", e.target.value)}
+                            className="text-xs font-medium"
+                          />
+                        </div>
 
-                  {/* Estimated Wholesale Cost & Individual Item Margin (%) */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-ui-border-base">
-                    <div>
-                      <label className="block text-xs font-medium text-ui-fg-subtle mb-1">
-                        Estimated Wholesale Cost ($)
-                      </label>
-                      <div className="relative">
-                        <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-ui-fg-muted pointer-events-none">
-                          $
-                        </span>
-                        <Input
-                          type="number"
-                          step="10"
-                          min="0"
-                          placeholder="0.00"
-                          value={item.estimated_wholesale_cost}
-                          onChange={(e) => updateItem(idx, "estimated_wholesale_cost", e.target.value)}
-                          className="text-xs font-medium pl-6"
-                        />
-                      </div>
-                      <span className="text-[10px] text-ui-fg-muted block mt-1">
-                        Wholesale benchmark value for diamonds, gems, or complete pieces
-                      </span>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-medium text-ui-fg-subtle mb-1">
-                        Margin (%)
-                      </label>
-                      <div className="relative">
-                        <Input
-                          type="number"
-                          step="1"
-                          min="0"
-                          max="100"
-                          placeholder="85"
-                          value={item.payout_ratio}
-                          onChange={(e) => updateItem(idx, "payout_ratio", e.target.value)}
-                          className="text-xs font-medium pr-7"
-                        />
-                        <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-ui-fg-muted pointer-events-none">
-                          %
-                        </span>
-                      </div>
-                      {/* Margin Quick Presets */}
-                      <div className="flex flex-wrap gap-1 mt-1.5">
-                        {[70, 75, 80, 85, 90, 95].map((preset) => (
-                          <button
-                            key={preset}
-                            type="button"
-                            onClick={() => updateItem(idx, "payout_ratio", preset)}
-                            className={`px-1.5 py-0.5 rounded text-[10px] border transition-all ${Number(item.payout_ratio) === preset
-                              ? "bg-ui-button-neutral text-ui-fg-on-color border-transparent font-bold shadow-xs"
-                              : "bg-ui-bg-subtle text-ui-fg-muted border-ui-border-base hover:text-ui-fg-base hover:bg-ui-bg-base"
-                              }`}
+                        {/* Unit */}
+                        <div>
+                          <label className="block text-xs font-medium text-ui-fg-subtle mb-1">Weight Unit</label>
+                          <select
+                            value={item.unit}
+                            onChange={(e) => updateItem(idx, "unit", e.target.value)}
+                            className="w-full text-xs p-2 rounded-md border border-ui-border-base bg-ui-bg-field text-ui-fg-base"
                           >
-                            {preset}%
-                          </button>
-                        ))}
+                            {UNIT_OPTIONS.map((u) => (
+                              <option key={u.value} value={u.value}>{u.label}</option>
+                            ))}
+                          </select>
+                        </div>
                       </div>
-                      <span className="text-[10px] text-ui-fg-muted block mt-1">
-                        Margin percentage applied to this line item
-                      </span>
+
+                      {/* Margin (%) for Scrap Metal */}
+                      <div className="pt-3 border-t border-ui-border-base max-w-sm">
+                        <label className="block text-xs font-medium text-ui-fg-subtle mb-1">
+                          Margin (%)
+                        </label>
+                        <div className="relative">
+                          <Input
+                            type="number"
+                            step="1"
+                            min="0"
+                            max="100"
+                            placeholder="85"
+                            value={item.payout_ratio}
+                            onChange={(e) => updateItem(idx, "payout_ratio", e.target.value)}
+                            className="text-xs font-medium pr-7"
+                          />
+                          <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-ui-fg-muted pointer-events-none">
+                            %
+                          </span>
+                        </div>
+                        {/* Margin Quick Presets */}
+                        <div className="flex flex-wrap gap-1 mt-1.5">
+                          {[70, 75, 80, 85, 90, 95].map((preset) => (
+                            <button
+                              key={preset}
+                              type="button"
+                              onClick={() => updateItem(idx, "payout_ratio", preset)}
+                              className={`px-1.5 py-0.5 rounded text-[10px] border transition-all ${Number(item.payout_ratio) === preset
+                                ? "bg-ui-button-neutral text-ui-fg-on-color border-transparent font-bold shadow-xs"
+                                : "bg-ui-bg-subtle text-ui-fg-muted border-ui-border-base hover:text-ui-fg-base hover:bg-ui-bg-base"
+                                }`}
+                            >
+                              {preset}%
+                            </button>
+                          ))}
+                        </div>
+                        <span className="text-[10px] text-ui-fg-muted block mt-1">
+                          Margin percentage applied to this line item
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    /* Estimated Wholesale Cost & Individual Item Margin (%) for non-scrap items */
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-medium text-ui-fg-subtle mb-1">
+                          Estimated Wholesale Cost ($)
+                        </label>
+                        <div className="relative">
+                          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-ui-fg-muted pointer-events-none">
+                            $
+                          </span>
+                          <Input
+                            type="number"
+                            step="10"
+                            min="0"
+                            placeholder="0.00"
+                            value={item.estimated_wholesale_cost}
+                            onChange={(e) => updateItem(idx, "estimated_wholesale_cost", e.target.value)}
+                            className="text-xs font-medium pl-6"
+                          />
+                        </div>
+                        <span className="text-[10px] text-ui-fg-muted block mt-1">
+                          Wholesale benchmark value for diamonds, gems, or complete pieces
+                        </span>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-medium text-ui-fg-subtle mb-1">
+                          Margin (%)
+                        </label>
+                        <div className="relative">
+                          <Input
+                            type="number"
+                            step="1"
+                            min="0"
+                            max="100"
+                            placeholder="85"
+                            value={item.payout_ratio}
+                            onChange={(e) => updateItem(idx, "payout_ratio", e.target.value)}
+                            className="text-xs font-medium pr-7"
+                          />
+                          <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-ui-fg-muted pointer-events-none">
+                            %
+                          </span>
+                        </div>
+                        {/* Margin Quick Presets */}
+                        <div className="flex flex-wrap gap-1 mt-1.5">
+                          {[70, 75, 80, 85, 90, 95].map((preset) => (
+                            <button
+                              key={preset}
+                              type="button"
+                              onClick={() => updateItem(idx, "payout_ratio", preset)}
+                              className={`px-1.5 py-0.5 rounded text-[10px] border transition-all ${Number(item.payout_ratio) === preset
+                                ? "bg-ui-button-neutral text-ui-fg-on-color border-transparent font-bold shadow-xs"
+                                : "bg-ui-bg-subtle text-ui-fg-muted border-ui-border-base hover:text-ui-fg-base hover:bg-ui-bg-base"
+                                }`}
+                            >
+                              {preset}%
+                            </button>
+                          ))}
+                        </div>
+                        <span className="text-[10px] text-ui-fg-muted block mt-1">
+                          Margin percentage applied to this line item
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </Container>
-              ))}
+              );
+              })}
 
               <Button variant="secondary" size="small" onClick={addItem} className="w-full border-dashed">
                 <Plus className="mr-1" /> Add Another Item / Lot to Calculation
@@ -1177,35 +1271,18 @@ const PriceCalculatorPage = () => {
                 <Heading level="h2" className="text-base font-bold text-ui-fg-base">Calculation Summary</Heading>
               </div>
 
-              {/* Weights Summary */}
-              <div className="grid grid-cols-3 gap-2 p-3 rounded-lg bg-ui-bg-base border border-ui-border-base text-center">
-                <div>
-                  <Text className="text-[10px] uppercase font-bold text-ui-fg-subtle">Pure DWT</Text>
-                  <Text className="text-xs sm:text-sm font-bold text-ui-fg-base">{calculationSummary.pure_metal_dwt.toFixed(2)} dwt</Text>
-                </div>
-                <div>
-                  <Text className="text-[10px] uppercase font-bold text-ui-fg-subtle">Pure Grams</Text>
-                  <Text className="text-xs sm:text-sm font-bold text-ui-fg-base">{calculationSummary.pure_metal_grams.toFixed(2)} g</Text>
-                </div>
-                <div>
-                  <Text className="text-[10px] uppercase font-bold text-ui-fg-subtle">Pure Troy Oz</Text>
-                  <Text className="text-xs sm:text-sm font-bold text-ui-fg-base">{calculationSummary.pure_metal_ozt.toFixed(4)} oz</Text>
-                </div>
-              </div>
-
-              {/* Line Item Costs Breakdown */}
+              {/* Itemized Margin Quote Breakdown */}
               <div className="space-y-2 text-xs border-b border-ui-border-base pb-3">
-                <div className="flex justify-between text-ui-fg-subtle">
-                  <span>Base Metal Melt Value:</span>
-                  <span className="font-semibold text-ui-fg-base">${calculationSummary.base_metal_cost.toFixed(2)}</span>
-                </div>
-
-                {calculationSummary.estimated_wholesale_cost > 0 && (
-                  <div className="flex justify-between text-ui-fg-subtle">
-                    <span>Estimated Wholesale Cost:</span>
-                    <span className="font-semibold text-ui-fg-base">${calculationSummary.estimated_wholesale_cost.toFixed(2)}</span>
+                {calculationSummary.itemResults.map((item, idx) => (
+                  <div key={item.id || idx} className="flex justify-between text-ui-fg-subtle">
+                    <span>
+                      item #{idx + 1} - {formatCategoryName(item.item_title)} {item.itemPayoutRatio}%
+                    </span>
+                    <span className="font-semibold text-ui-fg-base">
+                      ${item.itemOfferedPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
                   </div>
-                )}
+                ))}
 
                 <div className="flex justify-between text-ui-fg-subtle border-t border-ui-border-base pt-2">
                   <span>Total Base Valuation:</span>
@@ -1226,14 +1303,11 @@ const PriceCalculatorPage = () => {
               {/* Final Highlighted Quote Price */}
               <div className="p-4 rounded-xl bg-ui-bg-base border border-emerald-500/30 text-center shadow-xs">
                 <Text className="text-[11px] uppercase font-bold tracking-wider text-ui-fg-subtle">
-                  Buying Quote (USD)
+                  Buying Quote
                 </Text>
                 <div className="text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">
                   ${calculationSummary.final_offered_price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </div>
-                <Text className="text-[10px] text-ui-fg-muted mt-1">
-                  Calculated with Gold @ ${spotRates.gold}/oz
-                </Text>
               </div>
 
               {/* Action Buttons */}
@@ -2040,7 +2114,9 @@ const PriceCalculatorPage = () => {
                   </div>
 
                   <div className="space-y-4">
-                    {recalcItems.map((item, idx) => (
+                    {recalcItems.map((item, idx) => {
+                      const isRecalcScrapMetal = item.item_title === "Scrap Metal" || !item.item_title;
+                      return (
                       <div key={item.id || idx} className="p-4 rounded-xl border border-ui-border-base bg-ui-bg-subtle/50 space-y-3">
                         <div className="flex items-center justify-between border-b border-ui-border-base pb-2.5">
                           <div className="flex items-center gap-2 flex-1 mr-2">
@@ -2081,141 +2157,182 @@ const PriceCalculatorPage = () => {
                           />
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-                          {/* Metal Type */}
-                          <div>
-                            <label className="block text-[11px] font-medium text-ui-fg-subtle mb-1">Metal</label>
-                            <select
-                              value={item.metal_type}
-                              onChange={(e) => updateRecalcItem(idx, "metal_type", e.target.value)}
-                              className="w-full text-xs p-1.5 rounded-md border border-ui-border-base bg-ui-bg-field text-ui-fg-base"
-                            >
-                              {METAL_OPTIONS.map((m) => (
-                                <option key={m.value} value={m.value}>{m.label}</option>
-                              ))}
-                            </select>
-                          </div>
-
-                          {/* Purity (%) */}
-                          <div>
-                            <label className="block text-[11px] font-medium text-ui-fg-subtle mb-1">Purity (%)</label>
-                            <div className="relative">
-                              <Input
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                max="100"
-                                value={item.purity_percent}
-                                onChange={(e) => updateRecalcItem(idx, "purity_percent", e.target.value)}
-                                className="text-xs font-medium pr-7"
-                              />
-                              <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-bold text-ui-fg-muted pointer-events-none">
-                                %
-                              </span>
-                            </div>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {(STANDARD_PURITY_PRESETS[item.metal_type] || []).map((preset) => (
-                                <button
-                                  key={preset.label}
-                                  type="button"
-                                  onClick={() => updateRecalcItem(idx, "purity_percent", preset.percent)}
-                                  className={`px-1 py-0.5 rounded text-[9px] border transition-all ${Number(item.purity_percent) === preset.percent
-                                    ? "bg-ui-button-neutral text-ui-fg-on-color border-transparent font-bold"
-                                    : "bg-ui-bg-base text-ui-fg-muted border-ui-border-base hover:text-ui-fg-base"
-                                    }`}
+                        {isRecalcScrapMetal ? (
+                          <>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                              {/* Metal Type */}
+                              <div>
+                                <label className="block text-[11px] font-medium text-ui-fg-subtle mb-1">Metal</label>
+                                <select
+                                  value={item.metal_type}
+                                  onChange={(e) => updateRecalcItem(idx, "metal_type", e.target.value)}
+                                  className="w-full text-xs p-1.5 rounded-md border border-ui-border-base bg-ui-bg-field text-ui-fg-base"
                                 >
-                                  {preset.label}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
+                                  {METAL_OPTIONS.map((m) => (
+                                    <option key={m.value} value={m.value}>{m.label}</option>
+                                  ))}
+                                </select>
+                              </div>
 
-                          {/* Weight */}
-                          <div>
-                            <label className="block text-[11px] font-medium text-ui-fg-subtle mb-1">Weight</label>
-                            <Input
-                              type="number"
-                              step="0.01"
-                              min="0"
-                              value={item.weight}
-                              onChange={(e) => updateRecalcItem(idx, "weight", e.target.value)}
-                              className="text-xs font-medium"
-                            />
-                          </div>
+                              {/* Purity (%) */}
+                              <div>
+                                <label className="block text-[11px] font-medium text-ui-fg-subtle mb-1">Purity (%)</label>
+                                <div className="relative">
+                                  <Input
+                                    type="number"
+                                    step="0.01"
+                                    min="0"
+                                    max="100"
+                                    value={item.purity_percent}
+                                    onChange={(e) => updateRecalcItem(idx, "purity_percent", e.target.value)}
+                                    className="text-xs font-medium pr-7"
+                                  />
+                                  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-bold text-ui-fg-muted pointer-events-none">
+                                    %
+                                  </span>
+                                </div>
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {(STANDARD_PURITY_PRESETS[item.metal_type] || []).map((preset) => (
+                                    <button
+                                      key={preset.label}
+                                      type="button"
+                                      onClick={() => updateRecalcItem(idx, "purity_percent", preset.percent)}
+                                      className={`px-1 py-0.5 rounded text-[9px] border transition-all ${Number(item.purity_percent) === preset.percent
+                                        ? "bg-ui-button-neutral text-ui-fg-on-color border-transparent font-bold"
+                                        : "bg-ui-bg-base text-ui-fg-muted border-ui-border-base hover:text-ui-fg-base"
+                                        }`}
+                                    >
+                                      {preset.label}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
 
-                          {/* Unit */}
-                          <div>
-                            <label className="block text-[11px] font-medium text-ui-fg-subtle mb-1">Unit</label>
-                            <select
-                              value={item.unit}
-                              onChange={(e) => updateRecalcItem(idx, "unit", e.target.value)}
-                              className="w-full text-xs p-1.5 rounded-md border border-ui-border-base bg-ui-bg-field text-ui-fg-base"
-                            >
-                              {UNIT_OPTIONS.map((u) => (
-                                <option key={u.value} value={u.value}>{u.label}</option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
+                              {/* Weight */}
+                              <div>
+                                <label className="block text-[11px] font-medium text-ui-fg-subtle mb-1">Weight</label>
+                                <Input
+                                  type="number"
+                                  step="0.01"
+                                  min="0"
+                                  value={item.weight}
+                                  onChange={(e) => updateRecalcItem(idx, "weight", e.target.value)}
+                                  className="text-xs font-medium"
+                                />
+                              </div>
 
-                        {/* Wholesale Cost & Margin */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2.5 border-t border-ui-border-base">
-                          <div>
-                            <label className="block text-[11px] font-medium text-ui-fg-subtle mb-1">
-                              Estimated Wholesale Cost ($)
-                            </label>
-                            <div className="relative">
-                              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-ui-fg-muted pointer-events-none">
-                                $
-                              </span>
-                              <Input
-                                type="number"
-                                step="10"
-                                min="0"
-                                value={item.estimated_wholesale_cost}
-                                onChange={(e) => updateRecalcItem(idx, "estimated_wholesale_cost", e.target.value)}
-                                className="text-xs font-medium pl-6"
-                              />
-                            </div>
-                          </div>
-
-                          <div>
-                            <label className="block text-[11px] font-medium text-ui-fg-subtle mb-1">
-                              Margin (%)
-                            </label>
-                            <div className="relative">
-                              <Input
-                                type="number"
-                                step="1"
-                                min="0"
-                                max="100"
-                                value={item.payout_ratio}
-                                onChange={(e) => updateRecalcItem(idx, "payout_ratio", e.target.value)}
-                                className="text-xs font-medium pr-7"
-                              />
-                              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-ui-fg-muted pointer-events-none">
-                                %
-                              </span>
-                            </div>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {[70, 75, 80, 85, 90, 95].map((preset) => (
-                                <button
-                                  key={preset}
-                                  type="button"
-                                  onClick={() => updateRecalcItem(idx, "payout_ratio", preset)}
-                                  className={`px-1.5 py-0.5 rounded text-[10px] border transition-all ${Number(item.payout_ratio) === preset
-                                    ? "bg-ui-button-neutral text-ui-fg-on-color border-transparent font-bold shadow-xs"
-                                    : "bg-ui-bg-base text-ui-fg-muted border-ui-border-base hover:text-ui-fg-base"
-                                    }`}
+                              {/* Unit */}
+                              <div>
+                                <label className="block text-[11px] font-medium text-ui-fg-subtle mb-1">Unit</label>
+                                <select
+                                  value={item.unit}
+                                  onChange={(e) => updateRecalcItem(idx, "unit", e.target.value)}
+                                  className="w-full text-xs p-1.5 rounded-md border border-ui-border-base bg-ui-bg-field text-ui-fg-base"
                                 >
-                                  {preset}%
-                                </button>
-                              ))}
+                                  {UNIT_OPTIONS.map((u) => (
+                                    <option key={u.value} value={u.value}>{u.label}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+
+                            {/* Margin (%) for Scrap Metal */}
+                            <div className="pt-2.5 border-t border-ui-border-base max-w-xs">
+                              <label className="block text-[11px] font-medium text-ui-fg-subtle mb-1">
+                                Margin (%)
+                              </label>
+                              <div className="relative">
+                                <Input
+                                  type="number"
+                                  step="1"
+                                  min="0"
+                                  max="100"
+                                  value={item.payout_ratio}
+                                  onChange={(e) => updateRecalcItem(idx, "payout_ratio", e.target.value)}
+                                  className="text-xs font-medium pr-7"
+                                />
+                                <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-ui-fg-muted pointer-events-none">
+                                  %
+                                </span>
+                              </div>
+                              <div className="flex flex-wrap gap-1 mt-1">
+                                {[70, 75, 80, 85, 90, 95].map((preset) => (
+                                  <button
+                                    key={preset}
+                                    type="button"
+                                    onClick={() => updateRecalcItem(idx, "payout_ratio", preset)}
+                                    className={`px-1.5 py-0.5 rounded text-[10px] border transition-all ${Number(item.payout_ratio) === preset
+                                      ? "bg-ui-button-neutral text-ui-fg-on-color border-transparent font-bold shadow-xs"
+                                      : "bg-ui-bg-base text-ui-fg-muted border-ui-border-base hover:text-ui-fg-base"
+                                      }`}
+                                  >
+                                    {preset}%
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          </>
+                        ) : (
+                          /* Estimated Wholesale Cost & Individual Item Margin (%) for non-scrap items */
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-[11px] font-medium text-ui-fg-subtle mb-1">
+                                Estimated Wholesale Cost ($)
+                              </label>
+                              <div className="relative">
+                                <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-ui-fg-muted pointer-events-none">
+                                  $
+                                </span>
+                                <Input
+                                  type="number"
+                                  step="10"
+                                  min="0"
+                                  value={item.estimated_wholesale_cost}
+                                  onChange={(e) => updateRecalcItem(idx, "estimated_wholesale_cost", e.target.value)}
+                                  className="text-xs font-medium pl-6"
+                                />
+                              </div>
+                            </div>
+
+                            <div>
+                              <label className="block text-[11px] font-medium text-ui-fg-subtle mb-1">
+                                Margin (%)
+                              </label>
+                              <div className="relative">
+                                <Input
+                                  type="number"
+                                  step="1"
+                                  min="0"
+                                  max="100"
+                                  value={item.payout_ratio}
+                                  onChange={(e) => updateRecalcItem(idx, "payout_ratio", e.target.value)}
+                                  className="text-xs font-medium pr-7"
+                                />
+                                <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-ui-fg-muted pointer-events-none">
+                                  %
+                                </span>
+                              </div>
+                              <div className="flex flex-wrap gap-1 mt-1">
+                                {[70, 75, 80, 85, 90, 95].map((preset) => (
+                                  <button
+                                    key={preset}
+                                    type="button"
+                                    onClick={() => updateRecalcItem(idx, "payout_ratio", preset)}
+                                    className={`px-1.5 py-0.5 rounded text-[10px] border transition-all ${Number(item.payout_ratio) === preset
+                                      ? "bg-ui-button-neutral text-ui-fg-on-color border-transparent font-bold shadow-xs"
+                                      : "bg-ui-bg-base text-ui-fg-muted border-ui-border-base hover:text-ui-fg-base"
+                                      }`}
+                                  >
+                                    {preset}%
+                                  </button>
+                                ))}
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        )}
                       </div>
-                    ))}
+                    );
+                    })}
                   </div>
                 </Container>
 
@@ -2341,6 +2458,8 @@ const PriceCalculatorPage = () => {
                           ? `${item.payout_ratio}%`
                           : `${selectedQuote?.profit_margin_percent || 85}%`;
 
+                        const isScrap = item.item_title === "Scrap Metal" || !item.item_title;
+
                         return (
                           <div key={idx} className="p-3.5 rounded-lg border border-ui-border-base bg-ui-bg-base space-y-2 shadow-xs">
                             <div className="flex items-center justify-between border-b border-ui-border-base pb-2">
@@ -2351,7 +2470,7 @@ const PriceCalculatorPage = () => {
                                 </Text>
                               </div>
                               <Badge color="grey" size="xsmall">
-                                {item.metal_type?.toUpperCase()}
+                                {isScrap ? item.metal_type?.toUpperCase() : (item.item_title || "ITEM")}
                               </Badge>
                             </div>
 
@@ -2362,26 +2481,30 @@ const PriceCalculatorPage = () => {
                             )}
 
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs pt-1">
-                              <div>
-                                <span className="text-[10px] text-ui-fg-muted block uppercase font-bold">Weight</span>
-                                <span className="font-semibold text-ui-fg-base">
-                                  {itemWeight} {itemUnit} ({weightGrams}g)
-                                </span>
-                              </div>
+                              {isScrap ? (
+                                <>
+                                  <div>
+                                    <span className="text-[10px] text-ui-fg-muted block uppercase font-bold">Weight</span>
+                                    <span className="font-semibold text-ui-fg-base">
+                                      {itemWeight} {itemUnit} ({weightGrams}g)
+                                    </span>
+                                  </div>
 
-                              <div>
-                                <span className="text-[10px] text-ui-fg-muted block uppercase font-bold">Purity (%)</span>
-                                <span className="font-semibold text-ui-fg-base">
-                                  {purityDisplay}
-                                </span>
-                              </div>
-
-                              <div>
-                                <span className="text-[10px] text-ui-fg-muted block uppercase font-bold">Wholesale Cost</span>
-                                <span className="font-semibold text-ui-fg-base">
-                                  ${wholesaleCost.toFixed(2)}
-                                </span>
-                              </div>
+                                  <div>
+                                    <span className="text-[10px] text-ui-fg-muted block uppercase font-bold">Purity (%)</span>
+                                    <span className="font-semibold text-ui-fg-base">
+                                      {purityDisplay}
+                                    </span>
+                                  </div>
+                                </>
+                              ) : (
+                                <div>
+                                  <span className="text-[10px] text-ui-fg-muted block uppercase font-bold">Wholesale Cost</span>
+                                  <span className="font-semibold text-ui-fg-base">
+                                    ${wholesaleCost.toFixed(2)}
+                                  </span>
+                                </div>
+                              )}
 
                               <div>
                                 <span className="text-[10px] text-ui-fg-muted block uppercase font-bold">Margin</span>

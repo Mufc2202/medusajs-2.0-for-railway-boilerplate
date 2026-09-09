@@ -39,6 +39,14 @@ export const TROY_OZ_TO_GRAMS = 31.1034768;
 export const TROY_OZ_TO_DWT = 20.0; // 1 Troy Oz = 20 Pennyweight
 export const DWT_TO_GRAMS = 1.55517384; // 1 Pennyweight = 1.55517 Grams
 
+// Refiner settlement rates
+export const REFINER_RATES: Record<string, number> = {
+  gold: 0.98,
+  silver: 0.85,
+  platinum: 0.90,
+  palladium: 0.90,
+};
+
 export interface JewelryItemInput {
   metal_type: "gold" | "silver" | "platinum" | "palladium";
   purity_karat?: string;
@@ -174,19 +182,23 @@ class JewelryQuotesModuleService extends MedusaService({
     let totalScrapBuyingProfit = 0;
 
     const itemCalculations = items.map((item) => {
-      const weightNum = Number(item.weight) || 0;
-      const { ozt, grams, dwt } = this.convertWeight(weightNum, item.unit);
+      const isScrapMetal = item.item_title === "Scrap Metal" || !item.item_title;
+      const weightNum = isScrapMetal ? (Number(item.weight) || 0) : 0;
+      const { ozt, grams, dwt } = this.convertWeight(weightNum, item.unit || "dwt");
 
       const purityPercent = typeof item.purity_percent === "number"
         ? item.purity_percent
         : item.custom_purity_percent;
 
-      const purityFactor = this.getPurityFactor(item.metal_type, item.purity_karat || "", purityPercent);
+      const purityFactor = isScrapMetal
+        ? this.getPurityFactor(item.metal_type || "gold", item.purity_karat || "", purityPercent)
+        : 0;
       const pureOzt = ozt * purityFactor;
       const pureGrams = grams * purityFactor;
 
       const spotPricePerOzt = spotPrices[item.metal_type] || 0;
-      const baseMetalCost = pureOzt * spotPricePerOzt;
+      const refinerRate = REFINER_RATES[item.metal_type?.toLowerCase()] ?? 1.0;
+      const baseMetalCost = isScrapMetal ? pureOzt * spotPricePerOzt * refinerRate : 0;
 
       const wastagePercent = item.wastage_percent || 0;
       const wastageCost = baseMetalCost * (wastagePercent / 100.0);
@@ -208,7 +220,7 @@ class JewelryQuotesModuleService extends MedusaService({
       }
       const stoneCost = stoneCarats * (item.diamond_price_per_carat || 0);
 
-      const estimatedWholesale = Number(item.estimated_wholesale_cost) || 0;
+      const estimatedWholesale = !isScrapMetal ? (Number(item.estimated_wholesale_cost) || 0) : 0;
       const itemBaseValuation = baseMetalCost + estimatedWholesale;
 
       // Individual item payout ratio (defaults to global margin if not provided)

@@ -41,6 +41,13 @@ const PURITY_FACTORS: Record<string, number> = {
   "pd500": 0.5,
 };
 
+const REFINER_RATES: Record<string, number> = {
+  gold: 0.98,
+  silver: 0.85,
+  platinum: 0.90,
+  palladium: 0.90,
+};
+
 const CustomerJewelryQuotesWidget = ({ data }: DetailWidgetProps<AdminCustomer>) => {
   const [quotes, setQuotes] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -95,8 +102,9 @@ const CustomerJewelryQuotesWidget = ({ data }: DetailWidgetProps<AdminCustomer>)
     let totalWholesaleCost = 0;
 
     rawItems.forEach((item: any) => {
+      const isScrapMetal = item.item_title === "Scrap Metal" || !item.item_title;
       let grams = 0;
-      const weight = Number(item.weight) || 0;
+      const weight = isScrapMetal ? (Number(item.weight) || 0) : 0;
       switch (item.unit) {
         case "dwt": grams = weight * DWT_TO_GRAMS; break;
         case "g": grams = weight; break;
@@ -107,13 +115,14 @@ const CustomerJewelryQuotesWidget = ({ data }: DetailWidgetProps<AdminCustomer>)
       }
       const ozt = grams / TROY_OZ_TO_GRAMS;
       const dwt = ozt * TROY_OZ_TO_DWT;
-      const purityFactor = (item.purity_percent !== undefined && item.purity_percent !== null && !isNaN(Number(item.purity_percent)))
+      const purityFactor = isScrapMetal && (item.purity_percent !== undefined && item.purity_percent !== null && !isNaN(Number(item.purity_percent)))
         ? Number(item.purity_percent) / 100.0
-        : (PURITY_FACTORS[item.purity_karat] || 1.0);
-      const pureOzt = ozt * purityFactor;
+        : (isScrapMetal ? (PURITY_FACTORS[item.purity_karat] || 1.0) : 0);
+      const pureOzt = isScrapMetal ? ozt * purityFactor : 0;
 
       const spotPricePerOzt = Number((recalcSpotRates as any)[item.metal_type]) || 0;
-      const baseMetalCost = pureOzt * spotPricePerOzt;
+      const refinerRate = REFINER_RATES[item.metal_type?.toLowerCase()] ?? 1.0;
+      const baseMetalCost = isScrapMetal ? pureOzt * spotPricePerOzt * refinerRate : 0;
       const wastageCost = baseMetalCost * ((Number(item.wastage_percent) || 0) / 100.0);
 
       let laborCost = Number(item.labor_charge_flat) || 0;
@@ -126,7 +135,7 @@ const CustomerJewelryQuotesWidget = ({ data }: DetailWidgetProps<AdminCustomer>)
         stoneCarats += Number(item.diamond_points) / 100.0;
       }
       const stoneCost = stoneCarats * (Number(item.diamond_price_per_carat) || 0);
-      const estimatedWholesale = Number(item.estimated_wholesale_cost) || 0;
+      const estimatedWholesale = !isScrapMetal ? (Number(item.estimated_wholesale_cost) || 0) : 0;
 
       totalPureOzt += pureOzt;
       totalBaseMetalCost += baseMetalCost;
