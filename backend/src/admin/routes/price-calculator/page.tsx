@@ -111,6 +111,13 @@ const ITEM_CATEGORY_OPTIONS = [
   { value: "Complete Piece", label: "Complete Piece" },
 ];
 
+const NON_SCRAP_CATEGORIES = new Set(["Diamonds/gem stone", "Melee", "Complete Piece"]);
+
+export const isScrapMetalItem = (category?: string) => {
+  if (!category) return true;
+  return !NON_SCRAP_CATEGORIES.has(category);
+};
+
 const STANDARD_PURITY_PRESETS: Record<string, Array<{ label: string; percent: number }>> = {
   gold: [
     { label: "10K (41.7%)", percent: 41.67 },
@@ -260,7 +267,25 @@ const PriceCalculatorPage = () => {
     setRecalcNotes("");
 
     // Initialize items for editing within the revision modal
-    const raw = Array.isArray(q.items) ? q.items : (q.items?.raw_items || []);
+    let raw: any[] = [];
+    if (Array.isArray(q.items)) {
+      raw = q.items;
+    } else if (q.items && typeof q.items === "object") {
+      if (Array.isArray(q.items.raw_items)) raw = q.items.raw_items;
+      else if (Array.isArray(q.items.breakdown_items)) raw = q.items.breakdown_items;
+      else raw = Object.values(q.items).filter((v: any) => v && typeof v === "object");
+    } else if (typeof q.items === "string") {
+      try {
+        const parsed = JSON.parse(q.items);
+        if (Array.isArray(parsed)) raw = parsed;
+        else if (parsed?.raw_items && Array.isArray(parsed.raw_items)) raw = parsed.raw_items;
+        else if (parsed?.breakdown_items && Array.isArray(parsed.breakdown_items)) raw = parsed.breakdown_items;
+        else if (parsed && typeof parsed === "object") raw = Object.values(parsed);
+      } catch {
+        raw = [];
+      }
+    }
+
     const itemsFormatted: CalculatorItem[] = raw.map((it: any) => {
       let purityPct: any = it.purity_percent;
       if (purityPct === undefined || purityPct === null || isNaN(Number(purityPct))) {
@@ -271,16 +296,36 @@ const PriceCalculatorPage = () => {
           purityPct = match ? Number((match.factor * 100).toFixed(2)) : 58.33;
         }
       }
+
+      let category = it.item_title || "Scrap Metal";
+      let description = it.description || "";
+      if (!ITEM_CATEGORY_OPTIONS.some((opt) => opt.value === category)) {
+        const catLower = category.toLowerCase();
+        if (catLower.includes("diamond") || catLower.includes("gem")) {
+          category = "Diamonds/gem stone";
+        } else if (catLower.includes("melee")) {
+          category = "Melee";
+        } else if (catLower.includes("complete")) {
+          category = "Complete Piece";
+        } else {
+          // Preserve custom title in description if description was empty
+          if (!description && category !== "Scrap Metal") {
+            description = category;
+          }
+          category = "Scrap Metal";
+        }
+      }
+
       return {
         id: Math.random().toString(36).substring(2, 9),
-        item_title: it.item_title || "Scrap Metal",
-        description: it.description || "",
+        item_title: category,
+        description,
         metal_type: it.metal_type || "gold",
         purity_percent: purityPct,
-        weight: it.weight !== undefined ? it.weight : (it.weight_input || ""),
+        weight: it.weight !== undefined && it.weight !== null ? it.weight : (it.weight_input || ""),
         unit: it.unit || "dwt",
         estimated_wholesale_cost: it.estimated_wholesale_cost || "",
-        payout_ratio: it.payout_ratio !== undefined ? it.payout_ratio : (q.profit_margin_percent || 85),
+        payout_ratio: it.payout_ratio !== undefined && it.payout_ratio !== null ? it.payout_ratio : (q.profit_margin_percent || 85),
       };
     });
     setRecalcItems(itemsFormatted.length > 0 ? itemsFormatted : [defaultItem()]);
@@ -441,7 +486,7 @@ const PriceCalculatorPage = () => {
     let totalProfitAmount = 0;
 
     const itemResults = items.map((item) => {
-      const isScrapMetal = item.item_title === "Scrap Metal" || !item.item_title;
+      const isScrapMetal = isScrapMetalItem(item.item_title);
       // 1. Weight conversions (only for scrap metal)
       const weightNum = isScrapMetal ? (Number(item.weight) || 0) : 0;
       let grams = 0;
@@ -548,7 +593,7 @@ const PriceCalculatorPage = () => {
     let totalProfitAmount = 0;
 
     currentItems.forEach((item: any) => {
-      const isScrapMetal = item.item_title === "Scrap Metal" || !item.item_title;
+      const isScrapMetal = isScrapMetalItem(item.item_title);
       let grams = 0;
       const weight = isScrapMetal ? (Number(item.weight) || 0) : 0;
       switch (item.unit) {
@@ -1019,7 +1064,7 @@ const PriceCalculatorPage = () => {
             {/* Items List */}
             <div className="space-y-4">
               {items.map((item, idx) => {
-                const isScrapMetal = item.item_title === "Scrap Metal" || !item.item_title;
+                const isScrapMetal = isScrapMetalItem(item.item_title);
                 return (
                 <Container key={item.id} className="p-4 sm:p-5 shadow-xs border border-ui-border-base relative space-y-4">
                   <div className="flex items-center justify-between border-b border-ui-border-base pb-3">
@@ -2115,7 +2160,7 @@ const PriceCalculatorPage = () => {
 
                   <div className="space-y-4">
                     {recalcItems.map((item, idx) => {
-                      const isRecalcScrapMetal = item.item_title === "Scrap Metal" || !item.item_title;
+                      const isRecalcScrapMetal = isScrapMetalItem(item.item_title);
                       return (
                       <div key={item.id || idx} className="p-4 rounded-xl border border-ui-border-base bg-ui-bg-subtle/50 space-y-3">
                         <div className="flex items-center justify-between border-b border-ui-border-base pb-2.5">
@@ -2458,7 +2503,7 @@ const PriceCalculatorPage = () => {
                           ? `${item.payout_ratio}%`
                           : `${selectedQuote?.profit_margin_percent || 85}%`;
 
-                        const isScrap = item.item_title === "Scrap Metal" || !item.item_title;
+                        const isScrap = isScrapMetalItem(item.item_title);
 
                         return (
                           <div key={idx} className="p-3.5 rounded-lg border border-ui-border-base bg-ui-bg-base space-y-2 shadow-xs">

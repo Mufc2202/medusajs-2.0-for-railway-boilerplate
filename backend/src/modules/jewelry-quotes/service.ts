@@ -39,12 +39,18 @@ export const TROY_OZ_TO_GRAMS = 31.1034768;
 export const TROY_OZ_TO_DWT = 20.0; // 1 Troy Oz = 20 Pennyweight
 export const DWT_TO_GRAMS = 1.55517384; // 1 Pennyweight = 1.55517 Grams
 
-// Refiner settlement rates
 export const REFINER_RATES: Record<string, number> = {
   gold: 0.98,
   silver: 0.85,
   platinum: 0.90,
   palladium: 0.90,
+};
+
+const NON_SCRAP_CATEGORIES = new Set(["Diamonds/gem stone", "Melee", "Complete Piece"]);
+
+export const isScrapMetalItem = (category?: string) => {
+  if (!category) return true;
+  return !NON_SCRAP_CATEGORIES.has(category);
 };
 
 export interface JewelryItemInput {
@@ -182,7 +188,7 @@ class JewelryQuotesModuleService extends MedusaService({
     let totalScrapBuyingProfit = 0;
 
     const itemCalculations = items.map((item) => {
-      const isScrapMetal = item.item_title === "Scrap Metal" || !item.item_title;
+      const isScrapMetal = isScrapMetalItem(item.item_title);
       const weightNum = isScrapMetal ? (Number(item.weight) || 0) : 0;
       const { ozt, grams, dwt } = this.convertWeight(weightNum, item.unit || "dwt");
 

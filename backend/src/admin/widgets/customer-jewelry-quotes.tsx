@@ -48,6 +48,13 @@ const REFINER_RATES: Record<string, number> = {
   palladium: 0.90,
 };
 
+const NON_SCRAP_CATEGORIES = new Set(["Diamonds/gem stone", "Melee", "Complete Piece"]);
+
+const isScrapMetalItem = (category?: string) => {
+  if (!category) return true;
+  return !NON_SCRAP_CATEGORIES.has(category);
+};
+
 const CustomerJewelryQuotesWidget = ({ data }: DetailWidgetProps<AdminCustomer>) => {
   const [quotes, setQuotes] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -102,7 +109,7 @@ const CustomerJewelryQuotesWidget = ({ data }: DetailWidgetProps<AdminCustomer>)
     let totalWholesaleCost = 0;
 
     rawItems.forEach((item: any) => {
-      const isScrapMetal = item.item_title === "Scrap Metal" || !item.item_title;
+      const isScrapMetal = isScrapMetalItem(item.item_title);
       let grams = 0;
       const weight = isScrapMetal ? (Number(item.weight) || 0) : 0;
       switch (item.unit) {
