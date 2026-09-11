@@ -77,5 +77,10 @@
   "engines": {
     "node": "22.x",
     "npm": "10.x"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@medusajs/dashboard@2.19.0": "patches/@medusajs__dashboard@2.19.0.patch"
+    }
   }
 }

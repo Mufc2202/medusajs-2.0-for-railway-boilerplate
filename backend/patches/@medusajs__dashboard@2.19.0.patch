@@ -1,0 +1,39 @@
+diff --git a/dist/app.js b/dist/app.js
+index e2d159e96229f72d947b78ed75d2be946050c73b..d2247294b3250a235289c9cd448271dbadc551a2 100644
+--- a/dist/app.js
++++ b/dist/app.js
+@@ -133825,7 +133825,7 @@ var init_product_export = __esm({
+     };
+     ProductExportContent = () => {
+       const { t: t5 } = (0, import_react_i18next86.useTranslation)();
+-      const { searchParams } = useProductTableQuery({ prefix: "p" });
++      const { searchParams } = useProductTableQuery({});
+       delete searchParams.fields;
+       const { mutateAsync } = useExportProducts();
+       const { handleSuccess } = useRouteModal();
+diff --git a/dist/product-export-54RUIWT2.mjs b/dist/product-export-54RUIWT2.mjs
+index 341bd6ff297d3a3a91a04c6f545d9618b5f65163..8b8e4a5dac6d892c75566499e9f781839382d505 100644
+--- a/dist/product-export-54RUIWT2.mjs
++++ b/dist/product-export-54RUIWT2.mjs
+@@ -100,7 +100,7 @@ var ProductExport = () => {
+ };
+ var ProductExportContent = () => {
+   const { t } = useTranslation2();
+-  const { searchParams } = useProductTableQuery({ prefix: "p" });
++  const { searchParams } = useProductTableQuery({});
+   delete searchParams.fields;
+   const { mutateAsync } = useExportProducts();
+   const { handleSuccess } = useRouteModal();
+diff --git a/src/routes/products/product-export/product-export.tsx b/src/routes/products/product-export/product-export.tsx
+index d36a852c28d452cc508e457cc1b1764a5d6585b1..8ef8ed29fc098b0c734beeecd85dc7f2935da574 100644
+--- a/src/routes/products/product-export/product-export.tsx
++++ b/src/routes/products/product-export/product-export.tsx
+@@ -25,7 +25,7 @@ export const ProductExport = () => {
+ 
+ const ProductExportContent = () => {
+   const { t } = useTranslation()
+-  const { searchParams } = useProductTableQuery({ prefix: "p" })
++  const { searchParams } = useProductTableQuery({})
+   delete searchParams.fields
+ 
+   const { mutateAsync } = useExportProducts()
