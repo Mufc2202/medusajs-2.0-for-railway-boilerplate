@@ -45,8 +45,18 @@ const ProductAdditionalDetailsWidget = ({ data }: DetailWidgetProps<AdminProduct
       });
       if (res.ok) {
         const json = await res.json();
-        const addDetails = json.additionalDetails || json.data || json;
-        if (addDetails && (addDetails.id || addDetails.additional_details_title)) {
+        const rawDetails =
+          json.additionalDetails ??
+          json.data ??
+          json.product?.additional_details;
+        const addDetails = Array.isArray(rawDetails) ? rawDetails[0] : rawDetails;
+        if (
+          addDetails &&
+          (addDetails.id ||
+            addDetails.additional_details_title ||
+            addDetails.additional_description ||
+            addDetails.additional_details_content)
+        ) {
           setDetails(addDetails);
         } else {
           setDetails(null);
@@ -92,6 +102,15 @@ const ProductAdditionalDetailsWidget = ({ data }: DetailWidgetProps<AdminProduct
       });
 
       if (res.ok) {
+        const json = await res.json();
+        const rawDetails =
+          json.additionalDetails ??
+          json.data ??
+          json.product?.additional_details;
+        const addDetails = Array.isArray(rawDetails) ? rawDetails[0] : rawDetails;
+        if (addDetails) {
+          setDetails(addDetails);
+        }
         toast.success("Additional details saved successfully");
         setIsDrawerOpen(false);
         fetchAdditionalDetails();

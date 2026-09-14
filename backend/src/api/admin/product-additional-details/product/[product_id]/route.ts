@@ -22,8 +22,14 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
 				fields: ["*", "additional_details.*"],
 			});
 
+			const additionalDetails = Array.isArray(product?.additional_details)
+				? product.additional_details[0]
+				: product?.additional_details || null;
+
 			return res.json({
 				product,
+				additionalDetails,
+				data: additionalDetails,
 			});
 		}
 		return res.status(404).json({ error: "no product id found" });
@@ -128,8 +134,14 @@ export async function POST(
 				fields: ["*", "additional_details.*"],
 			});
 
+			const additionalDetails = Array.isArray(updated_product?.additional_details)
+				? updated_product.additional_details[0]
+				: updated_product?.additional_details || null;
+
 			return res.json({
 				product: updated_product,
+				additionalDetails,
+				data: additionalDetails,
 			});
 		}
 		return res.status(404).json({ error: "no product id found" });

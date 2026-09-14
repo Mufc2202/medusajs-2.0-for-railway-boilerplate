@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
+  '@medusajs/core-flows@2.19.0':
+    hash: f55hw3434ijg5bzzgjdurxbjey
+    path: patches/@medusajs__core-flows@2.19.0.patch
   '@medusajs/dashboard@2.19.0':
     hash: 7hat5ogesopb5x2y7bhcrgq7am
     path: patches/@medusajs__dashboard@2.19.0.patch
@@ -24,13 +27,13 @@ importers:
         version: 2.19.0(@types/node@20.17.10)
       '@medusajs/core-flows':
         specifier: 2.19.0
-        version: 2.19.0(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))
+        version: 2.19.0(patch_hash=f55hw3434ijg5bzzgjdurxbjey)(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))
       '@medusajs/dashboard':
         specifier: 2.19.0
         version: 2.19.0(patch_hash=7hat5ogesopb5x2y7bhcrgq7am)(@sinclair/typebox@0.27.8)(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(ajv@8.13.0)(typescript@5.7.2)
       '@medusajs/draft-order':
         specifier: 2.19.0
-        version: 2.19.0(yjgfbh53dcpibnjmcxkvsjx5oa)
+        version: 2.19.0(qteje2v2xbypypqx6ivvwbvsa4)
       '@medusajs/framework':
         specifier: 2.19.0
         version: 2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3)
@@ -112,7 +115,7 @@ importers:
     devDependencies:
       '@medusajs/test-utils':
         specifier: 2.19.0
-        version: 2.19.0(@medusajs/core-flows@2.19.0(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3)))(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))(@medusajs/medusa@2.19.0)
+        version: 2.19.0(@medusajs/core-flows@2.19.0(patch_hash=f55hw3434ijg5bzzgjdurxbjey)(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3)))(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))(@medusajs/medusa@2.19.0)
       '@mikro-orm/cli':
         specifier: 6.6.14
         version: 6.6.14(pg@8.13.1)
@@ -9968,7 +9971,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@medusajs/core-flows@2.19.0(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))':
+  '@medusajs/core-flows@2.19.0(patch_hash=f55hw3434ijg5bzzgjdurxbjey)(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))':
     dependencies:
       '@medusajs/framework': 2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3)
       csv-parse: 5.6.0
@@ -10081,7 +10084,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@medusajs/draft-order@2.19.0(yjgfbh53dcpibnjmcxkvsjx5oa)':
+  '@medusajs/draft-order@2.19.0(qteje2v2xbypypqx6ivvwbvsa4)':
     dependencies:
       '@ariakit/react': 0.4.15(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@babel/runtime': 7.29.7
@@ -10102,7 +10105,7 @@ snapshots:
       '@medusajs/cli': 2.19.0(@types/node@20.17.10)
       '@medusajs/dashboard': 2.19.0(patch_hash=7hat5ogesopb5x2y7bhcrgq7am)(@sinclair/typebox@0.27.8)(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(ajv@8.13.0)(typescript@5.7.2)
       '@medusajs/icons': 2.19.0(react@18.3.1)
-      '@medusajs/test-utils': 2.19.0(@medusajs/core-flows@2.19.0(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3)))(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))(@medusajs/medusa@2.19.0)
+      '@medusajs/test-utils': 2.19.0(@medusajs/core-flows@2.19.0(patch_hash=f55hw3434ijg5bzzgjdurxbjey)(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3)))(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))(@medusajs/medusa@2.19.0)
       '@medusajs/ui': 4.2.1(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.2)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -10274,10 +10277,10 @@ snapshots:
       '@medusajs/caching': 2.19.0(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))(awilix@8.0.1)
       '@medusajs/caching-redis': 2.19.0(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))
       '@medusajs/cart': 2.19.0(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))
-      '@medusajs/core-flows': 2.19.0(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))
+      '@medusajs/core-flows': 2.19.0(patch_hash=f55hw3434ijg5bzzgjdurxbjey)(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))
       '@medusajs/currency': 2.19.0(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))
       '@medusajs/customer': 2.19.0(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))
-      '@medusajs/draft-order': 2.19.0(yjgfbh53dcpibnjmcxkvsjx5oa)
+      '@medusajs/draft-order': 2.19.0(qteje2v2xbypypqx6ivvwbvsa4)
       '@medusajs/event-bus-local': 2.19.0(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))
       '@medusajs/event-bus-redis': 2.19.0(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))
       '@medusajs/file': 2.19.0(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))
@@ -10586,7 +10589,7 @@ snapshots:
       - debug
       - supports-color
 
-  '@medusajs/test-utils@2.19.0(@medusajs/core-flows@2.19.0(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3)))(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))(@medusajs/medusa@2.19.0)':
+  '@medusajs/test-utils@2.19.0(@medusajs/core-flows@2.19.0(patch_hash=f55hw3434ijg5bzzgjdurxbjey)(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3)))(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))(@medusajs/medusa@2.19.0)':
     dependencies:
       '@medusajs/framework': 2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3)
       '@types/express': 4.17.21
@@ -10595,7 +10598,7 @@ snapshots:
       get-port: 5.1.1
       ulid: 2.3.0
     optionalDependencies:
-      '@medusajs/core-flows': 2.19.0(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))
+      '@medusajs/core-flows': 2.19.0(patch_hash=f55hw3434ijg5bzzgjdurxbjey)(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.17.10))(@types/node@20.17.10)(ioredis@5.4.2)(vite@5.4.11(@types/node@20.17.10))(zod@4.4.3))
       '@medusajs/medusa': 2.19.0(oxevbrxsugiwqargadymerxske)
     transitivePeerDependencies:
       - debug

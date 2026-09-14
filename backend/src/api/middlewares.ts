@@ -67,5 +67,23 @@ export default defineMiddlewares({
         ]),
       ],
     },
+    {
+      matcher: "/admin/uploads/presigned-urls",
+      method: "POST",
+      middlewares: [
+        (req: any, _res: any, next: any) => {
+          if (
+            (!req.body?.mime_type || req.body.mime_type === "" || req.body.mime_type === "application/octet-stream") &&
+            req.body?.originalname?.toLowerCase().endsWith(".csv")
+          ) {
+            req.body.mime_type = "text/csv";
+            if (req.validatedBody) {
+              req.validatedBody.mime_type = "text/csv";
+            }
+          }
+          next();
+        },
+      ],
+    },
   ],
 });

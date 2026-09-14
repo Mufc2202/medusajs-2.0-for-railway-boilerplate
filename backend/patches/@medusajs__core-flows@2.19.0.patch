@@ -1,0 +1,30 @@
+diff --git a/dist/product/steps/normalize-products-to-chunks.js b/dist/product/steps/normalize-products-to-chunks.js
+index 7e95c7bce95dbfb6f8e44edc040f676d242688e9..b7d4f700a7d2a325bcecb461bc822dfbaf46af41 100644
+--- a/dist/product/steps/normalize-products-to-chunks.js
++++ b/dist/product/steps/normalize-products-to-chunks.js
+@@ -140,6 +140,9 @@ exports.normalizeCsvToChunksStep = (0, workflows_sdk_1.createStep)(exports.norma
+             const transformer = (0, csv_parse_1.parse)({
+                 columns: true,
+                 skip_empty_lines: true,
++                relax_column_count: true,
++                relax_quotes: true,
++                trim: true,
+             });
+             contents.on("error", reject);
+             const chunks = await createChunks(file, fileKey, contents.pipe(transformer));
+diff --git a/dist/product/steps/process-import-chunks.js b/dist/product/steps/process-import-chunks.js
+index 06e759c230bba729906a3f79caea7439ebc44cf7..e694e58e3700296e5f05fa616047cd6466957446 100644
+--- a/dist/product/steps/process-import-chunks.js
++++ b/dist/product/steps/process-import-chunks.js
+@@ -27,6 +27,11 @@ exports.processImportChunksStep = (0, workflows_sdk_1.createStep)({
+             products = undefined;
+         }
+     }
++    catch (error) {
++        const logger = container.resolve(utils_1.ContainerRegistrationKeys.LOGGER, { allowUnregistered: true });
++        logger?.error?.(`[ProductImport] Error processing product import chunk: ${error?.message || error}`, error);
++        throw error;
++    }
+     finally {
+         /**
+          * Delete chunks regardless of the import status

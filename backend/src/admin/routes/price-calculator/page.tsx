@@ -733,21 +733,41 @@ const PriceCalculatorPage = () => {
       return;
     }
 
-    // 3. Validate Items: check that every item has valid positive weight
+    // 3. Validate Items:
+    // - Scrap metal items require positive weight (> 0)
+    // - Non-scrap items (Melee, Complete Piece, Diamonds/gem stone) require estimated wholesale cost (> 0)
     for (let idx = 0; idx < items.length; idx++) {
       const it = items[idx];
-      const weightNum = Number(it.weight);
-      if (
-        it.weight === "" ||
-        it.weight === null ||
-        it.weight === undefined ||
-        isNaN(weightNum) ||
-        weightNum <= 0
-      ) {
-        toast.error("Invalid Item Weight", {
-          description: `Please enter a valid weight (> 0) for Item #${idx + 1}.`,
-        });
-        return;
+      const isScrap = isScrapMetalItem(it.item_title);
+
+      if (isScrap) {
+        const weightNum = Number(it.weight);
+        if (
+          it.weight === "" ||
+          it.weight === null ||
+          it.weight === undefined ||
+          isNaN(weightNum) ||
+          weightNum <= 0
+        ) {
+          toast.error("Invalid Item Weight", {
+            description: `Please enter a valid weight (> 0) for Item #${idx + 1} (${it.item_title || "Scrap Metal"}).`,
+          });
+          return;
+        }
+      } else {
+        const costNum = Number(it.estimated_wholesale_cost);
+        if (
+          it.estimated_wholesale_cost === "" ||
+          it.estimated_wholesale_cost === null ||
+          it.estimated_wholesale_cost === undefined ||
+          isNaN(costNum) ||
+          costNum <= 0
+        ) {
+          toast.error("Invalid Wholesale Cost", {
+            description: `Please enter a valid estimated wholesale cost (> $0.00) for Item #${idx + 1} (${it.item_title}).`,
+          });
+          return;
+        }
       }
     }
 
@@ -770,7 +790,7 @@ const PriceCalculatorPage = () => {
             description: i.description?.trim() || "",
             metal_type: i.metal_type,
             purity_percent: Number(i.purity_percent) || 0,
-            weight: Number(i.weight),
+            weight: Number(i.weight) || 0,
             unit: i.unit,
             estimated_wholesale_cost: Number(i.estimated_wholesale_cost) || 0,
             payout_ratio: Number(i.payout_ratio) || 85,
@@ -1870,7 +1890,7 @@ const PriceCalculatorPage = () => {
               </div>
               {calculationSummary.final_offered_price <= 0 && (
                 <div className="text-[11px] text-ui-fg-error font-medium bg-rose-500/10 border border-rose-500/20 p-2 rounded-md">
-                  ⚠️ Quote total must be greater than $0.00. Please enter item weights before saving.
+                  ⚠️ Quote total must be greater than $0.00. Please enter item details before saving.
                 </div>
               )}
               <div className="flex justify-between text-ui-fg-muted pt-1 border-t border-ui-border-base">
