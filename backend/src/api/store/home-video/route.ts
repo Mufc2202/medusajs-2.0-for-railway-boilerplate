@@ -21,7 +21,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     const homeVideoService: HomeVideoModuleService = req.scope.resolve(HOME_VIDEO_MODULE);
     
     // Retrieve current video configuration
-    const videos = await homeVideoService.listHomeVideos(
+    const videos = await homeVideoService.listHomeVideoes(
       {},
       { take: 1, order: { created_at: "DESC" } }
     );
