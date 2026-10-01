@@ -61,9 +61,15 @@ export default function Footer() {
             >
               Contact
             </Link>
+            <Link
+              className="text-lg text-dolginsblue h-14 mx-2 hover:text-gray-900 font-medium"
+              href="/card"
+            >
+              Digital Card
+            </Link>
           </div>
         </nav>
-        <p className="mt-2 text-center text-sm text-gray-900">
+        <p className="mt-2 text-center text-sm text-gray-900" suppressHydrationWarning>
           &copy; {new Date().getFullYear()} Joseph Dolgin Jeweler. All rights
           reserved. <br />
           From Overland Park To Kansas City And Beyond

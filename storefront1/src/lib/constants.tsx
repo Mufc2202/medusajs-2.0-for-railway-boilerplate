@@ -70,7 +70,10 @@ export const noDivisionCurrencies = [
 ]
 
 export const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+  process.env.NEXT_PUBLIC_BASE_URL ||
+  (process.env.NODE_ENV === "production"
+    ? "https://dolgins.com"
+    : "http://localhost:3000")
 export const SITE_NAME = "Dolgins Fine Jewelry"
 export const SITE_TITLE = "Dolgins | Welcome - Dolgins Fine Jewelry Store"
 export const SITE_DESC =

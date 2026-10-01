@@ -1,4 +1,5 @@
 import { Metadata } from "next"
+import Link from "next/link"
 import Testimonial from "@modules/layout/components/testimonial"
 import PageHeader from "@modules/layout/components/page-header"
 import DolginsCTA from "@modules/layout/components/dolgins-cta"
@@ -41,19 +42,29 @@ export function Contact() {
               </span>{" "}
               but operate in a small and personable office.
             </p>
-            <div className="mt-10 sm:flex justify-center">
+            <div className="mt-10 sm:flex sm:flex-wrap justify-center gap-3">
               <div className="rounded-md shadow bg-dolginsblue text-white hover:bg-dolginslightblue">
+                <Link
+                  href="/card"
+                  className="flex w-full items-center justify-center rounded-md bg-dolginsblue px-6 py-3 text-base font-medium text-white hover:bg-dolginslightblue md:py-3.5 md:px-8 md:text-base border border-gold/40"
+                >
+                  Save Contact Card
+                </Link>
+              </div>
+              <div className="mt-3 sm:mt-0 rounded-md shadow bg-dolginsblue text-white hover:bg-dolginslightblue">
                 <a
                   href="#"
-                  className="flex w-full items-center justify-center rounded-md bg-dolginsblue px-8 py-3 text-base font-medium text-white hover:bg-dolginslightblue md:py-4 md:px-10 md:text-lg"
+                  className="flex w-full items-center justify-center rounded-md bg-dolginsblue px-6 py-3 text-base font-medium text-white hover:bg-dolginslightblue md:py-3.5 md:px-8 md:text-base"
                 >
                   Tour
                 </a>
               </div>
-              <div className="mt-3 rounded-md shadow sm:mt-0 sm:ml-3">
+              <div className="mt-3 rounded-md shadow sm:mt-0">
                 <a
                   href="https://g.page/dolginsjewelry?share"
-                  className="flex w-full items-center justify-center rounded-md border border-transparent bg-dolginsblue px-8 py-3 text-base font-medium text-white hover:bg-dolginslightblue md:py-4 md:px-10 md:text-lg"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex w-full items-center justify-center rounded-md border border-transparent bg-dolginsblue px-6 py-3 text-base font-medium text-white hover:bg-dolginslightblue md:py-3.5 md:px-8 md:text-base"
                 >
                   Find On Google
                 </a>

@@ -118,6 +118,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     },
     category: product?.categories?.[0]?.name,
     viewport: product?.seo_details?.metaViewport,
+    alternates: {
+      canonical:
+        product?.seo_details?.canonicalURL?.trim() ||
+        `${BASE_URL}/jewelry/${product?.handle}`,
+    },
     metadataBase: new URL(`${BASE_URL}/jewelry/${product?.handle}`),
     applicationName: APPLICATION_NAME,
     authors: [{ name: "Dolgins Jewelry" }],

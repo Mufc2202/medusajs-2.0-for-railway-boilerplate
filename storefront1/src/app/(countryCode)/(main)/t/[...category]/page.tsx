@@ -110,30 +110,8 @@ export async function generateStaticParams() {
 
 export const dynamicParams = true
 
-const buildCategoryUrl = async (category: CustomCategory) => {
-  const categoryPathIds = category?.parent_category?.mpath?.split(".")
-
-  const { product_categories }: { product_categories: CustomCategory[] } =
-    categoryPathIds?.length
-      ? await sdk.client.fetch(
-          `/store/product-categories?fields=id,handle&id[]=${categoryPathIds.join(
-            ","
-          )}`,
-          {
-            method: "GET",
-            next: {
-              tags: [`canonical-url-${category.handle}`],
-              revalidate: 3600,
-            },
-            cache: "force-cache",
-          }
-        )
-      : { product_categories: [] }
-
-  return `${BASE_URL}/categoria/${[
-    ...product_categories?.map((x) => x.handle),
-    category?.handle,
-  ].join("/")}`
+const buildCategoryUrl = (categoryPath: string[]) => {
+  return `${BASE_URL}/t/${categoryPath.join("/")}`
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -142,7 +120,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     category
   )) as unknown as CustomCategory
 
-  const categoryUrl = await buildCategoryUrl(product_category)
+  const categoryUrl = buildCategoryUrl(category)
 
   const openGraphImages: OGProps[] = [
     {
@@ -181,10 +159,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description:
         product_category?.seo_details?.metaDescription ||
         product_category?.description,
-      url: `${BASE_URL}/categoria/${product_category?.handle}`,
+      url: categoryUrl,
       siteName: SITE_NAME,
       images: [...openGraphImages],
-      locale: "pt_BR",
+      locale: "en_US",
       type: "website",
     },
     facebook: {
@@ -216,7 +194,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       canonical:
         product_category?.seo_details?.canonicalURL?.trim() || categoryUrl,
     },
-    metadataBase: new URL(`${BASE_URL}/categoria/${product_category?.handle}`),
+    metadataBase: new URL(categoryUrl),
     applicationName: APPLICATION_NAME,
     authors: [{ name: "The Special Character" }],
     publisher: PUBLISHER,

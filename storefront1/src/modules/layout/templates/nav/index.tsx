@@ -248,6 +248,14 @@ export default function Nav({ cartData }: { cartData: StoreCart | null }) {
                       >
                         <span className="text-sm">E-mail</span>
                       </a>
+                      <Link
+                        id="CardMobileNavTag"
+                        href="/card"
+                        onClick={() => setOpen(false)}
+                        className="inline-block ml-3 rounded-md shadow bg-gold py-2 px-3 text-center text-dolginsblue font-semibold hover:bg-gold/80"
+                      >
+                        <span className="text-sm">Card</span>
+                      </Link>
                     </div>
                   </div>
                 </div>

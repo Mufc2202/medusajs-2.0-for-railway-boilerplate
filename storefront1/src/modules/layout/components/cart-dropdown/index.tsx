@@ -74,6 +74,7 @@ const CartDropdown = ({
       className="h-full z-50"
       onMouseEnter={openAndCancel}
       onMouseLeave={close}
+      suppressHydrationWarning
     >
       <Popover className="relative h-full">
         <Popover.Button className="h-full">

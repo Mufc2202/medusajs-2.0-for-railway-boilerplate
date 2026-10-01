@@ -85,5 +85,19 @@ export default defineMiddlewares({
         },
       ],
     },
+    {
+      matcher: "/admin/home-video*",
+      method: ["GET", "POST", "PUT"],
+      middlewares: [
+        authenticate("user", ["session", "bearer"]),
+      ],
+    },
+    {
+      matcher: "/admin/business-card*",
+      method: ["GET", "POST", "PUT"],
+      middlewares: [
+        authenticate("user", ["session", "bearer"]),
+      ],
+    },
   ],
 });

@@ -67,6 +67,12 @@ const medusaConfig = {
       resolve: "./src/modules/instagram-feed",
     },
     {
+      resolve: "./src/modules/home-video",
+    },
+    {
+      resolve: "./src/modules/business-card",
+    },
+    {
       key: Modules.FILE,
       resolve: "@medusajs/medusa/file",
       options: {

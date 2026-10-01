@@ -4,11 +4,13 @@ import FeaturedProducts from "@modules/home/components/featured-products"
 import Hero from "@modules/home/components/hero"
 import { getCollectionsWithProducts } from "@lib/data/collections"
 import { getRegion } from "@lib/data/regions"
-import { countryCode } from "@lib/constants"
+import { countryCode, BASE_URL } from "@lib/constants"
 import DolginsCTA from "@modules/layout/components/dolgins-cta"
 import CategoriesGrid from "@modules/layout/components/category-grid"
 import InstagramFeed from "@modules/home/components/instagram-feed"
 import { getInstagramFeed } from "@lib/data/instagram"
+import HomeVideo from "@modules/home/components/home-video"
+import { getHomeVideo } from "@lib/data/home-video"
 import BuyingRing from "@images/index/buying-ring-money.jpg"
 import Repair from "@images/index/repairing.jpg"
 
@@ -16,13 +18,17 @@ export const metadata: Metadata = {
   title: "Dolgins: Kansas City's Fine Jewelry Store",
   description:
     "A trusted, 4th generation jewelry store serving Kansas City from a private office in Overland Park. We sell & custom-make beautiful diamond engagement rings, wedding bands & other jewelry. We also buy your unwanted gold and diamonds and repair jewelry.",
+  alternates: {
+    canonical: `${BASE_URL}/`,
+  },
 }
 
 export default async function Home() {
-  const [collections, region, instagramFeed] = await Promise.all([
+  const [collections, region, instagramFeed, homeVideo] = await Promise.all([
     getCollectionsWithProducts(countryCode),
     getRegion(countryCode),
     getInstagramFeed(),
+    getHomeVideo(),
   ])
 
   if (!collections || !region) {
@@ -32,6 +38,7 @@ export default async function Home() {
   return (
     <>
       <Hero />
+      <HomeVideo video={homeVideo} />
       <div>
         <ul className="flex flex-col gap-x-6">
           <FeaturedProducts collections={collections} region={region} />

@@ -11,7 +11,10 @@ export const dynamic = "force-dynamic"
 export const revalidate = 0
 
 export const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+  process.env.NEXT_PUBLIC_BASE_URL ||
+  (process.env.NODE_ENV === "production"
+    ? "https://dolgins.com"
+    : "http://localhost:3000")
 
 enum ChangeFrequency {
   Always = "always",
@@ -164,6 +167,11 @@ const generateStaticSitemap = async (): Promise<Sitemap[] | null> => {
         url: `https://dolgins.com/contact`,
         lastModified: new Date().toISOString(),
         priority: 0.7,
+      },
+      {
+        url: `https://dolgins.com/card`,
+        lastModified: new Date().toISOString(),
+        priority: 0.8,
       },
       {
         url: `https://dolgins.com/policy`,
