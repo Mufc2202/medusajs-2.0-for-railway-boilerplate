@@ -14,6 +14,7 @@ export interface HomeVideoData {
   autoplay?: boolean
   muted?: boolean
   loop?: boolean
+  duration?: number
 }
 
 // Client's primary Vimeo video fallback so homepage is 100% resilient
@@ -28,6 +29,7 @@ const FALLBACK_HOME_VIDEO: HomeVideoData = {
   autoplay: false,
   muted: true,
   loop: false,
+  duration: 49,
 }
 
 export const getHomeVideo = async (): Promise<HomeVideoData | null> => {
