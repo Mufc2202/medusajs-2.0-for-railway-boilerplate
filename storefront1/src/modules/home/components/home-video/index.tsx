@@ -17,7 +17,7 @@ export default function HomeVideo({
   const [isMuted, setIsMuted] = useState<boolean>(true)
   const [showControls, setShowControls] = useState<boolean>(!isAutoplayConfigured)
   const [currentTime, setCurrentTime] = useState<number>(0)
-  const [duration, setDuration] = useState<number>(0)
+  const [duration, setDuration] = useState<number>(video?.duration || 49)
   const [progress, setProgress] = useState<number>(0)
   const [isSeeking, setIsSeeking] = useState<boolean>(false)
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -168,6 +168,24 @@ export default function HomeVideo({
     [isVimeo, isYouTube]
   )
 
+  // Fetch video duration from oEmbed for Vimeo if not already set
+  useEffect(() => {
+    if (isVimeo && video.video_url) {
+      fetch(
+        `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(
+          video.video_url
+        )}`
+      )
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data && typeof data.duration === "number" && data.duration > 0) {
+            setDuration(data.duration)
+          }
+        })
+        .catch(() => {})
+    }
+  }, [isVimeo, video.video_url])
+
   // Listen to postMessage events from Vimeo and YouTube
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -177,10 +195,18 @@ export default function HomeVideo({
 
         if (!data) return
 
-        // 1. Vimeo events
+        // 1. Handle duration responses (Vimeo & generic)
+        if (data.method === "getDuration" || data.event === "getDuration") {
+          const dur = Number(data.value ?? data.data ?? data.result ?? 0)
+          if (dur > 0) {
+            setDuration(dur)
+          }
+        }
+
+        // 2. Vimeo events
         if (data.event === "timeupdate" && data.data && !isSeeking) {
-          const current = data.data.seconds || 0
-          const dur = data.data.duration || duration || 0
+          const current = Number(data.data.seconds ?? data.data.currentTime ?? 0)
+          const dur = Number(data.data.duration || duration || 49)
           setCurrentTime(current)
           if (dur > 0) {
             setDuration(dur)
@@ -191,7 +217,7 @@ export default function HomeVideo({
         } else if (data.event === "pause") {
           setIsPlaying(false)
         } else if (data.event === "ready") {
-          // Subscribe to Vimeo events
+          // Subscribe to Vimeo events and request duration
           const iframe = iframeRef.current
           if (iframe && iframe.contentWindow) {
             iframe.contentWindow.postMessage(
@@ -206,10 +232,14 @@ export default function HomeVideo({
               JSON.stringify({ method: "addEventListener", value: "pause" }),
               "*"
             )
+            iframe.contentWindow.postMessage(
+              JSON.stringify({ method: "getDuration" }),
+              "*"
+            )
           }
         }
 
-        // 2. YouTube events (via enablejsapi)
+        // 3. YouTube events (via enablejsapi)
         if (data.event === "infoDelivery" && data.info && !isSeeking) {
           if (typeof data.info.currentTime === "number") {
             setCurrentTime(data.info.currentTime)
@@ -564,7 +594,7 @@ export default function HomeVideo({
                   <span>{formatTime(currentTime)}</span>
                   <span className="text-gray-400">/</span>
                   <span className="text-gray-300">
-                    {duration > 0 ? formatTime(duration) : "--:--"}
+                    {formatTime(duration > 0 ? duration : 49)}
                   </span>
                 </div>
 
