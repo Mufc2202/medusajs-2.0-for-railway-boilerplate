@@ -9,7 +9,7 @@ import { DEFAULT_HOME_VIDEO } from "../../store/home-video/route";
 export async function GET(req: AuthenticatedMedusaRequest, res: MedusaResponse) {
   try {
     const homeVideoService: HomeVideoModuleService = req.scope.resolve(HOME_VIDEO_MODULE);
-    const videos = await homeVideoService.listHomeVideoes(
+    const videos = await homeVideoService.listHomeVideos(
       {},
       { take: 1, order: { created_at: "DESC" } }
     );
@@ -30,7 +30,7 @@ export async function POST(req: AuthenticatedMedusaRequest, res: MedusaResponse)
     const homeVideoService: HomeVideoModuleService = req.scope.resolve(HOME_VIDEO_MODULE);
     const body = req.body as any;
 
-    const existingVideos = await homeVideoService.listHomeVideoes({}, { take: 1 });
+    const existingVideos = await homeVideoService.listHomeVideos({}, { take: 1 });
 
     const payload = {
       title: body.title ?? null,
@@ -46,12 +46,12 @@ export async function POST(req: AuthenticatedMedusaRequest, res: MedusaResponse)
 
     let savedVideo;
     if (existingVideos && existingVideos.length > 0) {
-      savedVideo = await homeVideoService.updateHomeVideoes({
+      savedVideo = await homeVideoService.updateHomeVideos({
         id: existingVideos[0].id,
         ...payload,
       });
     } else {
-      savedVideo = await homeVideoService.createHomeVideoes(payload);
+      savedVideo = await homeVideoService.createHomeVideos(payload);
     }
 
     return res.status(200).json({ video: savedVideo });
